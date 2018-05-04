@@ -4,6 +4,9 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+# .DS_Store banished!
+.DS_Store
+
 # Ignore bundler config.
 /.bundle
 
@@ -25,3 +28,18 @@
 config/settings.local.yml
 config/settings/*.local.yml
 config/environments/*.local.yml
+/public/packs
+/public/packs-test
+/node_modules
+yarn-debug.log*
+.yarn-integrity
+
+
+# carrierwave
+/public/uploads
+
+# dotenv
+/.env
+
+# coverage rate
+/coverage

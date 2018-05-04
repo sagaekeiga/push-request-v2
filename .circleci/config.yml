@@ -1,0 +1,78 @@
+version: 2
+dependencies:
+jobs:
+  build:
+    working_directory: ~/neurospace
+    docker:
+      - image: circleci/ruby:2.4.3-stretch-node-browsers
+        environment:
+          PGHOST: 127.0.0.1
+          PGUSER: neurospace
+          RAILS_ENV: test
+      - image: circleci/postgres:9.6.2-alpine
+        environment:
+          POSTGRES_USER: neurospace
+          POSTGRES_DB: neurospace_test
+          POSTGRES_PASSWORD: ""
+    steps:
+      - checkout
+
+      - restore_cache:
+          name: Restore bundle cache
+          keys:
+            - myapp-bundle-{{ checksum "Gemfile.lock" }}
+            - myapp-bundle-
+
+      - restore_cache:
+          name: Restore yarn cache
+          keys:
+            - myapp-yarn-{{ checksum "yarn.lock" }}
+            - myapp-yarn-
+
+      - run:
+          name: Bundle Install
+          command: bin/bundle check --path vendor/bundle ||  bin/bundle install --path vendor/bundle --jobs 4 --retry 3
+
+      - run:
+          name: Yarn Install
+          command: yarn install
+
+      - save_cache:
+          name: Store bundle cache
+          key: myapp-bundle-{{ checksum "Gemfile.lock" }}
+          paths:
+            - vendor/bundle
+
+      - save_cache:
+          name: Store yarn cache
+          key: neurospace-yarn-{{ checksum "yarn.lock" }}
+          paths:
+            - ~/.yarn-cache
+
+      - run:
+          name: Rubocop
+          command: bundle exec rubocop --rails
+
+      - run:
+          name: RailsBestPractice
+          command: bundle exec rails_best_practices .
+
+      - run:
+          name: Brakemen
+          command: bundle exec brakeman
+
+      - run:
+          name: Wait for DB
+          command: dockerize -wait tcp://localhost:5432 -timeout 1m
+
+      - run:
+          name: Database setup
+          command: gem pristine rmagick
+          command: bin/rails db:schema:load --trace
+
+      - run:
+          name: Run tests
+          command: bundle exec rspec
+
+      - store_artifacts:
+          path: coverage
