@@ -2,17 +2,17 @@ version: 2
 dependencies:
 jobs:
   build:
-    working_directory: ~/neurospace
+    working_directory: ~/push-request-v2
     docker:
       - image: circleci/ruby:2.4.3-stretch-node-browsers
         environment:
           PGHOST: 127.0.0.1
-          PGUSER: neurospace
+          PGUSER: push-request-v2
           RAILS_ENV: test
       - image: circleci/postgres:9.6.2-alpine
         environment:
-          POSTGRES_USER: neurospace
-          POSTGRES_DB: neurospace_test
+          POSTGRES_USER: push-request-v2
+          POSTGRES_DB: push-request-v2_test
           POSTGRES_PASSWORD: ""
     steps:
       - checkout
@@ -45,7 +45,7 @@ jobs:
 
       - save_cache:
           name: Store yarn cache
-          key: neurospace-yarn-{{ checksum "yarn.lock" }}
+          key: push-request-v2-yarn-{{ checksum "yarn.lock" }}
           paths:
             - ~/.yarn-cache
 
