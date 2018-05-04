@@ -630,6 +630,7 @@ GEM
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
+    brakeman (4.2.1)
     breadcrumbs_on_rails (3.0.1)
     builder (3.2.3)
     bullet (5.7.5)
@@ -650,6 +651,8 @@ GEM
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
     cocoon (1.2.11)
+    code_analyzer (0.4.8)
+      sexp_processor
     coderay (1.1.2)
     coffee-rails (4.2.2)
       coffee-script (>= 2.2.0)
@@ -1116,6 +1119,14 @@ GEM
     rails-i18n (5.1.1)
       i18n (>= 0.7, < 2)
       railties (>= 5.0, < 6)
+    rails_best_practices (1.19.2)
+      activesupport
+      code_analyzer (>= 0.4.8)
+      erubis
+      i18n
+      json
+      require_all (~> 2.0)
+      ruby-progressbar
     railties (5.1.6)
       actionpack (= 5.1.6)
       activesupport (= 5.1.6)
@@ -1151,6 +1162,7 @@ GEM
       redis (~> 4.0)
     request_store (1.4.1)
       rack (>= 1.4)
+    require_all (2.0.0)
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
@@ -1290,6 +1302,7 @@ DEPENDENCIES
   bootstrap-generators
   bootstrap-kaminari-views
   bootstrap-sass (~> 3.3.7)
+  brakeman
   breadcrumbs_on_rails
   bullet
   byebug
@@ -1348,6 +1361,7 @@ DEPENDENCIES
   pundit
   rails (~> 5.1.6)
   rails-i18n
+  rails_best_practices
   ransack
   recaptcha
   redis

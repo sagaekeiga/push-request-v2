@@ -1,10 +1,9 @@
 source 'https://rubygems.org'
 
 git_source(:github) do |repo_name|
-  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?("/")
+  repo_name = "#{repo_name}/#{repo_name}" unless repo_name.include?('/')
   "https://github.com/#{repo_name}.git"
 end
-
 
 # Bundle edge Rails instead: gem 'rails', github: 'rails/rails'
 gem 'rails', '~> 5.1.6'
@@ -35,20 +34,20 @@ gem 'jbuilder', '~> 2.5'
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console
-  gem 'byebug', platforms: [:mri, :mingw, :x64_mingw]
+  gem 'byebug', platforms: %i[mri mingw x64_mingw]
 end
 
 group :development do
   # Access an IRB console on exception pages or by using <%= console %> anywhere in the code.
-  gem 'web-console', '>= 3.3.0'
   gem 'listen', '>= 3.0.5', '< 3.2'
+  gem 'web-console', '>= 3.3.0'
   # Spring speeds up development by keeping your application running in the background. Read more: https://github.com/rails/spring
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 end
 
 # Windows does not include zoneinfo files, so bundle the tzinfo-data gem
-gem 'tzinfo-data', platforms: [:mingw, :mswin, :x64_mingw, :jruby]
+gem 'tzinfo-data', platforms: %i[mingw mswin x64_mingw jruby]
 
 gem 'pg', '~> 0.18'
 group :development, :test do
@@ -59,87 +58,90 @@ end
 group :development do
 end
 
+gem 'activemodel-serializers-xml'
+gem 'acts-as-taggable-on'
+gem 'annotate'
+gem 'audited'
+gem 'autoprefixer-rails'
+gem 'awesome_print'
+gem 'aws-sdk'
+gem 'bcrypt-ruby'
+gem 'bootstrap-generators'
+gem 'bootstrap-kaminari-views'
+gem 'bootstrap-sass', '~> 3.3.7'
+gem 'breadcrumbs_on_rails'
+gem 'carrierwave'
+gem 'cocoon'
+gem 'config'
+gem 'connection_pool'
+gem 'dotenv-rails'
+gem 'draper'
+gem 'enum_help'
+gem 'factory_bot_rails'
+gem 'faker'
+gem 'faker-japanese'
+gem 'file_validators'
+gem 'fog'
+gem 'font-awesome-sass'
+gem 'google-analytics-rails'
+gem 'guard'
+gem 'haml-rails'
+gem 'hiredis', require: ['redis', 'redis/connection/hiredis']
+gem 'httparty'
+gem 'i18n-tasks'
+gem 'inky-rb', require: 'inky'
+gem 'jquery-rails'
+gem 'jquery-turbolinks'
+gem 'jquery-ui-rails'
 gem 'json'
 gem 'jwt'
+gem 'kaminari'
+gem 'meta-tags'
 gem 'oj'
 gem 'oj_mimic_json'
-gem 'bcrypt-ruby'
-gem 'carrierwave'
-gem 'file_validators'
-gem 'rmagick'
-gem 'fog'
-gem 'recaptcha', require: 'recaptcha/rails'
-gem 'kaminari'
-gem 'bootstrap-kaminari-views'
-gem 'jquery-rails'
-gem 'jquery-ui-rails'
-gem 'jquery-turbolinks'
-gem 'rails-i18n'
-gem 'awesome_print'
-gem 'config'
-gem 'aws-sdk'
 gem 'paranoia'
-gem 'annotate'
-gem 'enum_help'
-gem 'inky-rb', require: 'inky'
 gem 'premailer-rails'
-gem 'draper'
-gem 'activemodel-serializers-xml'
-gem 'guard'
-gem 'meta-tags'
-gem 'ransack'
 gem 'pundit'
-gem 'cocoon'
-gem 'haml-rails'
-gem 'font-awesome-sass'
-gem 'autoprefixer-rails'
-gem 'bootstrap-sass', '~> 3.3.7'
-gem 'hiredis', require: ["redis", "redis/connection/hiredis"]
+gem 'rails-i18n'
+gem 'ransack'
+gem 'recaptcha', require: 'recaptcha/rails'
 gem 'redis'
 gem 'redis-namespace'
 gem 'redis-objects'
-gem 'connection_pool'
-gem 'httparty'
+gem 'rmagick'
 gem 'sidekiq'
-gem 'audited'
-gem 'acts-as-taggable-on'
-gem 'bootstrap-generators'
-gem 'faker'
-gem 'faker-japanese'
-gem 'breadcrumbs_on_rails'
-gem 'i18n-tasks'
-gem 'google-analytics-rails'
-gem 'dotenv-rails'
 gem 'webpacker', '~> 3.5'
-gem 'factory_bot_rails'
 group :development, :test do
-  gem 'timecop'
+  gem 'bullet'
+  gem 'database_cleaner'
+  gem 'database_rewinder'
+  gem 'erb2haml'
+  gem 'guard-rspec'
+  gem 'json_spec'
+  gem 'letter_opener_web'
   gem 'rspec'
   gem 'rspec-rails'
-  gem 'erb2haml'
-  gem 'database_cleaner'
   gem 'rspec-request_describer'
-  gem 'database_rewinder'
-  gem 'json_spec'
-  gem 'guard-rspec'
   gem 'rubocop', require: false
-  gem 'letter_opener_web'
   gem 'simplecov', require: false
+  gem 'rails_best_practices'
+  gem 'brakeman', require: false
+  gem 'timecop'
   gem 'webmock'
 end
 
 group :development do
-  gem 'bullet'
   gem 'better_errors'
   gem 'binding_of_caller'
-  gem 'pry-rails'
+  gem 'bullet'
   gem 'hirb'
   gem 'hirb-unicode'
+  gem 'pry-rails'
 end
 
 gem 'devise'
+gem 'foreman'
 gem 'omniauth'
-gem 'omniauth-twitter'
 gem 'omniauth-facebook'
 gem 'omniauth-google-oauth2', '0.5.0'
-gem 'foreman'
+gem 'omniauth-twitter'
