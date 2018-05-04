@@ -1,0 +1,24 @@
+!!!
+%html
+  %head
+    %meta{ content: 'text/html; charset=UTF-8', 'http-equiv': 'Content-Type' }/
+    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' }
+    %title push-request-v2
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  %body
+    %header
+      %nav
+        - if user_signed_in?
+          %strong
+            = link_to 'プロフィール変更', edit_user_registration_path
+            = link_to 'ログアウト', destroy_user_session_path, method: :delete
+        - else
+          = link_to 'サインアップ', new_user_registration_path
+          = link_to 'ログイン', new_user_session_path
+
+    - !content_for?(:flash) && flash && flash.each do |key, message|
+      .alert{ class: "alert-key", role: 'alert' }
+        %strong= message
+    = yield
