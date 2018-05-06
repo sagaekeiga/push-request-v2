@@ -7,9 +7,13 @@ require 'json'
 
 Dotenv.load
 
+
+
 # Private key contents
 private_pem = File.read(ENV['PATH_TO_PEM_FILE'])
 private_key = OpenSSL::PKey::RSA.new(private_pem)
+
+
 
 # Generate the JWT
 payload = {
@@ -25,7 +29,9 @@ jwt = JWT.encode payload, private_key, "RS256"
 p '【GET JSON WEB TOKEN】'
 puts jwt
 
-## Get access token
+
+
+## Get access token ##
 uri = URI.parse "https://api.github.com/installations/#{ENV['GITHUB_APP_INSTALLATION_ID']}/access_tokens"
 request = Net::HTTP::Post.new(uri)
 request["Authorization"] = "Bearer #{jwt}"
@@ -43,7 +49,9 @@ p '【GET TOKEN】'
 p json = JSON.load(response.body)
 p json['token']
 
-## Get Repository
+
+
+## Get Repository ##
 uri = URI.parse("https://api.github.com/installation/repositories")
 request = Net::HTTP::Get.new(uri)
 request["Authorization"] = "token #{json['token']}"
