@@ -67,6 +67,9 @@ end
 
 puts JSON.pretty_generate(JSON.load(response.body))
 
+
+
+## Get Pullrequest ##
 uri = URI.parse("https://api.github.com/repos/reviewers-prototype/116569462/pulls")
 request = Net::HTTP::Get.new(uri)
 request["Authorization"] = "token #{json['token']}"
