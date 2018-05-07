@@ -1,0 +1,19 @@
+api:
+  version: 1.0.0
+  errors:
+    not_found:
+      status: 404
+      code: E00404
+      message: endpoint not found
+    unauthorized:
+      status: 401
+      code: E00401
+      message: You are not authorized to perform this action
+    forbidden:
+      status: 403
+      code: E00403
+      message: You are not permitted to perform this action
+    server_error:
+      status: 500
+      code: E00500
+      message: failed to process request

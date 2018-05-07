@@ -111,6 +111,8 @@ gem 'redis-objects'
 gem 'rmagick'
 gem 'sidekiq'
 gem 'webpacker', '~> 3.5'
+gem 'omniauth-github'
+
 group :development, :test do
   gem 'bullet'
   gem 'database_cleaner'

@@ -13,6 +13,14 @@ class AdminDomainConstraint
 end
 
 Rails.application.routes.draw do
+  get '/auth/github/callback', to: 'connects#github'
+
+  devise_scope :user do
+    post '/auth/:action/callback',
+      controller: 'connects',
+      constraints: { action: /github/ }
+  end
+
   devise_for :users, path: 'users', controllers: {
     registrations: 'users/registrations',
     confirmations: 'users/confirmations',
@@ -20,7 +28,8 @@ Rails.application.routes.draw do
   }
 
   namespace :users do
-    get :my_page
+    get :dashboard, :pulls, :repos
+    get 'settings/integrations'
   end
 
   root to: 'welcome#index'

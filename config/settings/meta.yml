@@ -1,0 +1,9 @@
+meta:
+  site: PushRequest
+  title: PushRequest
+  description: コードレビュー自動化サービス
+  keywords: キーワード1,キーワード2,キーワード3
+og:
+  title: ページタイトル
+  type: website
+  image: /og.png
