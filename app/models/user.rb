@@ -34,7 +34,6 @@ class User < ApplicationRecord
    has_one :git_hub, class_name: 'Users::GitHub'
 
    def connect_to_github(auth)
-     p auth
      user_git_hub = build_git_hub(
        login: auth['extra']['raw_info']['login'],
        owner_id: auth['extra']['raw_info']['id'],
