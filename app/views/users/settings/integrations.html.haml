@@ -11,7 +11,7 @@
       = t 'views.integrations.github'
     .panel-body
       - if current_user.git_hub&.owner_id
-        = link_to t('users.settings.integrations.title'), 'https://github.com/apps/push-request-v2', target: '_blank', class: 'btn btn-default'
+        = link_to t('users.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-default'
       - else
         = link_to '/auth/github', class: 'ui button', data: { confirm: t('.confirm') } do
           %i.github.icon

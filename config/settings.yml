@@ -4,3 +4,5 @@ api:
       accept: application/vnd.github.machine-man-preview+json
     installation_url: https://api.github.com/installations/
     get_repositories_via_installation_url: https://api.github.com/installations/repositories
+github:
+  web_domain: https://github.com/

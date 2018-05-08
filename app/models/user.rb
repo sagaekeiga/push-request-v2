@@ -32,7 +32,9 @@ class User < ApplicationRecord
    # Relations
    # -------------------------------------------------------------------------------
    has_one :git_hub, class_name: 'Users::GitHub'
+   has_many :repos
 
+   # @TODO git_hub -> github_account
    def connect_to_github(auth)
      user_git_hub = build_git_hub(
        login: auth['extra']['raw_info']['login'],
@@ -53,5 +55,27 @@ class User < ApplicationRecord
        user_updated_at: auth['extra']['raw_info']['updated_at']
      )
      user_git_hub.save!
+   end
+
+   # @TODO テストコードを書く
+   #
+   # リモートのレポジトリを保存する
+   #
+   # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
+   #
+   # @return [Status] 成功すれば200、失敗すれば500のステータスコードを返す
+   #
+   def create_repo!(repositories_added_params)
+     ActiveRecord::Base.transaction do
+       repos.create!(
+         remote_id: repositories_added_params[0][:id],
+         name: repositories_added_params[0][:name],
+         full_name: repositories_added_params[0][:full_name],
+         private: ActiveRecord::Type::Boolean.new.cast(repositories_added_params[0][:private])
+       )
+     end
+     response_success(ActionController::Base.controller_name, ActionController::Base.action_name)
+   rescue => e
+     response_internal_server_error
    end
 end

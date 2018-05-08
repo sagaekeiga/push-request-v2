@@ -30,6 +30,17 @@ Rails.application.configure do
     config.cache_store = :null_store
   end
 
+  Flog.configure do |config|
+    # If this value is true, not format on cached query
+    config.ignore_cached_query = false
+    # If query duration is under this value, not format
+    config.query_duration_threshold = 2.0
+    # If key count of parameters is under this value, not format
+    config.params_key_count_threshold = 2
+    # If this value is true, nested Hash parameter is formatted coercively in any situation
+    config.force_on_nested_params = false
+  end
+
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = false
 

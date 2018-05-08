@@ -5,7 +5,7 @@ class ConnectsController < Users::BaseController
   end
 
   # GET /auth/facebook/callback
-  def callback_from
+  def callback_from(provider)
     ActiveRecord::Base.transaction do
       @user = current_user.connect_to_github(request.env['omniauth.auth'])
     end
