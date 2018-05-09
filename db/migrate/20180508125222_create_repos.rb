@@ -6,6 +6,7 @@ class CreateRepos < ActiveRecord::Migration[5.1]
       t.string :name
       t.string :full_name
       t.boolean :private
+      t.datetime :deleted_at, index: true
       t.timestamps
     end
   end

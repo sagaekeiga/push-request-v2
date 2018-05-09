@@ -3,6 +3,7 @@
 # Table name: repos
 #
 #  id         :bigint(8)        not null, primary key
+#  deleted_at :datetime
 #  full_name  :string
 #  name       :string
 #  private    :boolean
@@ -13,7 +14,8 @@
 #
 # Indexes
 #
-#  index_repos_on_user_id  (user_id)
+#  index_repos_on_deleted_at  (deleted_at)
+#  index_repos_on_user_id     (user_id)
 #
 # Foreign Keys
 #

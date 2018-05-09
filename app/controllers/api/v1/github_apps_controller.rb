@@ -9,7 +9,19 @@ class Api::V1::GithubAppsController < ApplicationController
   def webhook
     github_account = Users::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
     response_internal_server_error if github_account.nil?
-    status = github_account.user.create_repo!(params[:repositories_added]) if params[:repositories_added].present?
+    # Add
+    status = github_account.user.repos.create_or_restore!(params[:repositories_added]) if params[:repositories_added].present?
+    # Remove
+    if params[:repositories_removed].present?
+      repo = github_account.user.repos.find_by(remote_id: params[:repositories_removed][0][:id])&.destroy
+      status = true
+    end
+    response(status)
+  end
+
+  private
+
+  def response(status)
     if status.is_a?(TrueClass)
       response_success(controller_name, action_name)
     else

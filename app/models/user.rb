@@ -5,6 +5,7 @@
 #  id                     :bigint(8)        not null, primary key
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :inet
+#  deleted_at             :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
@@ -18,11 +19,13 @@
 #
 # Indexes
 #
+#  index_users_on_deleted_at            (deleted_at)
 #  index_users_on_email                 (email) UNIQUE
 #  index_users_on_reset_password_token  (reset_password_token) UNIQUE
 #
 
 class User < ApplicationRecord
+  acts_as_paranoid
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
@@ -54,28 +57,5 @@ class User < ApplicationRecord
        user_updated_at: auth['extra']['raw_info']['updated_at']
      )
      user_github_account.save!
-   end
-
-   # @TODO テストコードを書く
-   # @TODO languageを登録する
-   #
-   # リモートのレポジトリを保存する
-   #
-   # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
-   #
-   # @return [Status] 成功すれば200、失敗すれば500のステータスコードを返す
-   #
-   def create_repo!(repositories_added_params)
-     ActiveRecord::Base.transaction do
-       repos.create!(
-         remote_id: repositories_added_params[0][:id],
-         name: repositories_added_params[0][:name],
-         full_name: repositories_added_params[0][:full_name],
-         private: ActiveRecord::Type::Boolean.new.cast(repositories_added_params[0][:private])
-       )
-     end
-     true
-   rescue => e
-     false
    end
 end
