@@ -58,6 +58,7 @@ class User < ApplicationRecord
    end
 
    # @TODO テストコードを書く
+   # @TODO languageを登録する
    #
    # リモートのレポジトリを保存する
    #

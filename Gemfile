@@ -112,7 +112,7 @@ gem 'rmagick'
 gem 'sidekiq'
 gem 'webpacker', '~> 3.5'
 gem 'omniauth-github'
-gem 'rails-flog'
+gem 'bootstrap-material-design'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'
