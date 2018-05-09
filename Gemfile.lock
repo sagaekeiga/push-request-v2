@@ -47,6 +47,7 @@ GEM
       activerecord (>= 4.2.8)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    anbt-sql-formatter (0.0.6)
     annotate (2.7.3)
       activerecord (>= 3.2, < 6.0)
       rake (>= 10.4, < 13.0)
@@ -627,6 +628,8 @@ GEM
     bootstrap-kaminari-views (0.0.5)
       kaminari (>= 0.13)
       rails (>= 3.1)
+    bootstrap-material-design (0.2.2)
+      bootstrap-sass (~> 3.0)
     bootstrap-sass (3.3.7)
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
@@ -1117,6 +1120,10 @@ GEM
     rails-dom-testing (2.0.3)
       activesupport (>= 4.2.0)
       nokogiri (>= 1.6)
+    rails-flog (1.4.0)
+      anbt-sql-formatter
+      awesome_print
+      rails (>= 3.2.0)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     rails-i18n (5.1.1)
@@ -1304,6 +1311,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-generators
   bootstrap-kaminari-views
+  bootstrap-material-design
   bootstrap-sass (~> 3.3.7)
   brakeman
   breadcrumbs_on_rails
@@ -1364,6 +1372,7 @@ DEPENDENCIES
   puma (~> 3.7)
   pundit
   rails (~> 5.1.6)
+  rails-flog
   rails-i18n
   rails_best_practices
   ransack

@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: users_git_hubs
+# Table name: users_github_accounts
 #
 #  id              :bigint(8)        not null, primary key
 #  avatar_url      :string
@@ -26,16 +26,18 @@
 #
 # Indexes
 #
-#  index_users_git_hubs_on_deleted_at  (deleted_at)
-#  index_users_git_hubs_on_user_id     (user_id)
+#  index_users_github_accounts_on_deleted_at  (deleted_at)
+#  index_users_github_accounts_on_user_id     (user_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (user_id => users.id)
 #
 
-require 'rails_helper'
-
-RSpec.describe Users::GitHub, type: :model do
-  pending "add some examples to (or delete) #{__FILE__}"
+class Users::GithubAccount < ApplicationRecord
+  acts_as_paranoid
+  # -------------------------------------------------------------------------------
+  # Relations
+  # -------------------------------------------------------------------------------
+  belongs_to :user
 end

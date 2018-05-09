@@ -16,6 +16,7 @@ ja:
       title: ダッシュボード
     repos:
       title: レポジトリ
+      add_repo: レポジトリを追加する
     pulls:
       title: プルリクエスト
     settings:

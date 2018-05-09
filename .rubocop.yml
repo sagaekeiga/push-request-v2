@@ -41,6 +41,7 @@ AllCops:
     - Gemfile
     - app/models/**/*
     - lib/tasks/*
+    - samples/*
 # Metrics/AbcSize:
 MethodLength:
   Max: 50

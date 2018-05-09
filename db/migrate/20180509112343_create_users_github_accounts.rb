@@ -1,6 +1,6 @@
-class CreateUsersGitHubs < ActiveRecord::Migration[5.1]
+class CreateUsersGithubAccounts < ActiveRecord::Migration[5.1]
   def change
-    create_table :users_git_hubs do |t|
+    create_table :users_github_accounts do |t|
       t.belongs_to :user, foreign_key: true
       t.string :login
       t.integer :owner_id

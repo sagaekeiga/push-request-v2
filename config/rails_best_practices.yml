@@ -27,7 +27,13 @@ RemoveUnusedMethodsInControllersCheck: { except_methods: [
   'Users::RegistrationsController#new',
   'Users::RegistrationsController#sign_up_params',
   'Users::RegistrationsController#account_update_params',
-  'UsersController#my_page'
+  'UsersController#my_page',
+  'ApplicationController#response_success',
+  'ApplicationController#response_bad_request',
+  'ApplicationController#response_unauthorized',
+  'ApplicationController#response_not_found',
+  'ApplicationController#response_conflict',
+  'ApplicationController#response_internal_server_error'
 ] }
 RemoveUnusedMethodsInHelpersCheck: { except_methods: [] }
 RemoveUnusedMethodsInModelsCheck: { except_methods: [] }

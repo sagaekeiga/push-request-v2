@@ -112,8 +112,10 @@ gem 'rmagick'
 gem 'sidekiq'
 gem 'webpacker', '~> 3.5'
 gem 'omniauth-github'
-
+gem 'bootstrap-material-design'
+gem 'paranoia'
 group :development, :test do
+  gem 'rails-flog', require: "flog"
   gem 'bullet'
   gem 'database_cleaner'
   gem 'database_rewinder'

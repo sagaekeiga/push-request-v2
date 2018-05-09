@@ -13,6 +13,14 @@ class AdminDomainConstraint
 end
 
 Rails.application.routes.draw do
+  scope module: :api do
+    scope module: :v1 do
+      namespace :github_apps do
+        post :webhook
+      end
+    end
+  end
+
   get '/auth/github/callback', to: 'connects#github'
 
   devise_scope :user do

@@ -1,6 +1,4 @@
 class ConnectsController < Users::BaseController
-  prepend_before_action { request.env["devise.skip_timeout"] = true }
-
   # GET /auth/github/callback
   def github
     callback_from :github
@@ -8,7 +6,6 @@ class ConnectsController < Users::BaseController
 
   # GET /auth/facebook/callback
   def callback_from(provider)
-    provider = provider.to_s
     ActiveRecord::Base.transaction do
       @user = current_user.connect_to_github(request.env['omniauth.auth'])
     end
