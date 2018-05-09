@@ -10,7 +10,7 @@
       %i.fa.fa-github
       = t 'views.integrations.github'
     .panel-body
-      - if current_user.git_hub&.owner_id
+      - if current_user.github_account&.owner_id
         = link_to t('users.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-default'
       - else
         = link_to '/auth/github', class: 'ui button', data: { confirm: t('.confirm') } do

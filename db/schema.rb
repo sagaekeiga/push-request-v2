@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180508125222) do
+ActiveRecord::Schema.define(version: 20180509112343) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -68,6 +68,32 @@ ActiveRecord::Schema.define(version: 20180508125222) do
     t.index ["user_id"], name: "index_users_git_hubs_on_user_id"
   end
 
+  create_table "users_github_accounts", force: :cascade do |t|
+    t.bigint "user_id"
+    t.string "login"
+    t.integer "owner_id"
+    t.string "avatar_url"
+    t.string "gravatar_id"
+    t.string "email"
+    t.string "url"
+    t.string "html_url"
+    t.string "user_type"
+    t.string "name"
+    t.string "nickname"
+    t.string "company"
+    t.string "location"
+    t.integer "public_repos"
+    t.integer "public_gists"
+    t.datetime "user_created_at"
+    t.datetime "user_updated_at"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_users_github_accounts_on_deleted_at"
+    t.index ["user_id"], name: "index_users_github_accounts_on_user_id"
+  end
+
   add_foreign_key "repos", "users"
   add_foreign_key "users_git_hubs", "users"
+  add_foreign_key "users_github_accounts", "users"
 end

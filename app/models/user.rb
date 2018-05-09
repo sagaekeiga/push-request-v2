@@ -31,12 +31,11 @@ class User < ApplicationRecord
    # -------------------------------------------------------------------------------
    # Relations
    # -------------------------------------------------------------------------------
-   has_one :git_hub, class_name: 'Users::GitHub'
+   has_one :github_account, class_name: 'Users::GithubAccount'
    has_many :repos
 
-   # @TODO git_hub -> github_account
    def connect_to_github(auth)
-     user_git_hub = build_git_hub(
+     user_github_account = build_github_account(
        login: auth['extra']['raw_info']['login'],
        owner_id: auth['extra']['raw_info']['id'],
        avatar_url: auth['extra']['raw_info']['avatar_url'],
@@ -54,7 +53,7 @@ class User < ApplicationRecord
        user_created_at: auth['extra']['raw_info']['created_at'],
        user_updated_at: auth['extra']['raw_info']['updated_at']
      )
-     user_git_hub.save!
+     user_github_account.save!
    end
 
    # @TODO テストコードを書く
@@ -75,8 +74,8 @@ class User < ApplicationRecord
          private: ActiveRecord::Type::Boolean.new.cast(repositories_added_params[0][:private])
        )
      end
-     response_success(ActionController::Base.controller_name, ActionController::Base.action_name)
+     true
    rescue => e
-     response_internal_server_error
+     false
    end
 end

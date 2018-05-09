@@ -15,7 +15,7 @@ end
 Rails.application.routes.draw do
   scope module: :api do
     scope module: :v1 do
-      namespace :git_hub_apps do
+      namespace :github_apps do
         post :webhook
       end
     end
