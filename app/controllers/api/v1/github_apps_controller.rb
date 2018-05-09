@@ -16,12 +16,6 @@ class Api::V1::GithubAppsController < ApplicationController
       repo = github_account.user.repos.find_by(remote_id: params[:repositories_removed][0][:id])&.destroy
       status = true
     end
-    response(status)
-  end
-
-  private
-
-  def response(status)
     if status.is_a?(TrueClass)
       response_success(controller_name, action_name)
     else
