@@ -1,4 +1,5 @@
-module Authorizations
+module GithubAPI
+  # @TODO ファイル名をリネーム
   class << self
     def get_jwt
       # Private key contents
@@ -16,8 +17,6 @@ module Authorizations
       }
 
       jwt = JWT.encode payload, private_key, "RS256"
-      p '【GET JSON WEB TOKEN】'
-      puts jwt
     end
 
     def get_access_token
@@ -26,7 +25,7 @@ module Authorizations
       req_options = {
         use_ssl: parsed_uri.scheme == "https",
       }
-      
+
       response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
         http.request(target_request)
       end
