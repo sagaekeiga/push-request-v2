@@ -24,6 +24,10 @@
 
 FactoryBot.define do
   factory :repo do
-    
+    user nil
+    full_name { Faker::Name.name }
+    name { Faker::Name.first_name }
+    private true
+    remote_id { Faker::Number.number(6) }
   end
 end
