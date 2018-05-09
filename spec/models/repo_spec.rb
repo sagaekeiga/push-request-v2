@@ -53,18 +53,10 @@ RSpec.describe Repo, type: :model do
     #   it { is_expected.to eq 1 }
     # end
 
-    # context 'レポジトリがすでに存在すれば作成しない' do
-    #   let(:started_at) { Time.zone.today }
-    #   let(:reminded_at) { Time.zone.today }
-    #   let(:ended_at) { Time.zone.today }
-    #   it { is_expected.to 2 }
-    # end
-    #
-    # context '論理削除されたレポジトリが存在すればリストアする' do
-    #   let(:started_at) { Time.zone.today }
-    #   let(:reminded_at) { Time.zone.today }
-    #   let(:ended_at) { Time.zone.today }
-    #   it { expect(survey).not_to be_valid }
-    # end
+    context 'レポジトリがすでに存在すれば作成しない' do
+    end
+
+    context '論理削除されたレポジトリが存在すればリストアする' do
+    end
   end
 end
