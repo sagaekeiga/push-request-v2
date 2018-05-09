@@ -114,6 +114,7 @@ gem 'webpacker', '~> 3.5'
 gem 'omniauth-github'
 gem 'bootstrap-material-design'
 gem 'paranoia'
+gem 'octokit'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'

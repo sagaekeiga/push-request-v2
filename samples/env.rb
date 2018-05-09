@@ -70,7 +70,7 @@ puts JSON.pretty_generate(JSON.load(response.body))
 
 
 ## Get Pullrequest ##
-uri = URI.parse("https://api.github.com/repos/reviewers-prototype/116569462/pulls")
+uri = URI.parse("https://api.github.com/repos/sagaekeiga/reviewers-prototype/pulls")
 request = Net::HTTP::Get.new(uri)
 request["Authorization"] = "token #{json['token']}"
 request["Accept"] = "application/vnd.github.machine-man-preview+json"
