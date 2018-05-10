@@ -146,3 +146,5 @@ ja:
       truncate: ...
     integrations:
       github: GitHub
+    error:
+      failed_create_pull: プルリクエストの保存に失敗しました。

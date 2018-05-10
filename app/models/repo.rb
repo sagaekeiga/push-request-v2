@@ -28,35 +28,42 @@ class Repo < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   belongs_to :user
+  has_many :pulls
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
   validates :remote_id, presence: true, uniqueness: true
   validates :name, presence: true
   validates :full_name, presence: true, uniqueness: true
-  validates :private, presence: true
+  validates :private, inclusion: { in: [true, false] }
+
+  # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :private, default: false
 
   # @TODO テストコードを書く
   # @TODO languageを登録する
   #
-  # リモートのレポジトリを保存する
+  # リモートのレポジトリを保存する or リストアする
   #
   # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
   #
-  # @return [Status] 成功すれば200、失敗すれば500のステータスコードを返す
+  # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
   def self.create_or_restore!(repositories_added_params)
     ActiveRecord::Base.transaction do
       repo = with_deleted.find_by(remote_id: repositories_added_params[0][:id])
       if repo.nil?
-        create!(
+        repo = create!(
           remote_id: repositories_added_params[0][:id],
           name: repositories_added_params[0][:name],
           full_name: repositories_added_params[0][:full_name],
-          private: ActiveRecord::Type::Boolean.new.cast(repositories_added_params[0][:private])
+          private: repositories_added_params[0][:private]
         )
       end
       repo.restore if repo&.deleted?
+      Pull.create_or_restore!(repo)
     end
     true
   rescue => e

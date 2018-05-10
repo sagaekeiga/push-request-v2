@@ -36,6 +36,7 @@ class User < ApplicationRecord
    # -------------------------------------------------------------------------------
    has_one :github_account, class_name: 'Users::GithubAccount'
    has_many :repos
+   has_many :pulls
 
    def connect_to_github(auth)
      user_github_account = build_github_account(
