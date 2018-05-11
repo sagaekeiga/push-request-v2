@@ -13,7 +13,7 @@ class Api::V1::GithubAppsController < ApplicationController
     status = github_account.user.repos.create_or_restore!(params[:repositories_added]) if params[:repositories_added].present?
     # Remove
     if params[:repositories_removed].present?
-      repo = github_account.user.repos.find_by(remote_id: params[:repositories_removed][0][:id])&.destroy
+      github_account.user.repos.find_by(remote_id: params[:repositories_removed][0][:id])&.destroy
       status = true
     end
     if status.is_a?(TrueClass)

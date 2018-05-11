@@ -7,4 +7,4 @@
     - current_user.pulls.each do |pull|
       %tr
         %td= link_to pull.title, pull.decorate.remote_url, target: 'blank'
-        %td= link_to pull.repo.full_name, pull.repo.decorate.remote_url, target: 'blank'
+        %td= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'

@@ -16,19 +16,18 @@ module GithubAPI
         iss: ENV['GITHUB_APP_PAYLOAD_ISS_ID']
       }
 
-      jwt = JWT.encode payload, private_key, "RS256"
-      p jwt
+      jwt = JWT.encode payload, private_key, 'RS256'
       jwt
     end
 
     def get_access_token
       parsed_uri = URI.parse Settings.github.request.access_token_uri
       target_request = Net::HTTP::Post.new(parsed_uri)
-      target_request["Authorization"] = "Bearer #{get_jwt}"
-      target_request["Accept"] = Settings.github.request.header.accept
+      target_request['Authorization'] = "Bearer #{get_jwt}"
+      target_request['Accept'] = Settings.github.request.header.accept
 
       req_options = {
-        use_ssl: parsed_uri.scheme == "https",
+        use_ssl: parsed_uri.scheme == 'https'
       }
 
       response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
@@ -44,7 +43,7 @@ module GithubAPI
       parsed_uri = URI.parse target_uri
       target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}")
       req_options = {
-        use_ssl: parsed_uri.scheme == "https",
+        use_ssl: parsed_uri.scheme == 'https'
       }
 
       response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
@@ -55,8 +54,8 @@ module GithubAPI
 
     def generate_request_according_to(parsed_uri, authorization_element)
       request = Net::HTTP::Get.new(parsed_uri)
-      request["Authorization"] = authorization_element
-      request["Accept"] = Settings.github.request.header.accept
+      request['Authorization'] = authorization_element
+      request['Accept'] = Settings.github.request.header.accept
       request
     end
   end

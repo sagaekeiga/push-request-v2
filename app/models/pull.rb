@@ -44,6 +44,11 @@ class Pull < ApplicationRecord
   validates :title, presence: true
   validates :state, presence: true
 
+  # -------------------------------------------------------------------------------
+  # Delegations
+  # -------------------------------------------------------------------------------
+  delegate :full_name, to: :repo, prefix: true
+
   #
   # リモートのPRを保存 or リストアする
   #
