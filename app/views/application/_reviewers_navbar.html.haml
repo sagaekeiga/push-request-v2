@@ -13,14 +13,10 @@
     #navbar.collapse.navbar-collapse
       %ul.nav.navbar-nav.pull-right
         %li
-          = link_to new_user_registration_path do
+          = link_to reviewers_dashboard_path do
             &nbsp;
-            = t('helpers.links.sign_up')
+            = t('reviewers.dashboard.title')
         %li
-          = link_to new_user_session_path do
+          = link_to destroy_reviewer_session_path, method: :delete do
             &nbsp;
-            = t('helpers.label.user.log_in')
-        %li
-          = link_to new_reviewer_registration_path do
-            &nbsp;
-            = t('helpers.label.reviewer.log_in')
+            = t('helpers.label.log_out')

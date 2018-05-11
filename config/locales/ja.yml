@@ -19,11 +19,12 @@ ja:
       update: 更新する
       more: もっと見る
     label:
+      log_out: ログアウト
+      reviewer:
+        log_in: Reviewer ログイン
       user:
         remember_me: "ログイン情報を保持する"
         log_in: ユーザーログイン
-        log_out: ログアウト
-        for_shared_url: 従業員登録URL
     alerts:
       confirm: 本当に削除しますか？（この操作は取り消すことができません）
     success:

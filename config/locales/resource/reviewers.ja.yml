@@ -1,0 +1,16 @@
+ja:
+  activerecord:
+    models:
+      reviewer: 従業員
+    attributes:
+      reviewer:
+        id: ID
+        email: Eメール
+  enums:
+    reviewer:
+      gender:
+        woman: 女性
+        man: 男性
+  reviewers:
+    dashboard:
+      title: ダッシュボード

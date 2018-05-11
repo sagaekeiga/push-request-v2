@@ -49,12 +49,12 @@ ja:
         title: パスワード再設定
         description: アカウント登録時に設定したメールアドレス宛にパスワードの再設定方法を送信します。
         sub_titles:
-          remembered_account: 従業員情報がありましたか？
+          remembered_account: 登録情報がありましたか？
         sign_in_from_here_html: "<a href='%{url}'>こちら</a>からログインできます"
         placeholders:
           email: 例). hello@example.com
         helpers:
-          email: 従業員登録したときのメールアドレスを入力してください
+          email: 登録したときのメールアドレスを入力してください
       edit:
         title: パスワード再設定
         description: 新しいパスワードを設定することで、サービスを再び利用することができるようになります。
