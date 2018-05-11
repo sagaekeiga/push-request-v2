@@ -1,4 +1,4 @@
-class Users::SettingsController < ApplicationController
+class Users::SettingsController < Users::BaseController
   def integrations
   end
 end

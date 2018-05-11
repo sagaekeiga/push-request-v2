@@ -10,10 +10,26 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180509112343) do
+ActiveRecord::Schema.define(version: 20180509161044) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "pulls", force: :cascade do |t|
+    t.bigint "user_id"
+    t.bigint "repo_id"
+    t.integer "remote_id"
+    t.integer "number"
+    t.string "state"
+    t.string "title"
+    t.string "body"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_pulls_on_deleted_at"
+    t.index ["repo_id"], name: "index_pulls_on_repo_id"
+    t.index ["user_id"], name: "index_pulls_on_user_id"
+  end
 
   create_table "repos", force: :cascade do |t|
     t.bigint "user_id"
@@ -72,6 +88,8 @@ ActiveRecord::Schema.define(version: 20180509112343) do
     t.index ["user_id"], name: "index_users_github_accounts_on_user_id"
   end
 
+  add_foreign_key "pulls", "repos"
+  add_foreign_key "pulls", "users"
   add_foreign_key "repos", "users"
   add_foreign_key "users_github_accounts", "users"
 end

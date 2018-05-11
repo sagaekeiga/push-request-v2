@@ -33,7 +33,8 @@ RemoveUnusedMethodsInControllersCheck: { except_methods: [
   'ApplicationController#response_unauthorized',
   'ApplicationController#response_not_found',
   'ApplicationController#response_conflict',
-  'ApplicationController#response_internal_server_error'
+  'ApplicationController#response_internal_server_error',
+  'Api::V1::GithubAppsController#webhook'
 ] }
 RemoveUnusedMethodsInHelpersCheck: { except_methods: [] }
 RemoveUnusedMethodsInModelsCheck: { except_methods: [] }
