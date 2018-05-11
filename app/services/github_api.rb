@@ -3,9 +3,9 @@ module GithubAPI
   class << self
     def get_jwt
       # Private key contents
-      private_pem = File.read(ENV['PATH_TO_PEM_FILE'])
+      private_pem = Rails.env.production? ? ENV['PRIVATE_PEM'] : File.read(ENV['PATH_TO_PEM_FILE'])
       private_key = OpenSSL::PKey::RSA.new(private_pem)
-
+      
       # Generate the JWT
       payload = {
         # issued at time
