@@ -7,6 +7,7 @@
 #  deleted_at :datetime
 #  number     :integer
 #  state      :string
+#  status     :integer
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
@@ -42,12 +43,39 @@ class Pull < ApplicationRecord
   validates :number, presence: true
   validates :state, presence: true
   validates :title, presence: true
-  validates :state, presence: true
+  validates :status, presence: true
+
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # 性別
+  #
+  # - connected        : APIのレスポンスから作成された状態
+  # - request_reviewed : レビューをリクエストした
+  # - agreed           : リクエストを承認した
+  # - reviewed         : レビューを完了した
+  # - completed        : リモートのPRをMerge/Closeした
+  # - canceled         : キャンセルされた
+  #
+  enum status: {
+    connected:  1000,
+    request_reviewed: 2000,
+    agreed: 3000,
+    reviewed: 4000,
+    completed: 5000,
+    canceled: 6000
+  }
 
   # -------------------------------------------------------------------------------
   # Delegations
   # -------------------------------------------------------------------------------
   delegate :full_name, to: :repo, prefix: true
+  delegate :private, to: :repo, prefix: true
+
+  # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:connected]
 
   #
   # リモートのPRを保存 or リストアする

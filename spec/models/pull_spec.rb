@@ -7,6 +7,7 @@
 #  deleted_at :datetime
 #  number     :integer
 #  state      :string
+#  status     :integer
 #  title      :string
 #  created_at :datetime         not null
 #  updated_at :datetime         not null

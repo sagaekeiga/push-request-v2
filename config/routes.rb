@@ -43,6 +43,7 @@ Rails.application.routes.draw do
     namespace :users do
       get :dashboard, :pulls, :repos
       get 'settings/integrations'
+      resources :pulls, only: %i(update)
     end
 
     #

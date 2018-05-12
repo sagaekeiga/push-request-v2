@@ -5,6 +5,7 @@
 #  id                     :bigint(8)        not null, primary key
 #  current_sign_in_at     :datetime
 #  current_sign_in_ip     :inet
+#  deleted_at             :datetime
 #  email                  :string           default(""), not null
 #  encrypted_password     :string           default(""), not null
 #  last_sign_in_at        :datetime
@@ -18,12 +19,15 @@
 #
 # Indexes
 #
+#  index_reviewers_on_deleted_at            (deleted_at)
 #  index_reviewers_on_email                 (email) UNIQUE
 #  index_reviewers_on_reset_password_token  (reset_password_token) UNIQUE
 #
 
 FactoryBot.define do
   factory :reviewer do
-    
+    sequence(:email) { |n| "reviewer#{n}@example.com" }
+    password              'hogehoge'
+    password_confirmation 'hogehoge'
   end
 end

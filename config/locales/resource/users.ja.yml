@@ -25,3 +25,5 @@ ja:
         integrations: インテグレーション
         configure: 設定
         connect: Connect
+        alert:
+          danger: Githubに接続してください

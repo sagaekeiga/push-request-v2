@@ -3,6 +3,7 @@ class UsersController < Users::BaseController
   end
 
   def pulls
+    @pulls = current_user.pulls
   end
 
   def repos

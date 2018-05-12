@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
+
   # 200 Success
   def response_success(class_name, action_name)
     render status: 200, json: { status: 200, message: "Success #{class_name.capitalize} #{action_name.capitalize}" }
@@ -29,5 +30,9 @@ class ApplicationController < ActionController::Base
   # 500 Internal Server Error
   def response_internal_server_error
     render status: 500, json: { status: 500, message: 'Internal Server Error' }
+  end
+
+  def transition_dashboard!
+    redirect_to reviewers_dashboard_url if reviewer_signed_in?
   end
 end

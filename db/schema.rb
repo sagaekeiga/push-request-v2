@@ -23,6 +23,7 @@ ActiveRecord::Schema.define(version: 20180511140913) do
     t.string "state"
     t.string "title"
     t.string "body"
+    t.integer "status"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -55,8 +56,10 @@ ActiveRecord::Schema.define(version: 20180511140913) do
     t.datetime "last_sign_in_at"
     t.inet "current_sign_in_ip"
     t.inet "last_sign_in_ip"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_reviewers_on_deleted_at"
     t.index ["email"], name: "index_reviewers_on_email", unique: true
     t.index ["reset_password_token"], name: "index_reviewers_on_reset_password_token", unique: true
   end
