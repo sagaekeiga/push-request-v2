@@ -1,7 +1,7 @@
 class WebDomainConstraint
   # Review Appsでは毎回ドメインが変更されるのでドメイン制約をつけない
   def self.matches?(request)
-    ENV['REVIEW_APP'].present? || request.host == (ENV['REVIEWEE_DOMAIN'])
+    ENV['REVIEW_APP'].present? || request.host == (ENV['WEB_DOMAIN'])
   end
 end
 
