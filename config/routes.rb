@@ -21,25 +21,42 @@ Rails.application.routes.draw do
     end
   end
 
-  get '/auth/github/callback', to: 'connects#github'
+  constraints(WebDomainConstraint) do
+    root to: 'welcome#index'
+    get '/auth/github/callback', to: 'connects#github'
+    devise_scope :reviewee do
+      post '/auth/:action/callback',
+        controller: 'connects',
+        constraints: { action: /github/ }
+    end
 
-  devise_scope :user do
-    post '/auth/:action/callback',
-      controller: 'connects',
-      constraints: { action: /github/ }
+    #
+    # Reviewee
+    #
+
+    devise_for :reviewees, path: 'reviewees', controllers: {
+      registrations: 'reviewees/registrations',
+      confirmations: 'reviewees/confirmations',
+      sessions: 'reviewees/sessions'
+    }
+
+    namespace :reviewees do
+      get :dashboard, :pulls, :repos
+      get 'settings/integrations'
+      resources :pulls, only: %i(update)
+    end
+
+    #
+    # Reviewer
+
+    devise_for :reviewers, path: 'reviewers', controllers: {
+      registrations: 'reviewers/registrations',
+      confirmations: 'reviewers/confirmations',
+      sessions: 'reviewers/sessions'
+    }
+
+    namespace :reviewers do
+      get :dashboard
+    end
   end
-
-  devise_for :users, path: 'users', controllers: {
-    registrations: 'users/registrations',
-    confirmations: 'users/confirmations',
-    sessions: 'users/sessions'
-  }
-
-  namespace :users do
-    get :dashboard, :pulls, :repos
-    get 'settings/integrations'
-  end
-
-  root to: 'welcome#index'
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
 end

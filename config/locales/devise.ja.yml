@@ -6,7 +6,7 @@ ja:
       not_locked: "は凍結されていません"
       not_saved_html: "%{resource}を保存できませんでした。<br/>（%{count}件の入力エラーがあります）"
 
-  users:
+  reviewees:
     sessions:
       new:
         title: ユーザーログイン
@@ -22,11 +22,11 @@ ja:
           sign_up_with_email_and_password: 情報を入力して従業員登録する
           already_have_account: 既にアカウントをお持ちの場合
         sign_in_from_here_html: "<a href='%{url}'>こちら</a>からログインできます"
-        placeholders: &user_registrations_new_placeholders
+        placeholders: &reviewee_registrations_new_placeholders
           name: 例). hello
           email: 例). hello@example.com
           password_confirmation: 上記で入力したパスワードと同じものを入力してください
-        helpers: &user_registrations_new_helpers
+        helpers: &reviewee_registrations_new_helpers
           name: 半角英数字で指定してください
           email: ログイン時に使用します。他のユーザーには開示されません
           current_password: 現在設定中のパスワードを入力してください
@@ -37,9 +37,9 @@ ja:
       edit:
         title: プロフィール登録
         placeholders:
-          <<: *user_registrations_new_placeholders
+          <<: *reviewee_registrations_new_placeholders
         helpers:
-          <<: *user_registrations_new_helpers
+          <<: *reviewee_registrations_new_helpers
         change_password: パスワードを変更する
       create:
         title: 新規アカウントの登録
@@ -49,12 +49,12 @@ ja:
         title: パスワード再設定
         description: アカウント登録時に設定したメールアドレス宛にパスワードの再設定方法を送信します。
         sub_titles:
-          remembered_account: 従業員情報がありましたか？
+          remembered_account: 登録情報がありましたか？
         sign_in_from_here_html: "<a href='%{url}'>こちら</a>からログインできます"
         placeholders:
           email: 例). hello@example.com
         helpers:
-          email: 従業員登録したときのメールアドレスを入力してください
+          email: 登録したときのメールアドレスを入力してください
       edit:
         title: パスワード再設定
         description: 新しいパスワードを設定することで、サービスを再び利用することができるようになります。
@@ -65,18 +65,18 @@ ja:
           renew_password: パスワードの再設定を行う
           found_password: パスワードが見つかりましたか？
         placeholders:
-          <<: *user_registrations_new_placeholders
+          <<: *reviewee_registrations_new_placeholders
         helpers:
-          <<: *user_registrations_new_helpers
+          <<: *reviewee_registrations_new_helpers
 
     finish_signup:
       title: 必要情報の入力
       description: 連携したSNSからメールアドレスが取得できませんでしたので、以下のフォームに入力して「次に進む」を押してください。
       success: アカウント登録が完了しました
       placeholders:
-        <<: *user_registrations_new_placeholders
+        <<: *reviewee_registrations_new_placeholders
       helpers:
-        <<: *user_registrations_new_helpers
+        <<: *reviewee_registrations_new_helpers
 
     disconnect:
       success: アカウント連携を解除しました
@@ -108,7 +108,7 @@ ja:
     sessions:
       signed_in: 'ログインしました。'
       signed_out: 'ログアウトしました。'
-      user:
+      reviewee:
         already_signed_out: すでにログアウトしています
       admin:
         already_signed_out: すでにログアウトしています
@@ -133,7 +133,7 @@ ja:
       unlock_instructions:
         subject: 'アカウントの凍結解除'
     omniauth_callbacks:
-      user:
+      reviewee:
         success: SNSアカウントを連携しました
 
   omniauth:

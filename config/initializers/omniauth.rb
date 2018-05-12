@@ -8,7 +8,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
   on_failure do |env|
     # we need to setup env
     if env['omniauth.params'].present?
-      env["devise.mapping"] = Devise.mappings[:user]
+      env["devise.mapping"] = Devise.mappings[:reviewee]
     end
 
     AuthenticationsController.action(:failure).call(env)

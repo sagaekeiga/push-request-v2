@@ -1,0 +1,34 @@
+%nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      %button.navbar-toggle.collapsed{ type: 'button',
+        aria: { contorls: 'navbar', expanded: 'false' },
+        data: { target: '#navbar', toggle: 'collapse' } }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to Settings.meta.site, root_path, class: 'navbar-brand'
+
+    #navbar.collapse.navbar-collapse
+      %ul.nav.navbar-nav.pull-right
+        %li
+          = link_to reviewees_dashboard_path do
+            &nbsp;
+            = t('reviewers.dashboard.title')
+        %li
+          = link_to reviewees_repos_path do
+            &nbsp;
+            = t('reviewees.repos.title')
+        %li
+          = link_to reviewees_pulls_path do
+            &nbsp;
+            = t('reviewees.pulls.title')
+        %li
+          = link_to reviewees_settings_integrations_path do
+            &nbsp;
+            = t('reviewees.settings.integrations.title')
+        %li
+          = link_to destroy_reviewee_session_path, method: :delete do
+            &nbsp;
+            = t('helpers.label.log_out')

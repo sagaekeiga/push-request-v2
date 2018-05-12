@@ -2,28 +2,29 @@
 #
 # Table name: pulls
 #
-#  id         :bigint(8)        not null, primary key
-#  body       :string
-#  deleted_at :datetime
-#  number     :integer
-#  state      :string
-#  title      :string
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  remote_id  :integer
-#  repo_id    :bigint(8)
-#  user_id    :bigint(8)
+#  id          :bigint(8)        not null, primary key
+#  body        :string
+#  deleted_at  :datetime
+#  number      :integer
+#  state       :string
+#  status      :integer
+#  title       :string
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  remote_id   :integer
+#  repo_id     :bigint(8)
+#  reviewee_id :bigint(8)
 #
 # Indexes
 #
-#  index_pulls_on_deleted_at  (deleted_at)
-#  index_pulls_on_repo_id     (repo_id)
-#  index_pulls_on_user_id     (user_id)
+#  index_pulls_on_deleted_at   (deleted_at)
+#  index_pulls_on_repo_id      (repo_id)
+#  index_pulls_on_reviewee_id  (reviewee_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (repo_id => repos.id)
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (reviewee_id => reviewees.id)
 #
 
 class Pull < ApplicationRecord
@@ -31,7 +32,7 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :user
+  belongs_to :reviewee
   belongs_to :repo
 
   # -------------------------------------------------------------------------------
@@ -42,12 +43,39 @@ class Pull < ApplicationRecord
   validates :number, presence: true
   validates :state, presence: true
   validates :title, presence: true
-  validates :state, presence: true
+  validates :status, presence: true
+
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # 性別
+  #
+  # - connected        : APIのレスポンスから作成された状態
+  # - request_reviewed : レビューをリクエストした
+  # - agreed           : リクエストを承認した
+  # - reviewed         : レビューを完了した
+  # - completed        : リモートのPRをMerge/Closeした
+  # - canceled         : キャンセルされた
+  #
+  enum status: {
+    connected:  1000,
+    request_reviewed: 2000,
+    agreed: 3000,
+    reviewed: 4000,
+    completed: 5000,
+    canceled: 6000
+  }
 
   # -------------------------------------------------------------------------------
   # Delegations
   # -------------------------------------------------------------------------------
   delegate :full_name, to: :repo, prefix: true
+  delegate :private, to: :repo, prefix: true
+
+  # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:connected]
 
   #
   # リモートのPRを保存 or リストアする
@@ -58,13 +86,13 @@ class Pull < ApplicationRecord
     ActiveRecord::Base.transaction do
       response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls"
       response_pulls_in_json_format.each do |response_pull|
-        pull = repo.pulls.with_deleted.find_by(remote_id: response_pull['id'], user: repo.user)
+        pull = repo.pulls.with_deleted.find_by(remote_id: response_pull['id'], reviewee: repo.reviewee)
         if pull.nil?
           pull = repo.pulls.create!(
             remote_id: response_pull['id'],
             number: response_pull['number'],
             state: response_pull['state'],
-            user: repo.user,
+            reviewee: repo.reviewee,
             title: response_pull['title'],
             body: response_pull['body']
           )

@@ -13,10 +13,14 @@
     #navbar.collapse.navbar-collapse
       %ul.nav.navbar-nav.pull-right
         %li
-          = link_to new_user_registration_path do
+          = link_to new_reviewee_registration_path do
             &nbsp;
             = t('helpers.links.sign_up')
         %li
-          = link_to new_user_session_path do
+          = link_to new_reviewee_session_path do
             &nbsp;
-            = t('helpers.label.user.log_in')
+            = t('helpers.label.reviewee.log_in')
+        %li
+          = link_to new_reviewer_session_path do
+            &nbsp;
+            = t('helpers.label.reviewer.log_in')
