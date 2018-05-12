@@ -10,10 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180512042201) do
+ActiveRecord::Schema.define(version: 20180512090713) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "changed_files", force: :cascade do |t|
+    t.bigint "pull_id"
+    t.string "sha"
+    t.string "filename"
+    t.integer "status"
+    t.integer "additions"
+    t.integer "deletions"
+    t.integer "changes"
+    t.string "blob_url"
+    t.string "raw_url"
+    t.string "contents_url"
+    t.text "patch"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_changed_files_on_deleted_at"
+    t.index ["pull_id"], name: "index_changed_files_on_pull_id"
+  end
 
   create_table "pulls", force: :cascade do |t|
     t.bigint "reviewee_id"
@@ -108,6 +127,7 @@ ActiveRecord::Schema.define(version: 20180512042201) do
     t.index ["reset_password_token"], name: "index_reviewers_on_reset_password_token", unique: true
   end
 
+  add_foreign_key "changed_files", "pulls"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "repos", "reviewees"

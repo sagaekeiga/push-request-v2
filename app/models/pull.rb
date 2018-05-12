@@ -34,6 +34,7 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
   belongs_to :repo
+  has_many :changed_files
 
   # -------------------------------------------------------------------------------
   # Validations
