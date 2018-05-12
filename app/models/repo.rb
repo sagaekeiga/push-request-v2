@@ -2,24 +2,24 @@
 #
 # Table name: repos
 #
-#  id         :bigint(8)        not null, primary key
-#  deleted_at :datetime
-#  full_name  :string
-#  name       :string
-#  private    :boolean
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  remote_id  :integer
-#  user_id    :bigint(8)
+#  id          :bigint(8)        not null, primary key
+#  deleted_at  :datetime
+#  full_name   :string
+#  name        :string
+#  private     :boolean
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  remote_id   :integer
+#  reviewee_id :bigint(8)
 #
 # Indexes
 #
-#  index_repos_on_deleted_at  (deleted_at)
-#  index_repos_on_user_id     (user_id)
+#  index_repos_on_deleted_at   (deleted_at)
+#  index_repos_on_reviewee_id  (reviewee_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (user_id => users.id)
+#  fk_rails_...  (reviewee_id => reviewees.id)
 #
 
 class Repo < ApplicationRecord
@@ -27,7 +27,7 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :user
+  belongs_to :reviewee
   has_many :pulls, dependent: :destroy
   # -------------------------------------------------------------------------------
   # Validations

@@ -13,14 +13,22 @@
     #navbar.collapse.navbar-collapse
       %ul.nav.navbar-nav.pull-right
         %li
-          = link_to new_reviewee_registration_path do
+          = link_to reviewees_dashboard_path do
             &nbsp;
-            = t('helpers.links.sign_up')
+            = t('reviewers.dashboard.title')
         %li
-          = link_to new_reviewee_session_path do
+          = link_to reviewees_repos_path do
             &nbsp;
-            = t('helpers.label.reviewee.log_in')
+            = t('reviewees.repos.title')
         %li
-          = link_to new_reviewer_session_path do
+          = link_to reviewees_pulls_path do
             &nbsp;
-            = t('helpers.label.reviewer.log_in')
+            = t('reviewees.pulls.title')
+        %li
+          = link_to reviewees_settings_integrations_path do
+            &nbsp;
+            = t('reviewees.settings.integrations.title')
+        %li
+          = link_to destroy_reviewee_session_path, method: :delete do
+            &nbsp;
+            = t('helpers.label.log_out')

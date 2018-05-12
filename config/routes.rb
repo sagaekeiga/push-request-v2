@@ -24,23 +24,23 @@ Rails.application.routes.draw do
   constraints(WebDomainConstraint) do
     root to: 'welcome#index'
     get '/auth/github/callback', to: 'connects#github'
-    devise_scope :user do
+    devise_scope :reviewee do
       post '/auth/:action/callback',
         controller: 'connects',
         constraints: { action: /github/ }
     end
 
     #
-    # User
+    # Reviewee
     #
 
-    devise_for :users, path: 'users', controllers: {
-      registrations: 'users/registrations',
-      confirmations: 'users/confirmations',
-      sessions: 'users/sessions'
+    devise_for :reviewees, path: 'reviewees', controllers: {
+      registrations: 'reviewees/registrations',
+      confirmations: 'reviewees/confirmations',
+      sessions: 'reviewees/sessions'
     }
 
-    namespace :users do
+    namespace :reviewees do
       get :dashboard, :pulls, :repos
       get 'settings/integrations'
       resources :pulls, only: %i(update)
@@ -57,7 +57,6 @@ Rails.application.routes.draw do
 
     namespace :reviewers do
       get :dashboard
-      # get 'settings/integrations'
     end
   end
 end

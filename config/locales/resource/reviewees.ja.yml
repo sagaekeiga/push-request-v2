@@ -1,0 +1,29 @@
+ja:
+  activerecord:
+    models:
+      reviewee: 従業員
+    attributes:
+      reviewee:
+        id: ID
+        email: Eメール
+  enums:
+    reviewee:
+      gender:
+        woman: 女性
+        man: 男性
+  reviewees:
+    dashboard:
+      title: ダッシュボード
+    repos:
+      title: レポジトリ
+      add_repo: レポジトリを追加する
+    pulls:
+      title: プルリクエスト
+    settings:
+      integrations:
+        title: 設定
+        integrations: インテグレーション
+        configure: 設定
+        connect: Connect
+        alert:
+          danger: Githubに接続してください

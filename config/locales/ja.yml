@@ -22,7 +22,7 @@ ja:
       log_out: ログアウト
       reviewer:
         log_in: Reviewer ログイン
-      user:
+      reviewee:
         remember_me: "ログイン情報を保持する"
         log_in: ユーザーログイン
     alerts:

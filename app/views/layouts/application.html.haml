@@ -9,8 +9,8 @@
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   %body{ class: "#{controller_name}-#{action_name}" }
     .container
-      - if user_signed_in?
-        = render 'users_navbar'
+      - if reviewee_signed_in?
+        = render 'reviewees_navbar'
       - elsif reviewer_signed_in?
         = render 'reviewers_navbar'
       - else
