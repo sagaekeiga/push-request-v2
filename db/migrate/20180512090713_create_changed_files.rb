@@ -4,10 +4,10 @@ class CreateChangedFiles < ActiveRecord::Migration[5.1]
       t.belongs_to :pull, foreign_key: true
       t.string :sha
       t.string :filename
-      t.integer :status
+      t.string :status
       t.integer :additions
       t.integer :deletions
-      t.integer :changes
+      t.integer :difference
       t.string :blob_url
       t.string :raw_url
       t.string :contents_url

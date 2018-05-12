@@ -5,15 +5,15 @@
 #  id           :bigint(8)        not null, primary key
 #  additions    :integer
 #  blob_url     :string
-#  changes      :integer
 #  contents_url :string
 #  deleted_at   :datetime
 #  deletions    :integer
+#  difference   :integer
 #  filename     :string
 #  patch        :text
 #  raw_url      :string
 #  sha          :string
-#  status       :integer
+#  status       :string
 #  created_at   :datetime         not null
 #  updated_at   :datetime         not null
 #  pull_id      :bigint(8)

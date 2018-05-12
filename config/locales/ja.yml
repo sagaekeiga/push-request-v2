@@ -149,6 +149,7 @@ ja:
       github: GitHub
     error:
       failed_create_pull: プルリクエストの保存に失敗しました。
+      failed_create_changed_file: changed fileの保存に失敗しました。
     status:
       request_reviewed: Request Review
       pending: Pending

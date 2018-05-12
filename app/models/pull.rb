@@ -34,7 +34,7 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
   belongs_to :repo
-  has_many :changed_files
+  has_many :changed_files, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -99,6 +99,7 @@ class Pull < ApplicationRecord
           )
         end
         pull.restore if pull&.deleted?
+        ChangedFile.create_or_restore!(pull)
       end
     end
   rescue => e
