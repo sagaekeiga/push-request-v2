@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180512090713) do
+ActiveRecord::Schema.define(version: 20180512153633) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -127,9 +127,30 @@ ActiveRecord::Schema.define(version: 20180512090713) do
     t.index ["reset_password_token"], name: "index_reviewers_on_reset_password_token", unique: true
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "pull_id"
+    t.bigint "reviewer_id"
+    t.integer "remote_id"
+    t.text "body"
+    t.string "commit_id"
+    t.string "state"
+    t.string "path"
+    t.integer "event"
+    t.integer "position"
+    t.time "working_hours"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_reviews_on_deleted_at"
+    t.index ["pull_id"], name: "index_reviews_on_pull_id"
+    t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
   add_foreign_key "changed_files", "pulls"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "repos", "reviewees"
   add_foreign_key "reviewees_github_accounts", "reviewees"
+  add_foreign_key "reviews", "pulls"
+  add_foreign_key "reviews", "reviewers"
 end

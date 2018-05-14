@@ -40,7 +40,7 @@ module GithubAPI
 
     def receive_api_response_in_json_format_on(target_uri)
       parsed_uri = URI.parse target_uri
-      target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}")
+      target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}", 'get')
       req_options = {
         use_ssl: parsed_uri.scheme == 'https'
       }
@@ -51,8 +51,23 @@ module GithubAPI
       JSON.load(response.body)
     end
 
-    def generate_request_according_to(parsed_uri, authorization_element)
-      request = Net::HTTP::Get.new(parsed_uri)
+    def receive_api_request_in_json_format_on(target_uri, body)
+      parsed_uri = URI.parse target_uri
+      target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}", 'post')
+      target_request.body = body
+
+      req_options = {
+        use_ssl: parsed_uri.scheme == 'https'
+      }
+
+      response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
+        http.request(target_request)
+      end
+      response
+    end
+
+    def generate_request_according_to(parsed_uri, authorization_element, method)
+      request = method == 'get' ? Net::HTTP::Get.new(parsed_uri) : Net::HTTP::Post.new(parsed_uri)
       request['Authorization'] = authorization_element
       request['Accept'] = Settings.github.request.header.accept
       request

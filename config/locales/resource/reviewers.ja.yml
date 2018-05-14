@@ -14,3 +14,7 @@ ja:
   reviewers:
     dashboard:
       title: ダッシュボード
+    pulls:
+      show:
+        conversation: Conversation
+        changed_files: Changed Files

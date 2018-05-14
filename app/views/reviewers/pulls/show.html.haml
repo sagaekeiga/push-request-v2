@@ -1,0 +1,7 @@
+= render 'reviewers/shared/tab', pull: @pull
+
+.card
+  .card-body
+    %h4.card-title Special title treatment
+    %p.card-text= @pull.body
+    %a.btn.btn-deep-orange Go somewhere

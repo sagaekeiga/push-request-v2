@@ -9,11 +9,11 @@ ja:
   reviewees:
     sessions:
       new:
-        title: ユーザーログイン
+        title: Reviewee ログイン
         sub_titles:
           login_with_email_and_password: メールアドレスとパスワードを利用
       create:
-        title: ユーザーログイン
+        title: Reviewee ログイン
 
     registrations:
       new:

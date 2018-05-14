@@ -1,0 +1,9 @@
+%ul.nav.nav-tabs.nav-justified.indigo{ role: 'tablist' }
+  %li.nav-item
+    = link_to reviewers_pull_path(pull), class: 'nav-link' do
+      %i.glyphicon.glyphicon-comment
+      = t 'reviewers.pulls.show.conversation'
+  %li.nav-item
+    = link_to file_reviewers_pull_reviews_path(pull), class: 'nav-link' do
+      %i.glyphicon.glyphicon-file
+      = t 'reviewers.pulls.show.changed_files'
