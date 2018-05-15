@@ -85,7 +85,6 @@ function removeForm(elem) {
 };
 
 function startReview(elem) {
-  console.log(elem.nextAll('.path').val());
   $.ajax({
     type: 'POST',
     url: `/reviewers/review_comments`,

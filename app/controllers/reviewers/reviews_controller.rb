@@ -9,7 +9,10 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   # POST /reviewers/pulls/:pull_id/reviews
   def create
     ActiveRecord::Base.transaction do
-      @review = current_reviewer.reviews.new(pull: @pull)
+      @review = current_reviewer.reviews.new(
+        pull: @pull,
+        body: 'hoge'
+      )
       @review.save!
       review_comments = current_reviewer.review_comments.where(changed_file: @pull.changed_files)
       review_comments.each { |review_comment| review_comment.update!(review: @review) }

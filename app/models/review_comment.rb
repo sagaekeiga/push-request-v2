@@ -33,4 +33,13 @@ class ReviewComment < ApplicationRecord
   belongs_to :review, optional: true
   belongs_to :changed_file
   belongs_to :reviewer
+
+  # -------------------------------------------------------------------------------
+  # Validations
+  # -------------------------------------------------------------------------------
+  validates :body, presence: true
+  validates :path, presence: true
+  validates :position, presence: true, numericality: { only_integer: true }
+  # @TODO 時間を計測 & 記録する処理
+  # validates :working_hours, presence: true
 end

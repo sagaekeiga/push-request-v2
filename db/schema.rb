@@ -145,9 +145,7 @@ ActiveRecord::Schema.define(version: 20180515112421) do
   create_table "reviews", force: :cascade do |t|
     t.bigint "pull_id"
     t.bigint "reviewer_id"
-    t.integer "remote_id"
     t.text "body"
-    t.string "commit_id"
     t.string "state"
     t.string "path"
     t.integer "event"
