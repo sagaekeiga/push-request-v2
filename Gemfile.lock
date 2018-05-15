@@ -653,7 +653,6 @@ GEM
       mime-types (>= 1.16)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
-    cocoon (1.2.11)
     code_analyzer (0.4.8)
       sexp_processor
     coderay (1.1.2)
@@ -1124,6 +1123,7 @@ GEM
       anbt-sql-formatter
       awesome_print
       rails (>= 3.2.0)
+    rails-highlightjs (9.1.0.2)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     rails-i18n (5.1.1)
@@ -1319,7 +1319,6 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   carrierwave
-  cocoon
   coffee-rails (~> 4.2)
   config
   connection_pool
@@ -1373,6 +1372,7 @@ DEPENDENCIES
   pundit
   rails (~> 5.1.6)
   rails-flog
+  rails-highlightjs
   rails-i18n
   rails_best_practices
   ransack

@@ -10,10 +10,29 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180512042201) do
+ActiveRecord::Schema.define(version: 20180515112421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+
+  create_table "changed_files", force: :cascade do |t|
+    t.bigint "pull_id"
+    t.string "sha"
+    t.string "filename"
+    t.string "status"
+    t.integer "additions"
+    t.integer "deletions"
+    t.integer "difference"
+    t.string "blob_url"
+    t.string "raw_url"
+    t.string "contents_url"
+    t.text "patch"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_changed_files_on_deleted_at"
+    t.index ["pull_id"], name: "index_changed_files_on_pull_id"
+  end
 
   create_table "pulls", force: :cascade do |t|
     t.bigint "reviewee_id"
@@ -43,6 +62,21 @@ ActiveRecord::Schema.define(version: 20180512042201) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_repos_on_deleted_at"
     t.index ["reviewee_id"], name: "index_repos_on_reviewee_id"
+  end
+
+  create_table "review_comments", force: :cascade do |t|
+    t.bigint "reviewer_id"
+    t.bigint "review_id"
+    t.bigint "changed_file_id"
+    t.text "body"
+    t.string "commit_id"
+    t.string "path"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["changed_file_id"], name: "index_review_comments_on_changed_file_id"
+    t.index ["review_id"], name: "index_review_comments_on_review_id"
+    t.index ["reviewer_id"], name: "index_review_comments_on_reviewer_id"
   end
 
   create_table "reviewees", force: :cascade do |t|
@@ -108,8 +142,31 @@ ActiveRecord::Schema.define(version: 20180512042201) do
     t.index ["reset_password_token"], name: "index_reviewers_on_reset_password_token", unique: true
   end
 
+  create_table "reviews", force: :cascade do |t|
+    t.bigint "pull_id"
+    t.bigint "reviewer_id"
+    t.text "body"
+    t.string "state"
+    t.string "path"
+    t.integer "event"
+    t.integer "position"
+    t.time "working_hours"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_reviews_on_deleted_at"
+    t.index ["pull_id"], name: "index_reviews_on_pull_id"
+    t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
+  end
+
+  add_foreign_key "changed_files", "pulls"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "repos", "reviewees"
+  add_foreign_key "review_comments", "changed_files"
+  add_foreign_key "review_comments", "reviewers"
+  add_foreign_key "review_comments", "reviews"
   add_foreign_key "reviewees_github_accounts", "reviewees"
+  add_foreign_key "reviews", "pulls"
+  add_foreign_key "reviews", "reviewers"
 end

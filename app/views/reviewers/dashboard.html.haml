@@ -7,6 +7,6 @@
   %tbody
     - @pulls.each do |pull|
       %tr
-        %td= pull.title
+        %td= link_to pull.title, reviewers_pull_path(pull)
         %td= pull.repo_full_name
         %td= pull.repo_private

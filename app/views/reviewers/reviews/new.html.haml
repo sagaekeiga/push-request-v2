@@ -1,0 +1,17 @@
+= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.1.0/highlightjs-line-numbers.min.js'
+= render 'reviewers/shared/tab', pull: @pull
+
+= form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
+  .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
+  - @pull.changed_files.order(:id).each do |changed_file|
+    .card
+      .card-body.file-border{ 'changed-file-id': changed_file.id }
+        %h4.card-title= changed_file.filename
+        %p.card-text
+        %pre
+          %code
+            = changed_file.patch
+  .text-center= f.submit t('helpers.links.review'), class: 'btn btn-primary'
+
+= javascript_pack_tag 'highlight'
+= javascript_pack_tag 'reviews'

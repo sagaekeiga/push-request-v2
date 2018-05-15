@@ -11,20 +11,21 @@ ja:
       continue: 次に進む
       connect: 連携する
       disconnect: 連携を解除
-      sign_in: ユーザーログイン
+      sign_in: ログイン
       sign_up: 登録
       here: こちら
       send: 送信する
       add: 追加
       update: 更新する
       more: もっと見る
+      review: Review
     label:
       log_out: ログアウト
       reviewer:
         log_in: Reviewer ログイン
       reviewee:
         remember_me: "ログイン情報を保持する"
-        log_in: ユーザーログイン
+        log_in: Reviewee ログイン
     alerts:
       confirm: 本当に削除しますか？（この操作は取り消すことができません）
     success:
@@ -149,6 +150,7 @@ ja:
       github: GitHub
     error:
       failed_create_pull: プルリクエストの保存に失敗しました。
+      failed_create_changed_file: changed fileの保存に失敗しました。
     status:
       request_reviewed: Request Review
       pending: Pending

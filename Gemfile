@@ -71,7 +71,6 @@ gem 'bootstrap-kaminari-views'
 gem 'bootstrap-sass', '~> 3.3.7'
 gem 'breadcrumbs_on_rails'
 gem 'carrierwave'
-gem 'cocoon'
 gem 'config'
 gem 'connection_pool'
 gem 'dotenv-rails'
@@ -114,6 +113,8 @@ gem 'webpacker', '~> 3.5'
 gem 'omniauth-github'
 gem 'bootstrap-material-design'
 gem 'paranoia'
+gem 'rails-highlightjs'
+
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'
