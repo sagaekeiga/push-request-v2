@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180512153633) do
+ActiveRecord::Schema.define(version: 20180515112421) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -62,6 +62,21 @@ ActiveRecord::Schema.define(version: 20180512153633) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_repos_on_deleted_at"
     t.index ["reviewee_id"], name: "index_repos_on_reviewee_id"
+  end
+
+  create_table "review_comments", force: :cascade do |t|
+    t.bigint "reviewer_id"
+    t.bigint "review_id"
+    t.bigint "changed_file_id"
+    t.text "body"
+    t.string "commit_id"
+    t.string "path"
+    t.integer "position"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["changed_file_id"], name: "index_review_comments_on_changed_file_id"
+    t.index ["review_id"], name: "index_review_comments_on_review_id"
+    t.index ["reviewer_id"], name: "index_review_comments_on_reviewer_id"
   end
 
   create_table "reviewees", force: :cascade do |t|
@@ -150,6 +165,9 @@ ActiveRecord::Schema.define(version: 20180512153633) do
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "repos", "reviewees"
+  add_foreign_key "review_comments", "changed_files"
+  add_foreign_key "review_comments", "reviewers"
+  add_foreign_key "review_comments", "reviews"
   add_foreign_key "reviewees_github_accounts", "reviewees"
   add_foreign_key "reviews", "pulls"
   add_foreign_key "reviews", "reviewers"

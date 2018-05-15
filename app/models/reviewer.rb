@@ -34,4 +34,5 @@ class Reviewer < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_many :reviews
+  has_many :review_comments
 end

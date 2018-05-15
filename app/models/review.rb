@@ -36,7 +36,7 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewer
   belongs_to :pull
-  has_one :changed_file
+  has_many :review_comments
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -66,45 +66,32 @@ class Review < ApplicationRecord
   # @TODO バリデーション書く
   # @TODO JSでViewにもバリデーション書く
   # @TODO AJAXで「Start Button」を実装する
-  
+
   #
   # リモートのPRを保存 or リストアする
   #
   # @param [Repo] repo レポジトリ
   #
-  def self.create_review!(review_params, target_pull, reviewer)
-    paths = review_params[:path]
-    positions = review_params[:position]
-    bodies = review_params[:body]
+  def reflect
     ActiveRecord::Base.transaction do
-      paths.each.with_index do |path, i|
-        review = reviewer.reviews.create!(
-          pull: target_pull,
-          position: positions[i].to_i,
-          body: bodies[i],
-          path: paths[i]
-        )
-      end
-    end
-    true
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    false
-  end
-
-  # @TODO stateはレスポンスで。commit_idも。
-  def self.request_review!(target_pull)
-    reviews = where(pull: target_pull)
-    request_body = { 'body': 'hoge', 'event': 'COMMENT', 'comments': [] }
-    ActiveRecord::Base.transaction do
-      reviews.each do |review|
-        comment = { 'path': review.path, 'position': review.position.to_i, 'body': review.body }
+      request_body = { body: 'hoge', event: 'COMMENT', comments: [] }
+      review_comments.each do |review_comment|
+        comment = {
+          path: review_comment.path,
+          position: review_comment.position.to_i,
+          body: review_comment.body
+        }
         request_body[:comments] << comment
-        review.comment!
       end
+
       json_format_request_body = request_body.to_json
-      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{target_pull.repo_full_name}/pulls/#{target_pull.number}/reviews", json_format_request_body
+      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body
+
+      if response.code == '200'
+        review.comment!
+      else
+        fail response.body
+      end
     end
     true
   rescue => e

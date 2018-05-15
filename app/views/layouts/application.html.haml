@@ -7,7 +7,6 @@
     = csrf_meta_tags
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
-    = yield :javascript
   %body{ class: "#{controller_name}-#{action_name}" }
     .container
       - if reviewee_signed_in?

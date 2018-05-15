@@ -9,13 +9,21 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   # POST /reviewers/pulls/:pull_id/reviews
   def create
     ActiveRecord::Base.transaction do
-      Review.create_review!(params[:reviews], @pull, current_reviewer)
-      current_reviewer.reviews.request_review!(@pull)
+      @review = current_reviewer.reviews.new(pull: @pull)
+      @review.save!
+      review_comments = current_reviewer.review_comments.where(changed_file: @pull.changed_files)
+      review_comments.each { |review_comment| review_comment.update!(review: @review) }
     end
-    redirect_to [:reviewers, @pull], success: '成功しました'
+    if @review.reflect
+      redirect_to [:reviewers, @pull], success: '成功しました'
+    else
+      @review = Review.new
+      render :new
+    end
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
+    @review = Review.new
     render :new
   end
 

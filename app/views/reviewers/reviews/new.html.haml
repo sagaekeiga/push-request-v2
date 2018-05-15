@@ -2,6 +2,7 @@
 = render 'reviewers/shared/tab', pull: @pull
 
 = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
+  .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
   - @pull.changed_files.order(:id).each do |changed_file|
     .card
       .card-body.file-border{ 'changed-file-id': changed_file.id }

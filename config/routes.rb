@@ -48,6 +48,7 @@ Rails.application.routes.draw do
 
     #
     # Reviewer
+    #
 
     devise_for :reviewers, path: 'reviewers', controllers: {
       registrations: 'reviewers/registrations',
@@ -62,6 +63,7 @@ Rails.application.routes.draw do
           get :file, to: 'reviews#new', on: :collection
         end
       end
+      resources :review_comments, only: %i(create)
     end
   end
 end

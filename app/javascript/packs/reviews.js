@@ -5,9 +5,13 @@ $(window).on('load', function() {
   $('.hljs-addition').click(function() {
     addForm($(this));
   })
-  
+
   $(document).on('click', '.cancel-trigger', function () {
     removeForm($(this));
+  })
+
+  $(document).on('click', '.review-trigger', function () {
+    startReview($(this));
   })
 });
 
@@ -37,22 +41,25 @@ function addForm(elem) {
         type: 'text_area',
         name: 'reviews[body][]',
         value: '',
-        class: 'form-control'
+        class: 'form-control body'
     });
     var positionHiddenField = $('<input>').attr({
         type: 'hidden',
         name: 'reviews[position][]',
-        value: position
+        value: position,
+        class: 'position'
     });
     var pathHiddenField = $('<input>').attr({
         type: 'hidden',
         name: 'reviews[path][]',
-        value: path
+        value: path,
+        class: 'path'
     });
     var changedFileIdHiddenField = $('<input>').attr({
         type: 'hidden',
         name: 'reviews[changed_file_ids][]',
-        value: changed_file_id
+        value: changed_file_id,
+        class: 'changed_file_id'
     });
     $(CloenedTr).insertAfter(parentTr);
     $('<td>').attr({
@@ -67,6 +74,7 @@ function addForm(elem) {
     positionHiddenField.insertAfter(parentTr.next().find('a'));
     pathHiddenField.insertAfter(parentTr.next().find('a'));
     changedFileIdHiddenField.insertAfter(parentTr.next().find('a'));
+    $('<a class="btn btn-deep-orange review-trigger">Start a review</a>').insertAfter($(elem).parent().parent().parent().next().find('a'));
     $(elem).addClass('add-form');
   }
 };
@@ -74,4 +82,22 @@ function addForm(elem) {
 function removeForm(elem) {
   elem.closest('tr').prev().find('span').removeClass('add-form');
   elem.closest('tr').remove();
+};
+
+function startReview(elem) {
+  console.log(elem.nextAll('.path').val());
+  $.ajax({
+    type: 'POST',
+    url: `/reviewers/review_comments`,
+    dataType: 'JSON',
+    data: {
+      path: elem.nextAll('.path').val(),
+      position: elem.nextAll('.position').val(),
+      changed_file_id: elem.nextAll('.changed_file_id').val(),
+      body: elem.prevAll('.body').val(),
+      reviewer_id: $('.data_id').attr('reviewer-id')
+    },
+    success: function(data) {
+    }
+  });
 };
