@@ -653,7 +653,6 @@ GEM
       mime-types (>= 1.16)
     childprocess (0.9.0)
       ffi (~> 1.0, >= 1.0.11)
-    cocoon (1.2.11)
     code_analyzer (0.4.8)
       sexp_processor
     coderay (1.1.2)
@@ -1320,7 +1319,6 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   carrierwave
-  cocoon
   coffee-rails (~> 4.2)
   config
   connection_pool
