@@ -58,7 +58,7 @@ Rails.application.routes.draw do
 
     namespace :reviewers do
       get :dashboard
-      resources :pulls, only: %i(show) do
+      resources :pulls, only: %i(show update) do
         resources :reviews, only: %i(create) do
           get :file, to: 'reviews#new', on: :collection
         end

@@ -35,6 +35,7 @@ ActiveRecord::Schema.define(version: 20180515112421) do
   end
 
   create_table "pulls", force: :cascade do |t|
+    t.bigint "reviewer_id"
     t.bigint "reviewee_id"
     t.bigint "repo_id"
     t.integer "remote_id"
@@ -49,6 +50,7 @@ ActiveRecord::Schema.define(version: 20180515112421) do
     t.index ["deleted_at"], name: "index_pulls_on_deleted_at"
     t.index ["repo_id"], name: "index_pulls_on_repo_id"
     t.index ["reviewee_id"], name: "index_pulls_on_reviewee_id"
+    t.index ["reviewer_id"], name: "index_pulls_on_reviewer_id"
   end
 
   create_table "repos", force: :cascade do |t|
@@ -147,9 +149,7 @@ ActiveRecord::Schema.define(version: 20180515112421) do
     t.bigint "reviewer_id"
     t.text "body"
     t.string "state"
-    t.string "path"
     t.integer "event"
-    t.integer "position"
     t.time "working_hours"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -162,6 +162,7 @@ ActiveRecord::Schema.define(version: 20180515112421) do
   add_foreign_key "changed_files", "pulls"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
+  add_foreign_key "pulls", "reviewers"
   add_foreign_key "repos", "reviewees"
   add_foreign_key "review_comments", "changed_files"
   add_foreign_key "review_comments", "reviewers"

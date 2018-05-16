@@ -18,6 +18,8 @@ class Reviewers::ReviewsController < Reviewers::BaseController
       review_comments.each { |review_comment| review_comment.update!(review: @review) }
     end
     if @review.reflect
+      @review.pull.reviewed!
+      wぇjfんうぇkjんふぇwkj
       redirect_to [:reviewers, @pull], success: '成功しました'
     else
       @review = Review.new

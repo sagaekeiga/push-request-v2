@@ -1,3 +1,5 @@
+- unless @pull.completed? || @pull.reviewed?
+  = link_to @pull.decorate.link_title_by_status, reviewers_pull_path(@pull, status: @pull.status), method: :put, class: "btn #{@pull.decorate.btn_class_by_status}"
 = render 'reviewers/shared/tab', pull: @pull
 
 .card

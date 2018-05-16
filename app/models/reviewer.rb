@@ -35,4 +35,11 @@ class Reviewer < ApplicationRecord
   # -------------------------------------------------------------------------------
   has_many :reviews
   has_many :review_comments
+
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
+  def target_review_comments(pull)
+    review_comments.where(changed_file: pull.changed_files)
+  end
 end
