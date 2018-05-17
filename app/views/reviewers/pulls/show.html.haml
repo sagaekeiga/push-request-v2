@@ -14,6 +14,7 @@
     %a.btn.btn-deep-orange Go somewhere
 
 - unless @pull.agreed?
+  // @TODO ここはnreとpartialできそう 
   %h4
     %i.glyphicon.glyphicon-file
     = t 'reviewers.pulls.show.changed_files'
