@@ -35,4 +35,19 @@ class Reviewer < ApplicationRecord
   # -------------------------------------------------------------------------------
   has_many :reviews
   has_many :review_comments
+
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
+  # pullのレビューコメントを返す
+  def target_review_comments(pull)
+    review_comments.where(changed_file: pull.changed_files)
+  end
+
+  # レビューコメントを削除する
+  def cancel_review_comments!(pull)
+    if target_review_comments(pull).present?
+      target_review_comments(pull).delete_all
+    end
+  end
 end

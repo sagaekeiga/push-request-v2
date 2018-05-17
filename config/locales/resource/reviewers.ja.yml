@@ -18,3 +18,13 @@ ja:
       show:
         conversation: Conversation
         changed_files: Changed Files
+      update:
+        already_reviewed: すでにレビュー済みのためキャンセルできません
+        success: あなたがレビュー担当になりました！2時間以内にレビューをしてあげましょう。
+    reviews:
+      create:
+        success: レビューしました
+    views:
+      reviews: レビューする
+      cancels: キャンセルする
+      canceled: レビューをキャンセルしました。

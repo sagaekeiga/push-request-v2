@@ -1,5 +1,6 @@
 class Reviewers::ReviewsController < Reviewers::BaseController
   before_action :set_pull, only: %i(new create)
+  before_action :check_pull, only: %i(new create)
 
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
@@ -8,21 +9,14 @@ class Reviewers::ReviewsController < Reviewers::BaseController
 
   # POST /reviewers/pulls/:pull_id/reviews
   def create
+    # データの作成とGHAへのリクエストを分離することで例外処理に対応する
     ActiveRecord::Base.transaction do
-      @review = current_reviewer.reviews.new(
-        pull: @pull,
-        body: 'hoge'
-      )
-      @review.save!
-      review_comments = current_reviewer.review_comments.where(changed_file: @pull.changed_files)
-      review_comments.each { |review_comment| review_comment.update!(review: @review) }
+      @review = current_reviewer.reviews.ready_to_review!(@pull)
     end
-    if @review.reflect
-      redirect_to [:reviewers, @pull], success: '成功しました'
-    else
-      @review = Review.new
-      render :new
+    ActiveRecord::Base.transaction do
+      @review.reflect!
     end
+    redirect_to [:reviewers, @pull], success: t('.success')
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
@@ -34,5 +28,9 @@ class Reviewers::ReviewsController < Reviewers::BaseController
 
   def set_pull
     @pull = Pull.find(params[:pull_id])
+  end
+
+  def check_pull
+    redirect_to reviewers_dashboard_url unless @pull.agreed?
   end
 end

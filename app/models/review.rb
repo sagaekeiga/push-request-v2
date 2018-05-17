@@ -6,8 +6,6 @@
 #  body          :text
 #  deleted_at    :datetime
 #  event         :integer
-#  path          :string
-#  position      :integer
 #  state         :string
 #  working_hours :time
 #  created_at    :datetime         not null
@@ -66,9 +64,23 @@ class Review < ApplicationRecord
   # validates :working_hours, presence: true
 
   #
+  # リモートに送るレビューデータの作成・レビューコメントの更新をする
+  #
+  def self.ready_to_review!(pull)
+    review = new(
+      pull: pull,
+      body: 'hoge'
+    )
+    review.save!
+    review_comments = review.reviewer.review_comments.where(changed_file: pull.changed_files)
+    review_comments.each { |review_comment| review_comment.update!(review: review) }
+    review
+  end
+
+  #
   # リモートのPRにレビューする
   #
-  def reflect
+  def reflect!
     ActiveRecord::Base.transaction do
       request_body = { body: 'hoge', event: 'COMMENT', comments: [] }
       review_comments.each do |review_comment|
@@ -82,9 +94,9 @@ class Review < ApplicationRecord
 
       json_format_request_body = request_body.to_json
       response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body
-
       if response.code == '200'
-        review.comment!
+        comment!
+        pull.reviewed!
       else
         fail response.body
       end

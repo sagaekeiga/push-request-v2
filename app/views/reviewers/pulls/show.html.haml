@@ -1,3 +1,10 @@
+.page-header
+  .pull-right
+    %h2.label.label-default= @pull.status_i18n
+    // レビューが完了した時点でキャンセルされても困る
+    - unless @pull.reviewed? || @pull.completed?
+      = link_to @pull.decorate.link_title_by_status, reviewers_pull_path(@pull, status: @pull.status), method: :put, class: "btn #{@pull.decorate.btn_class_by_status}"
+
 = render 'reviewers/shared/tab', pull: @pull
 
 .card
@@ -5,3 +12,20 @@
     %h4.card-title Special title treatment
     %p.card-text= @pull.body
     %a.btn.btn-deep-orange Go somewhere
+
+- unless @pull.agreed?
+  // @TODO ここはnreとpartialできそう 
+  %h4
+    %i.glyphicon.glyphicon-file
+    = t 'reviewers.pulls.show.changed_files'
+  .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
+  - @pull.changed_files.order(:id).each do |changed_file|
+    .card
+      .card-body.file-border{ 'changed-file-id': changed_file.id }
+        %h4.card-title= changed_file.filename
+        %p.card-text
+        %pre
+          %code
+            = changed_file.patch
+
+= javascript_pack_tag 'highlight'
