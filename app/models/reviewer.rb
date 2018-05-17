@@ -46,7 +46,7 @@ class Reviewer < ApplicationRecord
 
   # レビューコメントを削除する
   def cancel_review_comments!(pull)
-    if current_reviewer.target_review_comments(pull).present?
+    if target_review_comments(pull).present?
       target_review_comments(pull).delete_all
     end
   end

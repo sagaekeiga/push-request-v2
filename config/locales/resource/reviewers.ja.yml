@@ -27,3 +27,4 @@ ja:
     views:
       reviews: レビューする
       cancels: キャンセルする
+      canceled: レビューをキャンセルしました。
