@@ -13,15 +13,17 @@ class PullDecorator < Draper::Decorator
     end
   end
 
+  # プルのステータスに基づき次のアクション名を返す
   def link_title_by_status
     case object.status
     when 'request_reviewed', 'canceled'
-      'レビューする'
+      I18n.t('reviewers.views.reviews')
     when 'agreed'
-      'キャンセルする'
+      I18n.t('reviewers.views.cancels')
     end
   end
 
+  # プルのステータスに基づきボタンカラーを返す
   def btn_class_by_status
     case object.status
     when 'request_reviewed', 'canceled'

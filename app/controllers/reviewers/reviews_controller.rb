@@ -19,8 +19,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     end
     if @review.reflect
       @review.pull.reviewed!
-      wぇjfんうぇkjんふぇwkj
-      redirect_to [:reviewers, @pull], success: '成功しました'
+      redirect_to [:reviewers, @pull], success: t('.success')
     else
       @review = Review.new
       render :new

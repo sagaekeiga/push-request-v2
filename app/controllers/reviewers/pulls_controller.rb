@@ -9,17 +9,17 @@ class Reviewers::PullsController < Reviewers::BaseController
     case params[:status]
     when 'request_reviewed', 'canceled'
       @pull.agreed!
-      @pull.update!(reviewer: current_reviewer)
+      @pull.update(reviewer: current_reviewer)
     when 'agreed'
       if current_reviewer.reviews.find_by(pull: @pull).nil?
-        current_reviewer.target_review_comments(@pull).delete_all if current_reviewer.target_review_comments(@pull).present?
+        current_reviewer.cancel_review_comments!(@pull)
         @pull.canceled!
-        @pull.update!(reviewer: nil)
+        @pull.update(reviewer: nil)
       else
-        return redirect_to [:reviewers, @pull], success: 'すでにレビュー済みのためキャンセルできません'
+        return redirect_to [:reviewers, @pull], success: t('.already_reviewed')
       end
     end
-    redirect_to [:reviewers, @pull], success: 'あなたがレビュー担当になりました！2時間以内にレビューをしてあげましょう。'
+    redirect_to [:reviewers, @pull], success: t('.success')
   end
 
   private
@@ -28,6 +28,7 @@ class Reviewers::PullsController < Reviewers::BaseController
     @pull = Pull.find(params[:id])
   end
 
+  # 他のレビュワーに承認されたら情報保護的に非公開にしたい
   def check_reviewer
     redirect_to reviewers_dashboard_url if  @pull.already_pairing? && !@pull.reviewer?(current_reviewer)
   end

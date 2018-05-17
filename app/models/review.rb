@@ -83,6 +83,7 @@ class Review < ApplicationRecord
 
       if response.code == '200'
         review.comment!
+        review.pull.reviewed!
       else
         fail response.body
       end
