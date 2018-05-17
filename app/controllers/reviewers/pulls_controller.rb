@@ -11,13 +11,10 @@ class Reviewers::PullsController < Reviewers::BaseController
       @pull.agreed!
       @pull.update(reviewer: current_reviewer)
     when 'agreed'
-      if current_reviewer.reviews.find_by(pull: @pull).nil?
-        current_reviewer.cancel_review_comments!(@pull)
-        @pull.canceled!
-        @pull.update(reviewer: nil)
-      else
-        return redirect_to [:reviewers, @pull], success: t('.already_reviewed')
-      end
+      return redirect_to [:reviewers, @pull], success: t('.already_reviewed') if current_reviewer.reviews.find_by(pull: @pull).nil?
+      current_reviewer.cancel_review_comments!(@pull)
+      @pull.canceled!
+      @pull.update(reviewer: nil)
     end
     redirect_to [:reviewers, @pull], success: t('.success')
   end
@@ -30,6 +27,6 @@ class Reviewers::PullsController < Reviewers::BaseController
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい
   def check_reviewer
-    redirect_to reviewers_dashboard_url if  @pull.already_pairing? && !@pull.reviewer?(current_reviewer)
+    redirect_to reviewers_dashboard_url if @pull.already_pairing? && !@pull.reviewer?(current_reviewer)
   end
 end

@@ -64,6 +64,19 @@ class Review < ApplicationRecord
   # validates :working_hours, presence: true
 
   #
+  # リモートに送るレビューデータの作成・レビューコメントの更新をする
+  #
+  def ready_to_review!(pull)
+    review = new(
+      pull: pull,
+      body: 'hoge'
+    )
+    review.save!
+    review_comments = review.reviewer.review_comments.where(changed_file: pull.changed_files)
+    review_comments.each { |review_comment| review_comment.update!(review: review) }
+  end
+
+  #
   # リモートのPRにレビューする
   #
   def reflect
