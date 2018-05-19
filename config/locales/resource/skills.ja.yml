@@ -1,0 +1,12 @@
+ja:
+  activerecord:
+    models:
+      skill: スキル
+    attributes:
+      skill:
+        id: ID
+        name: スキル名
+  enums:
+    skill:
+      category:
+        language: 言語

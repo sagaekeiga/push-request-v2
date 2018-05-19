@@ -3,6 +3,7 @@
 # Table name: skills
 #
 #  id         :bigint(8)        not null, primary key
+#  category   :integer
 #  deleted_at :datetime
 #  name       :string
 #  created_at :datetime         not null

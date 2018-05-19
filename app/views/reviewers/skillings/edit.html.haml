@@ -1,0 +1,23 @@
+.container
+  %h2.text-center= title t('users.entries.new.title')
+
+  .row
+    .col-xs-12.col-sm-offset-2.col-sm-8
+      = form_for(@reviewer, url: reviewers_skillings_path, html: { class: 'form-horizontal' }) do |f|
+        .form-group
+          %hr
+
+        .form-group
+          .col-xs-12
+            %h4.text-center= t 'enums.skill.category.language'
+
+        .form-group
+          = f.label :skills, class: 'col-xs-12 col-sm-3 control-label'
+          .col-sm-9
+            = f.collection_check_boxes(:skill_ids, Skill.language, :id, :name) do |b|
+              .check_box= b.label { b.check_box + b.text }
+
+        .form-group
+          .col-xs-12.col-sm-4.col-sm-offset-4
+            = f.submit t('users.entries.new.confirm'), class: 'btn btn-primary btn-block'
+            %br

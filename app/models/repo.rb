@@ -72,4 +72,10 @@ class Repo < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     false
   end
+
+  # レビュワーのスキルに合致するPRを取得する
+  def self.pulls_suitable_for reviewer
+    repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
+    Pull.where(repo_id: repos&.pluck(:id))
+  end
 end

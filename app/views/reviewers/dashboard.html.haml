@@ -1,12 +1,15 @@
-%table.table
+%table.table.pulls-on-dashboard-wrapper
   %thead
     %tr
       %th= t 'activerecord.models.pull'
       %th= t 'activerecord.models.repo'
+      %th= t 'activerecord.models.skill'
       %th= t 'activerecord.attributes.repo.private'
   %tbody
     - @pulls.each do |pull|
       %tr
         %td= link_to pull.title, reviewers_pull_path(pull)
         %td= pull.repo_full_name
-        %td= pull.repo_private
+        %td.text-center
+          %span.label.label-warning= pull.repo.skillings.first.skill.name
+        %td.text-center= pull.repo_private

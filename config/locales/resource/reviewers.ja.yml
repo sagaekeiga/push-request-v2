@@ -24,6 +24,9 @@ ja:
     reviews:
       create:
         success: レビューしました
+    skillings:
+      update:
+        success: スキルを登録しました
     views:
       reviews: レビューする
       cancels: キャンセルする

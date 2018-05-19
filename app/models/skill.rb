@@ -3,6 +3,7 @@
 # Table name: skills
 #
 #  id         :bigint(8)        not null, primary key
+#  category   :integer
 #  deleted_at :datetime
 #  name       :string
 #  created_at :datetime         not null
@@ -20,6 +21,17 @@ class Skill < ApplicationRecord
   # -------------------------------------------------------------------------------
   has_many :skillings, dependent: :destroy
   has_many :reviewers, through: :skillings
+
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # カテゴリ
+  #
+  # - language        : プログラミング言語
+  #
+  enum category: {
+    language:  1000
+  }
 
   # -------------------------------------------------------------------------------
   # Validations

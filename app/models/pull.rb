@@ -102,7 +102,7 @@ class Pull < ApplicationRecord
             body: response_pull['body']
           )
 
-          skill = Skill.find_by(name: response_pull['head']['repo']['language']&.downcase)
+          skill = Skill.find_by(name: response_pull['head']['repo']['language'])
           skilling = skill.skillings.find_or_create_by!(
             resource_type: 'Repo',
             resource_id: repo.id
