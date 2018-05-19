@@ -46,7 +46,7 @@ class Pull < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :token, uniqueness: true
-  validates :remote_id, presence: true, uniqueness: true
+  validates :remote_id, presence: true, uniqueness: true, on: %i(create)
   # @TODO 重複されることが前提のカラムであるかどうかを確認
   validates :number, presence: true
   validates :state, presence: true
@@ -125,9 +125,23 @@ class Pull < ApplicationRecord
     fail I18n.t('views.error.failed_create_pull')
   end
 
-  def self.check_and_update(params)
-    pull = find_by(remote_id: params[0]['id'])
-    pull
+  # PRの更新がhookされた時に、PRを更新する
+  def self.check_and_update!(params)
+    @pull = find_by(remote_id: params[:pull_requests][0]['id'])
+    ActiveRecord::Base.transaction do
+      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{@pull.repo.full_name}/pulls/#{@pull.number}"
+      @pull.update!(
+        state: response_pulls_in_json_format['state'],
+        title: response_pulls_in_json_format['title'],
+        body: response_pulls_in_json_format['body']
+      )
+      ChangedFile.check_and_update!(@pull)
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
   end
 
   def already_pairing?

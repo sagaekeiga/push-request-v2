@@ -7,9 +7,6 @@ class Api::V1::GithubAppsController < ApplicationController
 
   # POST /github_apps/webhook
   def webhook
-    p 1111111111111111111111111111111111111
-    p 1111111111111111111111111111111111111
-    p 1111111111111111111111111111111111111
     begin
       github_account = Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
       response_internal_server_error if github_account.nil?
@@ -22,13 +19,7 @@ class Api::V1::GithubAppsController < ApplicationController
       end
     rescue => e
       # Update
-      p 222222222222222222222222222222222222
-      p 222222222222222222222222222222222222
-      p 222222222222222222222222222222222222
-      if params[:github_app][:check_suite].present?
-        p 222222222222222222222222222222222222
-        p pulls = Pull.check_and_update(params[:github_app][:check_suite][:pull_requests])
-      end
+      status = Pull.check_and_update!(params[:github_app][:check_suite]) if params[:github_app][:check_suite].present?
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
