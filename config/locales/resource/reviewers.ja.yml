@@ -25,6 +25,9 @@ ja:
       create:
         success: レビューしました
     skillings:
+      edit:
+        alert: スキルを登録しましょう
+        title: スキルの登録
       update:
         success: スキルを登録しました
     views:

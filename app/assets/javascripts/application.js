@@ -6,5 +6,6 @@
 //= require bootstrap-material-design
 //= require bootstrap-sprockets
 //= require highlight_pack
+//= require marked
 //= require_tree .
 'use strict';

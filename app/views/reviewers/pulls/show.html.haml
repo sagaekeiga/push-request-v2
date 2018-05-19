@@ -1,4 +1,4 @@
-.page-header
+.page-header{ 'pull-id': @pull.id }
   .pull-right
     %h2.label.label-default= @pull.status_i18n
     // レビューが完了した時点でキャンセルされても困る
@@ -7,25 +7,26 @@
 
 = render 'reviewers/shared/tab', pull: @pull
 
-.card
-  .card-body
-    %h4.card-title Special title treatment
-    %p.card-text= @pull.body
-    %a.btn.btn-deep-orange Go somewhere
+.pulls-show-card
+  .card
+    .card-body
+      %h4.card-title= @pull.title
+      %p#marked-body.card-text
 
-- unless @pull.agreed?
-  // @TODO ここはnreとpartialできそう 
-  %h4
-    %i.glyphicon.glyphicon-file
-    = t 'reviewers.pulls.show.changed_files'
-  .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-  - @pull.changed_files.order(:id).each do |changed_file|
-    .card
-      .card-body.file-border{ 'changed-file-id': changed_file.id }
-        %h4.card-title= changed_file.filename
-        %p.card-text
-        %pre
-          %code
-            = changed_file.patch
+  - unless @pull.agreed?
+    // @TODO ここはnreとpartialできそう
+    %h4
+      %i.glyphicon.glyphicon-file
+      = t 'reviewers.pulls.show.changed_files'
+    .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
+    - @pull.changed_files.order(:id).each do |changed_file|
+      .card
+        .card-body.file-border{ 'changed-file-id': changed_file.id }
+          %h4.card-title= changed_file.filename
+          %p.card-text
+          %pre
+            %code
+              = changed_file.patch
 
 = javascript_pack_tag 'highlight'
+= javascript_pack_tag 'marked'

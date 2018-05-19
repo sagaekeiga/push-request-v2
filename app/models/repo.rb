@@ -76,6 +76,6 @@ class Repo < ApplicationRecord
   # レビュワーのスキルに合致するPRを取得する
   def self.pulls_suitable_for reviewer
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.where(repo_id: repos&.pluck(:id))
+    Pull.request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 end
