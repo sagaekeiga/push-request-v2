@@ -3,6 +3,7 @@ class Reviewers::PullsController < Reviewers::BaseController
   before_action :check_reviewer, only: %i(show update)
 
   def show
+    @changed_files = @pull.last_committed_changed_files
     respond_to do |format|
       format.html
       format.json do
@@ -31,7 +32,7 @@ class Reviewers::PullsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.find(params[:id])
+    @pull = Pull.friendly.find(params[:token])
   end
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい

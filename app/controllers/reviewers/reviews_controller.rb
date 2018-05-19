@@ -27,7 +27,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.find(params[:pull_id])
+    @pull = Pull.friendly.find(params[:pull_token])
   end
 
   def check_pull

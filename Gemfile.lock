@@ -910,6 +910,8 @@ GEM
       thor (~> 0.19.1)
     formatador (0.2.5)
     foundation_emails (2.2.1.0)
+    friendly_id (5.1.0)
+      activerecord (>= 4.0.0)
     globalid (0.4.1)
       activesupport (>= 4.2.0)
     google-analytics-rails (1.1.1)
@@ -1337,6 +1339,7 @@ DEPENDENCIES
   fog
   font-awesome-sass
   foreman
+  friendly_id (~> 5.1.0)
   google-analytics-rails
   guard
   guard-rspec

@@ -1,3 +1,4 @@
+= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.1.0/highlightjs-line-numbers.min.js'
 .page-header{ 'pull-id': @pull.id }
   .pull-right
     %h2.label.label-default= @pull.status_i18n
@@ -19,7 +20,7 @@
       %i.glyphicon.glyphicon-file
       = t 'reviewers.pulls.show.changed_files'
     .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-    - @pull.changed_files.order(:id).each do |changed_file|
+    - @changed_files.each do |changed_file|
       .card
         .card-body.file-border{ 'changed-file-id': changed_file.id }
           %h4.card-title= changed_file.filename
