@@ -12,6 +12,7 @@ class CreateChangedFiles < ActiveRecord::Migration[5.1]
       t.string :raw_url
       t.string :contents_url
       t.text :patch
+      t.datetime :head_commit_timestamp
       t.datetime :deleted_at, index: true
       t.timestamps
     end

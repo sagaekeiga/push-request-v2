@@ -125,6 +125,11 @@ class Pull < ApplicationRecord
     fail I18n.t('views.error.failed_create_pull')
   end
 
+  def self.check_and_update(params)
+    pull = find_by(remote_id: params[0]['id'])
+    pull
+  end
+
   def already_pairing?
     agreed? || reviewed? || completed?
   end

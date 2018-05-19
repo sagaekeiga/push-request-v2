@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20180519052157) do
     t.string "raw_url"
     t.string "contents_url"
     t.text "patch"
+    t.datetime "head_commit_timestamp"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
