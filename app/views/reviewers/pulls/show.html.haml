@@ -19,7 +19,7 @@
       %i.glyphicon.glyphicon-file
       = t 'reviewers.pulls.show.changed_files'
     .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-    - @pull.changed_files.order(:id).each do |changed_file|
+    - @changed_files.each do |changed_file|
       .card
         .card-body.file-border{ 'changed-file-id': changed_file.id }
           %h4.card-title= changed_file.filename

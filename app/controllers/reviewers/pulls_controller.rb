@@ -3,6 +3,8 @@ class Reviewers::PullsController < Reviewers::BaseController
   before_action :check_reviewer, only: %i(show update)
 
   def show
+    changed_file = @pull.changed_files.order(:id).last
+    @changed_files = @pull.changed_files.order(:id).where(sha: changed_file&.sha)
     respond_to do |format|
       format.html
       format.json do
