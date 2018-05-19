@@ -9,6 +9,7 @@
 #  state       :string
 #  status      :integer
 #  title       :string
+#  token       :string
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  remote_id   :integer
@@ -31,6 +32,7 @@
 #
 
 class Pull < ApplicationRecord
+  include GenToken, FriendlyId
   acts_as_paranoid
   # -------------------------------------------------------------------------------
   # Relations
@@ -43,6 +45,7 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
+  validates :token, uniqueness: true
   validates :remote_id, presence: true, uniqueness: true
   # @TODO 重複されることが前提のカラムであるかどうかを確認
   validates :number, presence: true

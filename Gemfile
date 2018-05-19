@@ -115,6 +115,7 @@ gem 'bootstrap-material-design'
 gem 'paranoia'
 gem 'rails-highlightjs'
 gem 'marked-rails'
+gem 'friendly_id', '~> 5.1.0'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'

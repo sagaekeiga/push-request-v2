@@ -31,7 +31,7 @@ class Reviewers::PullsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.find(params[:id])
+    @pull = Pull.friendly.find(params[:token])
   end
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい

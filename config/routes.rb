@@ -60,7 +60,7 @@ Rails.application.routes.draw do
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
-      resources :pulls, only: %i(show update) do
+      resources :pulls, only: %i(show update), param: :token do
         resources :reviews, only: %i(create) do
           get :file, to: 'reviews#new', on: :collection
         end
