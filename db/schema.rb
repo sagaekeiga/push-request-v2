@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180515112421) do
+ActiveRecord::Schema.define(version: 20180519052157) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -159,6 +159,25 @@ ActiveRecord::Schema.define(version: 20180515112421) do
     t.index ["reviewer_id"], name: "index_reviews_on_reviewer_id"
   end
 
+  create_table "skillings", force: :cascade do |t|
+    t.bigint "skill_id"
+    t.integer "resource_id"
+    t.string "resource_type"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_skillings_on_deleted_at"
+    t.index ["skill_id"], name: "index_skillings_on_skill_id"
+  end
+
+  create_table "skills", force: :cascade do |t|
+    t.string "name"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_skills_on_deleted_at"
+  end
+
   add_foreign_key "changed_files", "pulls"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
@@ -170,4 +189,5 @@ ActiveRecord::Schema.define(version: 20180515112421) do
   add_foreign_key "reviewees_github_accounts", "reviewees"
   add_foreign_key "reviews", "pulls"
   add_foreign_key "reviews", "reviewers"
+  add_foreign_key "skillings", "skills"
 end

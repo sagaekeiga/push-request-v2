@@ -101,8 +101,18 @@ class Pull < ApplicationRecord
             title: response_pull['title'],
             body: response_pull['body']
           )
+
+          skill = Skill.find_by(name: response_pull['head']['repo']['language']&.downcase)
+          skilling = skill.skillings.find_or_create_by!(
+            resource_type: 'Repo',
+            resource_id: repo.id
+          )
         end
-        pull.restore if pull&.deleted?
+        if pull&.deleted?
+          pull.restore
+          skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
+          skillings.each(&:restore) if skillings.present?
+        end
         ChangedFile.create_or_restore!(pull)
       end
     end

@@ -29,6 +29,8 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
   has_many :pulls, dependent: :destroy
+  has_many :skillings, dependent: :destroy, as: :resource
+  has_many :skills, through: :skillings
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -43,7 +45,6 @@ class Repo < ApplicationRecord
   attribute :private, default: false
 
   # @TODO テストコードを書く
-  # @TODO languageを登録する
   #
   # リモートのレポジトリを保存する or リストアする
   #
