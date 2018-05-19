@@ -167,6 +167,7 @@ ActiveRecord::Schema.define(version: 20180519052157) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_skillings_on_deleted_at"
+    t.index ["resource_id", "resource_type"], name: "index_skillings_on_resource_id_and_resource_type"
     t.index ["skill_id"], name: "index_skillings_on_skill_id"
   end
 

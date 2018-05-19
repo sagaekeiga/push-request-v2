@@ -12,8 +12,9 @@
 #
 # Indexes
 #
-#  index_skillings_on_deleted_at  (deleted_at)
-#  index_skillings_on_skill_id    (skill_id)
+#  index_skillings_on_deleted_at                     (deleted_at)
+#  index_skillings_on_resource_id_and_resource_type  (resource_id,resource_type)
+#  index_skillings_on_skill_id                       (skill_id)
 #
 # Foreign Keys
 #

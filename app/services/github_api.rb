@@ -48,7 +48,7 @@ module GithubAPI
       response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
         http.request(target_request)
       end
-      p JSON.load(response.body)
+      JSON.load(response.body)
     end
 
     def receive_api_request_in_json_format_on(target_uri, body)

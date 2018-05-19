@@ -7,5 +7,6 @@ class CreateSkillings < ActiveRecord::Migration[5.1]
       t.datetime :deleted_at, index: true
       t.timestamps
     end
+    add_index :skillings, %i(resource_id resource_type)
   end
 end
