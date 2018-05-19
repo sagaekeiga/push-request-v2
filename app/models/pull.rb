@@ -135,7 +135,7 @@ class Pull < ApplicationRecord
         title: response_pulls_in_json_format['title'],
         body: response_pulls_in_json_format['body']
       )
-      ChangedFile.check_and_update!(@pull)
+      ChangedFile.check_and_update!(@pull, params[:head_commit][:id])
     end
     true
   rescue => e

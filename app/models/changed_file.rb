@@ -2,21 +2,22 @@
 #
 # Table name: changed_files
 #
-#  id           :bigint(8)        not null, primary key
-#  additions    :integer
-#  blob_url     :string
-#  contents_url :string
-#  deleted_at   :datetime
-#  deletions    :integer
-#  difference   :integer
-#  filename     :string
-#  patch        :text
-#  raw_url      :string
-#  sha          :string
-#  status       :string
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
-#  pull_id      :bigint(8)
+#  id             :bigint(8)        not null, primary key
+#  additions      :integer
+#  blob_url       :string
+#  contents_url   :string
+#  deleted_at     :datetime
+#  deletions      :integer
+#  difference     :integer
+#  filename       :string
+#  patch          :text
+#  raw_url        :string
+#  sha            :string
+#  status         :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  head_commit_id :string
+#  pull_id        :bigint(8)
 #
 # Indexes
 #
@@ -64,7 +65,7 @@ class ChangedFile < ApplicationRecord
     fail I18n.t('views.error.failed_create_changed_file')
   end
 
-  def self.check_and_update!(pull)
+  def self.check_and_update!(pull, head_commit_id)
     ActiveRecord::Base.transaction do
       response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
       response_changed_files_in_json_format.each do |response_changed_file|
@@ -78,7 +79,8 @@ class ChangedFile < ApplicationRecord
           filename: response_changed_file['filename'],
           patch: response_changed_file['patch'],
           raw_url: response_changed_file['raw_url'],
-          status: response_changed_file['status']
+          status: response_changed_file['status'],
+          head_commit_id: head_commit_id
         )
       end
     end
