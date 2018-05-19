@@ -151,4 +151,9 @@ class Pull < ApplicationRecord
   def reviewer? current_reviewer
     reviewer == current_reviewer
   end
+
+  def last_committed_changed_files
+    changed_file = changed_files.order(:id).last
+    changed_files.order(:id).where(head_commit_id: changed_file&.head_commit_id)
+  end
 end
