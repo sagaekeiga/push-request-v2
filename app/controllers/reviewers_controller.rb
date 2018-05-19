@@ -1,5 +1,5 @@
 class ReviewersController < Reviewers::BaseController
   def dashboard
-    @pulls = Pull.where(status: :request_reviewed || :canceled)
+    @pulls = Repo.pulls_suitable_for(current_reviewer)
   end
 end

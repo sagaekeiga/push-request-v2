@@ -18,6 +18,6 @@
         = render 'navbar'
       .m-b-4
       - !content_for?(:flash) && flash && flash.each do |key, message|
-        .alert{ class: "alert-key", role: 'alert' }
+        .alert{ class: "alert-#{key}", role: 'alert' }
           %strong= message
       = yield

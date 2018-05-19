@@ -3,6 +3,14 @@ class Reviewers::PullsController < Reviewers::BaseController
   before_action :check_reviewer, only: %i(show update)
 
   def show
+    respond_to do |format|
+      format.html
+      format.json do
+        render json: {
+          body: @pull.body
+        }
+      end
+    end
   end
 
   def update

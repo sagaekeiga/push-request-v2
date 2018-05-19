@@ -29,6 +29,8 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
   has_many :pulls, dependent: :destroy
+  has_many :skillings, dependent: :destroy, as: :resource
+  has_many :skills, through: :skillings
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -43,7 +45,6 @@ class Repo < ApplicationRecord
   attribute :private, default: false
 
   # @TODO テストコードを書く
-  # @TODO languageを登録する
   #
   # リモートのレポジトリを保存する or リストアする
   #
@@ -70,5 +71,11 @@ class Repo < ApplicationRecord
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     false
+  end
+
+  # レビュワーのスキルに合致するPRを取得する
+  def self.pulls_suitable_for reviewer
+    repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
+    Pull.request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 end

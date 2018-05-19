@@ -49,7 +49,6 @@ Rails.application.routes.draw do
     #
     # Reviewer
     #
-
     devise_for :reviewers, path: 'reviewers', controllers: {
       registrations: 'reviewers/registrations',
       confirmations: 'reviewers/confirmations',
@@ -58,6 +57,9 @@ Rails.application.routes.draw do
 
     namespace :reviewers do
       get :dashboard
+      resource :skillings, only: %i(update) do
+        get :skills, to: 'skillings#edit'
+      end
       resources :pulls, only: %i(show update) do
         resources :reviews, only: %i(create) do
           get :file, to: 'reviews#new', on: :collection
