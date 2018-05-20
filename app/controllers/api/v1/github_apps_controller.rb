@@ -20,10 +20,7 @@ class Api::V1::GithubAppsController < ApplicationController
         status = true
       end
     when 'pull_request'
-      Rails.logger.error e
-      Rails.logger.error e.backtrace.join("\n")
-      # Update
-      status = Pull.check_and_update!(params[:github_app][:check_suite]) if params[:github_app][:check_suite].present?
+      status = Pull.update_by_pull_request_event!(params)
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
