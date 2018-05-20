@@ -127,7 +127,7 @@ class Pull < ApplicationRecord
 
   def self.update_by_pull_request_event!(params)
     update_when_push!(params[:github_app][:check_suite]) if params[:github_app][:check_suite].present?
-    update_by_oprating_on_gui(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
+    update_by_oprating_on_gui!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
   end
 
   # PRの更新がhookされた時に、PRを更新する
@@ -150,7 +150,7 @@ class Pull < ApplicationRecord
   end
 
   # Close/Merge/titleやbodyの変更を検知して更新する
-  def self.update_by_oprating_on_gui(params)
+  def self.update_by_oprating_on_gui!(params)
     @pull = find_by(remote_id: params[:id])
     ActiveRecord::Base.transaction do
       @pull.update!(

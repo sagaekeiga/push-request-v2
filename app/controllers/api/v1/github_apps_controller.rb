@@ -7,7 +7,6 @@ class Api::V1::GithubAppsController < ApplicationController
 
   # POST /github_apps/receive_webhook
   def receive_webhook
-    p request.headers['X-GitHub-Event']
     case request.headers['X-GitHub-Event']
     when 'installation_repositories'
       github_account = Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
