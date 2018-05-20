@@ -52,32 +52,7 @@ p json['token']
 
 
 ## Get Repository ##
-# uri = URI.parse("https://api.github.com/installation/repositories")
-# request = Net::HTTP::Get.new(uri)
-# request["Authorization"] = "token #{json['token']}"
-# request["Accept"] = "application/vnd.github.machine-man-preview+json"
-#
-# req_options = {
-#   use_ssl: uri.scheme == "https",
-# }
-#
-# response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-#   http.request(request)
-# end
-#
-# puts JSON.pretty_generate(JSON.load(response.body))
-
-## Get Skill
-# JSON.load(response.body)['repositories'].each do |repo|
-#   p '----------------------------------'
-#   p repo['name']
-#   p repo['language']
-#   p '----------------------------------'
-# end
-
-
-# Get Pullrequest ##
-uri = URI.parse("https://api.github.com/repos/sagaekeiga/reviewers-prototype/pulls")
+uri = URI.parse("https://api.github.com/installation/repositories")
 request = Net::HTTP::Get.new(uri)
 request["Authorization"] = "token #{json['token']}"
 request["Accept"] = "application/vnd.github.machine-man-preview+json"
@@ -91,6 +66,31 @@ response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
 end
 
 puts JSON.pretty_generate(JSON.load(response.body))
+
+# Get Skill
+JSON.load(response.body)['repositories'].each do |repo|
+  p '----------------------------------'
+  p repo['name']
+  p repo['language']
+  p '----------------------------------'
+end
+
+
+# Get Pullrequest ##
+# uri = URI.parse("https://api.github.com/repos/sagaekeiga/reviewers-prototype/pulls")
+# request = Net::HTTP::Get.new(uri)
+# request["Authorization"] = "token #{json['token']}"
+# request["Accept"] = "application/vnd.github.machine-man-preview+json"
+#
+# req_options = {
+#   use_ssl: uri.scheme == "https",
+# }
+#
+# response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+#   http.request(request)
+# end
+#
+# puts JSON.pretty_generate(JSON.load(response.body))
 
 ## Get PRFile ##
 # uri = URI.parse("https://api.github.com/repos/sagaekeiga/github-api-sample/pulls/1/files")
