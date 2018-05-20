@@ -19,7 +19,7 @@ class Api::V1::GithubAppsController < ApplicationController
         status = true
       end
     when 'pull_request'
-      status = Pull.update_by_pull_request_event!(params)
+      status = Pull.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
