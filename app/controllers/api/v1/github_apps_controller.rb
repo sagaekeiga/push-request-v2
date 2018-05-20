@@ -7,7 +7,9 @@ class Api::V1::GithubAppsController < ApplicationController
 
   # POST /github_apps/receive_webhook
   def receive_webhook
-    begin
+    p request.headers['X-GitHub-Event']
+    case request.headers['X-GitHub-Event']
+    when 'installation_repositories'
       github_account = Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
       response_internal_server_error if github_account.nil?
       # Add
@@ -17,7 +19,7 @@ class Api::V1::GithubAppsController < ApplicationController
         github_account.reviewee.repos.find_by(remote_id: params[:github_app][:repositories_removed][0][:id])&.destroy
         status = true
       end
-    rescue => e
+    when 'pull_request'
       Rails.logger.error e
       Rails.logger.error e.backtrace.join("\n")
       # Update
