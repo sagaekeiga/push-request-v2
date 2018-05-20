@@ -13,6 +13,6 @@
       - if current_reviewee.github_account&.owner_id
         = link_to t('reviewees.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-default'
       - else
-        = link_to '/auth/github', class: 'btn btn-primary', data: { confirm: t('.confirm') } do
+        = link_to '/auth/github', class: 'btn btn-primary' do
           %i.github.icon
           = t('reviewees.settings.integrations.connect')

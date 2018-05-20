@@ -85,11 +85,8 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:connected]
 
-  #
-  # リモートのPRを保存 or リストアする
-  #
-  # @param [Repo] repo レポジトリ
-  #
+  # @TODO リファクタできる気がする
+  # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.create_or_restore!(repo)
     ActiveRecord::Base.transaction do
       response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls"
@@ -125,17 +122,17 @@ class Pull < ApplicationRecord
     fail I18n.t('views.error.failed_create_pull')
   end
 
-  # PRの更新がhookされた時に、PRを更新する
-  def self.check_and_update!(params)
-    @pull = find_by(remote_id: params[:pull_requests][0]['id'])
+  # pull_requestのeventで発火しリモートの変更を検知して更新する
+  def self.update_by_pull_request_event!(params)
+    @pull = find_by(remote_id: params[:id])
     ActiveRecord::Base.transaction do
-      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{@pull.repo.full_name}/pulls/#{@pull.number}"
       @pull.update!(
-        state: response_pulls_in_json_format['state'],
-        title: response_pulls_in_json_format['title'],
-        body: response_pulls_in_json_format['body']
+        state: params[:state],
+        title: params[:title],
+        body: params[:body]
       )
-      ChangedFile.check_and_update!(@pull, params[:head_commit][:id])
+      @pull.update_status_by!(params[:state])
+      ChangedFile.check_and_update!(@pull, params[:head][:sha])
     end
     true
   rescue => e
@@ -155,5 +152,17 @@ class Pull < ApplicationRecord
   def last_committed_changed_files
     changed_file = changed_files.order(:id).last
     changed_files.order(:id).where(head_commit_id: changed_file&.head_commit_id)
+  end
+
+  # stateのパラメータに対応したstatusに更新する
+  def update_status_by!(state_params)
+    case state_params
+    when 'closed'
+      completed!
+    when 'merged'
+      completed!
+    when 'open'
+      connected!
+    end
   end
 end

@@ -21,13 +21,31 @@
       = t 'reviewers.pulls.show.changed_files'
     .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
     - @changed_files.each do |changed_file|
-      .card
-        .card-body.file-border{ 'changed-file-id': changed_file.id }
-          %h4.card-title= changed_file.filename
-          %p.card-text
-          %pre
-            %code
-              = changed_file.patch
+      .js-blob-wrapper
+        .card
+          .card-body.file-border{ 'changed-file-id': changed_file.id }
+            %h4.card-title= changed_file.filename
+            %p.card-text
+              %table
+                %thead
+                  %tr
+                    -# %th{ scope: 'col' }
+                    %th{ scope: 'col' }
+                - changed_file.patch.gsub(' ', '&nbsp;').each_line.with_index do |line, index|
+                  %tbody
+                    %tr
+                      -# %td= index
+                      - if line.start_with?('+')
+                        %td.markdown-highlight.bg-success= simple_format(line)
+                      - elsif line.start_with?('-')
+                        %td.markdown-highlight.bg-danger= simple_format(line)
+                      - elsif line.start_with?('@@')
+                        %td.markdown-highlight.bg-primary= simple_format(line)
+                      - else
+                        %td.markdown-highlight= simple_format(line)
+          -# %pre
+          -#   %code
+          -#     = changed_file.patch
 
 = javascript_pack_tag 'highlight'
 = javascript_pack_tag 'marked'

@@ -1,6 +1,40 @@
 .pulls-show-card {
+  p {
+    margin: 0;
+  }
   img {
   	max-width: 100%;
   	height: auto;
+  }
+  .card {
+    width: 100%;
+    white-space:nowrap;
+    overflow: scroll;
+    overflow-style: marquee;
+  }
+  table {
+    border-collapse: collapse;
+    width: 100%;
+    max-width: 100%;
+    td {
+      border: none;
+      &.markdown-highlight {
+        font-family: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+        font-size: 12px;
+        &.bg-primary {
+          background-color: #f1f8ff;
+          color: rgba(27,31,35,0.5);
+        }
+        &.bg-success {
+          background-color: #e6ffed;
+        }
+        &.bg-danger {
+          background-color: #ffeef0;
+        }
+      }
+    }
+  }
+  .js-blob-wrapper {
+    overflow-x: auto;
   }
 }
