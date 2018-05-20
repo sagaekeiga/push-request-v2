@@ -85,11 +85,8 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:connected]
 
-  #
-  # リモートのPRを保存 or リストアする
-  #
-  # @param [Repo] repo レポジトリ
-  #
+  # @TODO リファクタできる気がする
+  # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.create_or_restore!(repo)
     ActiveRecord::Base.transaction do
       response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls"
@@ -125,7 +122,7 @@ class Pull < ApplicationRecord
     fail I18n.t('views.error.failed_create_pull')
   end
 
-  # Close/Merge/titleやbodyの変更を検知して更新する
+  # pull_requestのeventで発火しリモートの変更を検知して更新する
   def self.update_by_pull_request_event!(params)
     @pull = find_by(remote_id: params[:id])
     ActiveRecord::Base.transaction do

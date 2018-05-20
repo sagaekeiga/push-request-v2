@@ -37,6 +37,8 @@ class ChangedFile < ApplicationRecord
   belongs_to :pull
   has_many :review_comments
 
+  # @TODO リファクタできる気がする
+  # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
   def self.create_or_restore!(pull)
     ActiveRecord::Base.transaction do
       response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
