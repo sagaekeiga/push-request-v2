@@ -126,7 +126,7 @@ class Pull < ApplicationRecord
   end
 
   def self.update_by_pull_request_event!(params)
-    update_when_push!(params[:github_app][:check_suite]) if params[:github_app][:check_suite].present?
+    # update_when_push!(params[:github_app][:check_suite]) if params[:github_app][:check_suite].present?
     update_by_oprating_on_gui!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
   end
 
@@ -140,7 +140,7 @@ class Pull < ApplicationRecord
         title: response_pulls_in_json_format['title'],
         body: response_pulls_in_json_format['body']
       )
-      ChangedFile.check_and_update!(@pull, params[:head_commit][:id])
+      ChangedFile.check_and_update!(@pull, params[:head][:sha])
     end
     true
   rescue => e
@@ -159,6 +159,7 @@ class Pull < ApplicationRecord
         body: params[:body]
       )
       @pull.update_status_by!(params[:state])
+      ChangedFile.check_and_update!(@pull, params[:head][:sha])
     end
     true
   rescue => e

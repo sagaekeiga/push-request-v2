@@ -65,12 +65,12 @@ class ChangedFile < ApplicationRecord
     fail I18n.t('views.error.failed_create_changed_file')
   end
 
-  def self.check_and_update!(pull, head_commit_id)
+  def self.check_and_update!(pull, sha)
     ActiveRecord::Base.transaction do
       response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
       response_changed_files_in_json_format.each do |response_changed_file|
         changed_file = pull.changed_files.find_or_create_by!(
-          sha: response_changed_file['sha'],
+          sha: sha,
           additions: response_changed_file['additions'],
           blob_url: response_changed_file['blob_url'],
           difference: response_changed_file['changes'],
@@ -79,8 +79,7 @@ class ChangedFile < ApplicationRecord
           filename: response_changed_file['filename'],
           patch: response_changed_file['patch'],
           raw_url: response_changed_file['raw_url'],
-          status: response_changed_file['status'],
-          head_commit_id: head_commit_id
+          status: response_changed_file['status']
         )
       end
     end
