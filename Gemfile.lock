@@ -1168,6 +1168,7 @@ GEM
       trollop (~> 2.1)
     recaptcha (4.8.0)
       json
+    redcarpet (3.4.0)
     redis (4.0.1)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
@@ -1322,6 +1323,7 @@ DEPENDENCIES
   byebug
   capybara (~> 2.13)
   carrierwave
+  coderay
   coffee-rails (~> 4.2)
   config
   connection_pool
@@ -1382,6 +1384,7 @@ DEPENDENCIES
   rails_best_practices
   ransack
   recaptcha
+  redcarpet
   redis
   redis-namespace
   redis-objects

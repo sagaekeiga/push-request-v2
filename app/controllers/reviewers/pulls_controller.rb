@@ -3,7 +3,7 @@ class Reviewers::PullsController < Reviewers::BaseController
   before_action :check_reviewer, only: %i(show update)
 
   def show
-    @changed_files = @pull.last_committed_changed_files
+    @changed_files = @pull.last_committed_changed_files.decorate
     respond_to do |format|
       format.html
       format.json do

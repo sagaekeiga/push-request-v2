@@ -1,4 +1,4 @@
-= javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.1.0/highlightjs-line-numbers.min.js'
+-# = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.1.0/highlightjs-line-numbers.min.js'
 .page-header{ 'pull-id': @pull.id }
   .pull-right
     %h2.label.label-default= @pull.status_i18n
@@ -13,39 +13,38 @@
     .card-body
       %h4.card-title= @pull.title
       %p#marked-body.card-text
-
   - unless @pull.agreed?
     // @TODO ここはnreとpartialできそう
-    %h4
+    .changed-file-title
       %i.glyphicon.glyphicon-file
       = t 'reviewers.pulls.show.changed_files'
     .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
     - @changed_files.each do |changed_file|
       .js-blob-wrapper
         .card
+          .card-header= changed_file.filename
           .card-body.file-border{ 'changed-file-id': changed_file.id }
-            %h4.card-title= changed_file.filename
             %p.card-text
               %table
                 %thead
                   %tr
-                    -# %th{ scope: 'col' }
                     %th{ scope: 'col' }
-                - changed_file.patch.gsub(' ', '&nbsp;').each_line.with_index do |line, index|
+                - changed_file.patch.each_line.with_index do |line, index|
                   %tbody
                     %tr
-                      -# %td= index
+                      %td.hidden= index
                       - if line.start_with?('+')
-                        %td.markdown-highlight.bg-success= simple_format(line)
+                        %td.markdown-highlight.bg-success= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
                       - elsif line.start_with?('-')
-                        %td.markdown-highlight.bg-danger= simple_format(line)
+                        %td.markdown-highlight.bg-danger= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
                       - elsif line.start_with?('@@')
                         %td.markdown-highlight.bg-primary= simple_format(line)
                       - else
-                        %td.markdown-highlight= simple_format(line)
+                        %td.markdown-highlight= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
+
           -# %pre
           -#   %code
           -#     = changed_file.patch
 
-= javascript_pack_tag 'highlight'
+-# = javascript_pack_tag 'highlight'
 = javascript_pack_tag 'marked'

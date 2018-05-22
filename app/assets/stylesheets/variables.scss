@@ -12,7 +12,11 @@ $color-line: #00c400;
 $color-grey: #F5F5F5;
 $color-black: #000000;
 $color-blue: #428bca;
-
+$color-gihub-blue: #f1f8ff;
+$color-literal-gray: rgba(27,31,35,0.5);
+$color-github-green: #e6ffed;
+$color-github-red: #ffeef0;
+$font-code: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
 
 
 // Spacing
@@ -32,4 +36,5 @@ $spacers: (
 ) !default;
 $base-margin: 16px;
 $base-padding: 4px;
-$border-radius: 3px;
+$base-border-radius: 3px;
+$base-font-size: 12px;
