@@ -1,4 +1,3 @@
--# = javascript_include_tag '//cdnjs.cloudflare.com/ajax/libs/highlightjs-line-numbers.js/2.1.0/highlightjs-line-numbers.min.js'
 .page-header{ 'pull-id': @pull.id }
   .pull-right
     %h2.label.label-default= @pull.status_i18n
@@ -34,17 +33,12 @@
                     %tr
                       %td.hidden= index
                       - if line.start_with?('+')
-                        %td.markdown-highlight.bg-success= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
+                        %td.markdown-highlight.bg-success= changed_file.coderay(line)
                       - elsif line.start_with?('-')
-                        %td.markdown-highlight.bg-danger= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
+                        %td.markdown-highlight.bg-danger= changed_file.coderay(line)
                       - elsif line.start_with?('@@')
                         %td.markdown-highlight.bg-primary= simple_format(line)
                       - else
-                        %td.markdown-highlight= CodeRay.scan(line, changed_file.symbolized_lang).div.html_safe
+                        %td.markdown-highlight= changed_file.coderay(line)
 
-          -# %pre
-          -#   %code
-          -#     = changed_file.patch
-
--# = javascript_pack_tag 'highlight'
 = javascript_pack_tag 'marked'

@@ -1126,7 +1126,6 @@ GEM
       anbt-sql-formatter
       awesome_print
       rails (>= 3.2.0)
-    rails-highlightjs (9.1.0.2)
     rails-html-sanitizer (1.0.4)
       loofah (~> 2.2, >= 2.2.2)
     rails-i18n (5.1.1)
@@ -1168,7 +1167,6 @@ GEM
       trollop (~> 2.1)
     recaptcha (4.8.0)
       json
-    redcarpet (3.4.0)
     redis (4.0.1)
     redis-namespace (1.6.0)
       redis (>= 3.0.4)
@@ -1379,12 +1377,10 @@ DEPENDENCIES
   pundit
   rails (~> 5.1.6)
   rails-flog
-  rails-highlightjs
   rails-i18n
   rails_best_practices
   ransack
   recaptcha
-  redcarpet
   redis
   redis-namespace
   redis-objects

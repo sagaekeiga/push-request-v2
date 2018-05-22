@@ -25,4 +25,9 @@ class ChangedFileDecorator < ApplicationDecorator
       :yaml
     end
   end
+
+  # シンタックスハイライトで返す
+  def coderay(line)
+    CodeRay.scan(line, object.decorate.symbolized_lang).div.html_safe
+  end
 end
