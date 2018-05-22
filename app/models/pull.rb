@@ -124,15 +124,32 @@ class Pull < ApplicationRecord
 
   # pull_requestのeventで発火しリモートの変更を検知して更新する
   def self.update_by_pull_request_event!(params)
-    @pull = find_by(remote_id: params[:id])
     ActiveRecord::Base.transaction do
-      @pull.update!(
-        state: params[:state],
-        title: params[:title],
-        body: params[:body]
-      )
-      @pull.update_status_by!(params[:state])
-      ChangedFile.check_and_update!(@pull, params[:head][:sha])
+      pull = find_by(remote_id: params[:id])
+      if pull.present?
+        pull.update!(
+          state: params[:state],
+          title: params[:title],
+          body: params[:body]
+        )
+        pull.update_status_by!(params[:state])
+      else
+        repo = Repo.find_by(remote_id: params[:head][:repo][:id])
+        pull = create!(
+          remote_id: params['id'],
+          number: params[:number],
+          state: params[:state],
+          title: params[:title],
+          body: params[:body],
+          repo: repo
+        )
+        skill = Skill.find_by(name: params[:head][:repo][:language])
+        skilling = skill.skillings.find_or_create_by!(
+          resource_type: 'Repo',
+          resource_id: repo.id
+        )
+      end
+      ChangedFile.check_and_update!(pull, params[:head][:sha])
     end
     true
   rescue => e

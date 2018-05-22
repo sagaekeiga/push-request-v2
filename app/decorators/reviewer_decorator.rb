@@ -1,3 +1,3 @@
-class ReviewerDecorator < Draper::Decorator
+class ReviewerDecorator < ApplicationDecorator
   delegate_all
 end

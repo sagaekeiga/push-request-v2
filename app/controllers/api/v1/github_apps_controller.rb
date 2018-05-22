@@ -19,7 +19,8 @@ class Api::V1::GithubAppsController < ApplicationController
         status = true
       end
     when 'pull_request'
-      status = Pull.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
+      github_account = Reviewees::GithubAccount.find_by(owner_id: params[:github_app][:pull_request][:head][:user][:id])
+      status = github_account.reviewee.pulls.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
