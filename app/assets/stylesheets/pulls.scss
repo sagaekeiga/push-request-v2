@@ -30,6 +30,9 @@
       font-size: $base-font-size + 2px;
     }
   }
+  .card.card-body.review-comments{
+    padding: 10px;
+  }
   table {
     border-collapse: collapse;
     width: 100%;

@@ -3,6 +3,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
   before_action :set_changed_file, only: %i(create)
   before_action :set_pull, only: %i(create)
   before_action :check_pull, only: %i(create)
+  before_action :set_review_comment, only: %i(destroy update show)
 
   def create
     reviewer = Reviewer.find(params[:reviewer_id])
@@ -16,12 +17,44 @@ class Reviewers::ReviewCommentsController < ApplicationController
       body: params[:body],
       reviewer: reviewer
     )
-    p review_comment
 
     if review_comment.save
+      render json: {
+        status: 'success',
+        review_comment_id: review_comment.id,
+        body: params[:body]
+      }
+    else
+      render json: { status: 'failed' }
+    end
+  end
+
+  def update
+    if @review_comment.update(body: params[:body])
+      render json: {
+        status: 'success',
+        body: params[:body]
+      }
+    else
+      render json: { status: 'failed' }
+    end
+  end
+
+  def destroy
+    if @review_comment.destroy
       render json: { status: 'success' }
     else
       render json: { status: 'failed' }
+    end
+  end
+
+  def show
+    respond_to do |format|
+      format.json do
+        render json: {
+          body: @review_comment.body
+        }
+      end
     end
   end
 
@@ -33,6 +66,10 @@ class Reviewers::ReviewCommentsController < ApplicationController
 
   def set_pull
     @pull = @changed_file.pull
+  end
+
+  def set_review_comment
+    @review_comment = ReviewComment.find(params[:id])
   end
 
   def check_pull

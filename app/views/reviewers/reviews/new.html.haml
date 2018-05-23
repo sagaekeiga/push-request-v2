@@ -24,6 +24,17 @@
                         %td.markdown-highlight.bg-primary.hljs-addition= simple_format(line)
                       - else
                         %td.markdown-highlight.hljs-addition= changed_file.coderay(line)
+                    - review_comment = changed_file.review_comments.find_by(position: index)
+                    - if review_comment.present?
+                      %tr
+                        %td
+                          .card.card-body
+                            - if review_comment.review.nil?
+                              .card-title
+                                %span.label.label-warning Pending
+                            %p.card-text
+                              = review_comment.body
+
   .text-center= f.submit t('helpers.links.review'), class: 'btn btn-primary'
 
 = javascript_pack_tag 'reviews'
