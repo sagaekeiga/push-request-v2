@@ -2,14 +2,28 @@
 
 = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
   .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-  - @pull.changed_files.order(:id).each do |changed_file|
-    .card
-      .card-body.file-border{ 'changed-file-id': changed_file.id }
-        %h4.card-title= changed_file.filename
-        %p.card-text
-        %pre
-          %code
-            = changed_file.patch
+  .pulls-show-card
+    - @changed_files.each do |changed_file|
+      .js-blob-wrapper
+        .card
+          .card-header= changed_file.filename
+          .card-body.file-border{ 'changed-file-id': changed_file.id }
+            %p.card-text
+              %table
+                %thead
+                  %tr
+                    %th{ scope: 'col' }
+                %tbody
+                  - changed_file.patch.each_line.with_index do |line, index|
+                    %tr.code-tr{ 'data-line-number': index }
+                      - if line.start_with?('+')
+                        %td.markdown-highlight.bg-success.hljs-addition= changed_file.coderay(line)
+                      - elsif line.start_with?('-')
+                        %td.markdown-highlight.bg-danger.hljs-addition= changed_file.coderay(line)
+                      - elsif line.start_with?('@@')
+                        %td.markdown-highlight.bg-primary.hljs-addition= simple_format(line)
+                      - else
+                        %td.markdown-highlight.hljs-addition= changed_file.coderay(line)
   .text-center= f.submit t('helpers.links.review'), class: 'btn btn-primary'
 
 = javascript_pack_tag 'reviews'

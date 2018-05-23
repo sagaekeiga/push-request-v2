@@ -16,6 +16,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
       body: params[:body],
       reviewer: reviewer
     )
+    p review_comment
 
     if review_comment.save
       render json: { status: 'success' }

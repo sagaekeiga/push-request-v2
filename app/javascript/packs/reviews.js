@@ -32,10 +32,8 @@ function hoverColor() {
 
 function addForm(elem) {
   if (!$(elem).hasClass('add-form')) {
-    var parentTr = $(elem).parent().parent().parent();
-    var CloenedTr = parentTr.clone();
-    var position = $(elem).parent().parent().parent().find('.hljs-ln-n').attr('data-line-number');
-    var path = $(elem).closest('.file-border').find('.card-title').text();
+    var position = $(elem).closest('.code-tr').attr('data-line-number');
+    var path = $(elem).closest('.card').find('.card-header').text();
     var changed_file_id = $(elem).closest('.file-border').attr('changed-file-id');
     var input = $('<input>').attr({
         type: 'text_area',
@@ -61,27 +59,22 @@ function addForm(elem) {
         value: changed_file_id,
         class: 'changed_file_id'
     });
-    $(CloenedTr).insertAfter(parentTr);
-    $('<td>').attr({
-        colspan: '3'
-    }).insertAfter(parentTr.next().children('td').filter(':last').wrapInner());
-    parentTr.next().children('td').filter(':first').remove();
-    parentTr.next().children('td').filter(':first').remove();
-    parentTr.next().children('td').wrapInner(input);
+    // input追加
+    $('<div class="card"><div class="card-body"></div></div>').insertAfter($(elem).closest('.code-tr'));
+    $(elem).closest('.code-tr').nextAll('.card').find('.card-body').wrapInner(input);
     // @TODO widthを横幅いっぱいにする
-    parentTr.next().children('td').wrapInner('<div class="card"><div class="card-body"></div></div>');
-    $('<a class="btn btn-deep-orange cancel-trigger">Cancel</a>').insertAfter($(elem).parent().parent().parent().next().find('input'));
-    positionHiddenField.insertAfter(parentTr.next().find('a'));
-    pathHiddenField.insertAfter(parentTr.next().find('a'));
-    changedFileIdHiddenField.insertAfter(parentTr.next().find('a'));
-    $('<a class="btn btn-deep-orange review-trigger">Start a review</a>').insertAfter($(elem).parent().parent().parent().next().find('a'));
+    $('<a class="btn btn-deep-orange cancel-trigger">Cancel</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('input'));
+    $('<a class="btn btn-deep-orange review-trigger">Start a review</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('a'));
+    positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
+    pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
+    changedFileIdHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
     $(elem).addClass('add-form');
   }
 };
 
 function removeForm(elem) {
-  elem.closest('tr').prev().find('span').removeClass('add-form');
-  elem.closest('tr').remove();
+  elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
+  elem.closest('.card').remove();
 };
 
 function startReview(elem) {
