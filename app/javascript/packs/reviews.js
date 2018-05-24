@@ -11,13 +11,33 @@ $(window).on('load', function() {
   })
 
   $(document).on('click', '.review-trigger', function () {
-    startReview($(this));
+    createReviewComment($(this));
+  })
+
+  $(document).on('click', '.destroy-trigger', function () {
+    destroyReviewComment($(this));
+  })
+
+  $(document).on('click', '.edit-trigger', function () {
+    editReviewCommentForm($(this));
+  })
+
+  $(document).on('click', '.update-trigger', function () {
+    updateReviewComment($(this));
+  })
+
+  $(document).on('click', '.cancel-update-trigger', function () {
+    cancelUpdateReviewComment($(this));
+  })
+
+  $(document).on('click', '#submit_review_button', function () {
+    $(this).prop('disabled', true);
   })
 });
 
 function hoverColor() {
   $('.hljs-addition').each(function(i, elem) {
-    $(elem).css("cursor","pointer");
+    $(elem).css('cursor','pointer');
     var color = $(elem).css("color");
     $(elem).hover(
       function(){
@@ -32,10 +52,8 @@ function hoverColor() {
 
 function addForm(elem) {
   if (!$(elem).hasClass('add-form')) {
-    var parentTr = $(elem).parent().parent().parent();
-    var CloenedTr = parentTr.clone();
-    var position = $(elem).parent().parent().parent().find('.hljs-ln-n').attr('data-line-number');
-    var path = $(elem).closest('.file-border').find('.card-title').text();
+    var position = $(elem).closest('.code-tr').attr('data-line-number');
+    var path = $(elem).closest('.card').find('.card-header').text();
     var changed_file_id = $(elem).closest('.file-border').attr('changed-file-id');
     var input = $('<input>').attr({
         type: 'text_area',
@@ -61,30 +79,25 @@ function addForm(elem) {
         value: changed_file_id,
         class: 'changed_file_id'
     });
-    $(CloenedTr).insertAfter(parentTr);
-    $('<td>').attr({
-        colspan: '3'
-    }).insertAfter(parentTr.next().children('td').filter(':last').wrapInner());
-    parentTr.next().children('td').filter(':first').remove();
-    parentTr.next().children('td').filter(':first').remove();
-    parentTr.next().children('td').wrapInner(input);
+    // input追加
+    $('<div class="card card-body review-comments"></div>').insertAfter($(elem).closest('.code-tr'));
+    $(elem).closest('.code-tr').nextAll('.card').wrapInner(input);
     // @TODO widthを横幅いっぱいにする
-    parentTr.next().children('td').wrapInner('<div class="card"><div class="card-body"></div></div>');
-    $('<a class="btn btn-deep-orange cancel-trigger">Cancel</a>').insertAfter($(elem).parent().parent().parent().next().find('input'));
-    positionHiddenField.insertAfter(parentTr.next().find('a'));
-    pathHiddenField.insertAfter(parentTr.next().find('a'));
-    changedFileIdHiddenField.insertAfter(parentTr.next().find('a'));
-    $('<a class="btn btn-deep-orange review-trigger">Start a review</a>').insertAfter($(elem).parent().parent().parent().next().find('a'));
+    $('<a class="btn btn-danger cancel-trigger">Cancel</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('input'));
+    $('<a class="btn btn-success review-trigger">Start a review</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('a'));
+    positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
+    pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
+    changedFileIdHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
     $(elem).addClass('add-form');
   }
 };
 
 function removeForm(elem) {
-  elem.closest('tr').prev().find('span').removeClass('add-form');
-  elem.closest('tr').remove();
+  elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
+  elem.closest('.card').remove();
 };
 
-function startReview(elem) {
+function createReviewComment(elem) {
   $.ajax({
     type: 'POST',
     url: `/reviewers/review_comments`,
@@ -96,7 +109,85 @@ function startReview(elem) {
       body: elem.prevAll('.body').val(),
       reviewer_id: $('.data_id').attr('reviewer-id')
     },
+    element: elem,
     success: function(data) {
+      if (data.status === 'success') {
+        var card = elem.closest('.card');
+        card.empty();
+        card.wrapInner(`<p class="card-text" review-comment-id=${data.review_comment_id} />`);
+        var cardText = card.find('.card-text')
+        card.prepend('<h4 class="card-title"><span class="label label-warning">Pending</h4>')
+        cardText.text(data.body);
+        $('<a class="btn btn-success edit-trigger">UPDATE</a>').insertAfter(cardText);
+        $('<a class="btn btn-danger destroy-trigger">DELETE</a>').insertAfter(cardText);
+      }
+    }
+  });
+};
+
+function destroyReviewComment(elem) {
+  elem.prop('disabled', true);
+  $.ajax({
+    type: 'DELETE',
+    url: `/reviewers/review_comments/${elem.prevAll('.card-text').attr('review-comment-id')}`,
+    dataType: 'JSON',
+    element: elem,
+    success: function(data) {
+      if (data.status === 'success') {
+        elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
+        elem.closest('.card').remove();
+        elem.prop('disabled', false);
+      }
+    }
+  });
+};
+
+function editReviewCommentForm(elem) {
+  elem.prop('disabled', true);
+  var input = $('<input>').attr({
+      type: 'text_area',
+      name: 'reviews[body][]',
+      value: elem.prevAll('.card-text').text(),
+      class: 'form-control'
+  });
+  elem.prevAll('.destroy-trigger').remove();
+  $('<a class="btn btn-default cancel-update-trigger">Cancel</a>').insertAfter(elem.prevAll('p'));
+  elem.removeClass('edit-trigger').addClass('update-trigger');
+  elem.prevAll('.card-text').html(input);
+  elem.prop('disabled', false);
+};
+
+function cancelUpdateReviewComment(elem) {
+  $.ajax({
+    type: 'GET',
+    url: `/reviewers/review_comments/${elem.prevAll('.card-text').attr('review-comment-id')}`,
+    dataType: 'JSON',
+    element: elem,
+    success: function(data) {
+      elem.removeClass('cancel-update-trigger btn-default').addClass('destroy-trigger btn-danger').text('DELETE');
+      elem.nextAll('.update-trigger').removeClass('update-trigger').addClass('edit-trigger');
+      elem.prevAll('p').find('input').remove();
+      elem.prevAll('p').text(data.body);
+    }
+  });
+};
+
+function updateReviewComment(elem) {
+  elem.prop('disabled', true);
+  $.ajax({
+    type: 'PUT',
+    url: `/reviewers/review_comments/${elem.prevAll('.card-text').attr('review-comment-id')}`,
+    dataType: 'JSON',
+    data: { body: elem.prevAll('.card-text').find('input').val() },
+    element: elem,
+    success: function(data) {
+      if (data.status === 'success') {
+        elem.prevAll('.cancel-update-trigger').removeClass('cancel-update-trigger btn-default').addClass('destroy-trigger btn-danger').text('DELETE');
+        elem.removeClass('update-trigger').addClass('edit-trigger');
+        elem.prevAll('p').find('input').remove();
+        elem.prevAll('p').text(data.body);
+        elem.prop('disabled', false);
+      }
     }
   });
 };

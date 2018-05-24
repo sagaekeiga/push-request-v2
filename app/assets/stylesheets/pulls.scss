@@ -30,6 +30,28 @@
       font-size: $base-font-size + 2px;
     }
   }
+  .review-comments {
+    .card {
+      border-radius: $base-border-radius;
+      margin-top: 0;
+      .label {
+        padding: 2px 5px;
+        font-size: 12px;
+        border: 1px solid rgba(27,31,35,0.1);
+        border-radius: $base-border-radius;
+        color: #586069;
+        font-weight: 400;
+        background-color: #fff5b1 !important;
+      }
+      p.card-text {
+        padding: $base-padding;
+      }
+    }
+  }
+  .card.card-body.review-comments{
+    margin-top: 0;
+    padding: 10px;
+  }
   table {
     border-collapse: collapse;
     width: 100%;

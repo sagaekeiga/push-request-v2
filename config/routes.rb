@@ -65,7 +65,7 @@ Rails.application.routes.draw do
           get :file, to: 'reviews#new', on: :collection
         end
       end
-      resources :review_comments, only: %i(create)
+      resources :review_comments, only: %i(create update destroy show)
     end
   end
 end

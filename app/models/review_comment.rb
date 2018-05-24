@@ -9,7 +9,6 @@
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  changed_file_id :bigint(8)
-#  commit_id       :string
 #  review_id       :bigint(8)
 #  reviewer_id     :bigint(8)
 #

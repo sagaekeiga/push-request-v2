@@ -73,7 +73,6 @@ ActiveRecord::Schema.define(version: 20180519052157) do
     t.bigint "review_id"
     t.bigint "changed_file_id"
     t.text "body"
-    t.string "commit_id"
     t.string "path"
     t.integer "position"
     t.datetime "created_at", null: false
