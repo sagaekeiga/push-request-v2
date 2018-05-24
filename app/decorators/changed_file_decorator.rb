@@ -51,7 +51,7 @@ class ChangedFileDecorator < ApplicationDecorator
     review_comments.find_by(position: index)&.path
   end
 
-  # レビューコメントのパスを返す
+  # レビューコメントのポジションを返す
   def review_comment_position(index)
     review_comments.find_by(position: index)&.position
   end
