@@ -13,7 +13,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
 
     review_comment = @changed_file.review_comments.new(
       position: params[:position],
-      path: params[:path],
+      path: params[:path]&.gsub('\n', ''),
       body: params[:body],
       reviewer: reviewer
     )

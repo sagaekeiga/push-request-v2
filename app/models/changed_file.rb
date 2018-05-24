@@ -91,4 +91,8 @@ class ChangedFile < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     fail I18n.t('views.error.failed_create_changed_file')
   end
+
+  def reviewed?(index)
+    review_comments.find_by(position: index).review.present?
+  end
 end

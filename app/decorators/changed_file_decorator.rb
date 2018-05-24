@@ -30,4 +30,29 @@ class ChangedFileDecorator < ApplicationDecorator
   def coderay(line)
     CodeRay.scan(line, object.decorate.symbolized_lang).div.html_safe
   end
+
+  # レビューコメントがあるかどうかを返す
+  def present_review_comment?(index)
+    review_comments.find_by(position: index).present?
+  end
+
+  # レビューコメントのIDを返す
+  def review_comment_id(index)
+    review_comments.find_by(position: index)&.id
+  end
+
+  # レビューコメントを返す
+  def review_comment_body(index)
+    review_comments.find_by(position: index)&.body
+  end
+
+  # レビューコメントのパスを返す
+  def review_comment_path(index)
+    review_comments.find_by(position: index)&.path
+  end
+
+  # レビューコメントのパスを返す
+  def review_comment_position(index)
+    review_comments.find_by(position: index)&.position
+  end
 end

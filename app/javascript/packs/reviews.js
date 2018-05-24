@@ -25,14 +25,19 @@ $(window).on('load', function() {
   $(document).on('click', '.update-trigger', function () {
     updateReviewComment($(this));
   })
+
   $(document).on('click', '.cancel-update-trigger', function () {
     cancelUpdateReviewComment($(this));
+  })
+
+  $(document).on('click', '#submit_review_button', function () {
+    $(this).prop('disabled', true);
   })
 });
 
 function hoverColor() {
   $('.hljs-addition').each(function(i, elem) {
-    $(elem).css("cursor","pointer");
+    $(elem).css('cursor','pointer');
     var color = $(elem).css("color");
     $(elem).hover(
       function(){
@@ -121,6 +126,7 @@ function createReviewComment(elem) {
 };
 
 function destroyReviewComment(elem) {
+  elem.prop('disabled', true);
   $.ajax({
     type: 'DELETE',
     url: `/reviewers/review_comments/${elem.prevAll('.card-text').attr('review-comment-id')}`,
@@ -130,12 +136,14 @@ function destroyReviewComment(elem) {
       if (data.status === 'success') {
         elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
         elem.closest('.card').remove();
+        elem.prop('disabled', false);
       }
     }
   });
 };
 
 function editReviewCommentForm(elem) {
+  elem.prop('disabled', true);
   var input = $('<input>').attr({
       type: 'text_area',
       name: 'reviews[body][]',
@@ -146,6 +154,7 @@ function editReviewCommentForm(elem) {
   $('<a class="btn btn-default cancel-update-trigger">Cancel</a>').insertAfter(elem.prevAll('p'));
   elem.removeClass('edit-trigger').addClass('update-trigger');
   elem.prevAll('.card-text').html(input);
+  elem.prop('disabled', false);
 };
 
 function cancelUpdateReviewComment(elem) {
@@ -164,6 +173,7 @@ function cancelUpdateReviewComment(elem) {
 };
 
 function updateReviewComment(elem) {
+  elem.prop('disabled', true);
   $.ajax({
     type: 'PUT',
     url: `/reviewers/review_comments/${elem.prevAll('.card-text').attr('review-comment-id')}`,
@@ -176,6 +186,7 @@ function updateReviewComment(elem) {
         elem.removeClass('update-trigger').addClass('edit-trigger');
         elem.prevAll('p').find('input').remove();
         elem.prevAll('p').text(data.body);
+        elem.prop('disabled', false);
       }
     }
   });
