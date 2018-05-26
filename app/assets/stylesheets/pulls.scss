@@ -1,89 +1,117 @@
-.pulls-show-card {
-  font-family: $font-code;
-  .changed-file-title {
-    font-size: $base-font-size + 1px;
+.pull-show-tab-wrapper {
+  ul {
+    margin-bottom: $base-margin;
   }
-  p {
-    margin: 0;
+}
+.pulls-show-wrapper {
+  .col-sm-10 {
+    padding-left: 0;
   }
-  img {
-  	max-width: 100%;
-  	height: auto;
+  .col-sm-2 {
+    padding-right: 0;
   }
-  .card {
-    margin-top: $base-margin;
-    border-color: $color-grey;
-    width: 100%;
-    white-space:nowrap;
-    overflow: scroll;
-    overflow-style: marquee;
-    .card-header {
-      background-color: $color-grey;
-      font-family: $font-code;
-      font-size: $base-font-size;
-      padding: $base-padding * 2;
+  .label.label-default {
+    padding: 2px 5px;
+    font-size: 12px;
+    border: 1px solid rgba(27,31,35,0.1);
+    border-radius: $base-border-radius;
+    color: #586069;
+    font-weight: 400;
+    background-color: #fff5b1 !important;
+  }
+  .pulls-show-card {
+    font-family: $font-code;
+    .changed-file-title {
+      font-size: $base-font-size + 1px;
     }
-    .card-body {
-      padding: 0px;
+    p {
+      margin: 0;
     }
-    .card-text {
-      font-size: $base-font-size + 2px;
+    img {
+    	max-width: 100%;
+    	height: auto;
     }
-  }
-  .review-comments {
     .card {
-      border-radius: $base-border-radius;
-      margin-top: 0;
-      .label {
-        padding: 2px 5px;
-        font-size: 12px;
-        border: 1px solid rgba(27,31,35,0.1);
+      margin-top: $base-margin;
+      width: 100%;
+      white-space:nowrap;
+      overflow: scroll;
+      overflow-style: marquee;
+      border: $base-border;
+      box-shadow: none;
+      .card-header {
+        background-color: $color-grey;
+        font-family: $font-code;
+        font-size: $base-font-size;
+        padding: $base-padding * 2;
+        width: 100%;
+      }
+      .card-body {
+        padding: 0;
+      }
+      .card-text {
+        font-size: $base-font-size + 2px;
+      }
+    }
+    .review-comments {
+      padding: 0;
+      margin: 0;
+      .card {
         border-radius: $base-border-radius;
-        color: #586069;
-        font-weight: 400;
-        background-color: #fff5b1 !important;
-      }
-      p.card-text {
-        padding: $base-padding;
+        margin-top: 0;
+        border: $base-border;
+        box-shadow: none;
+        .label {
+          padding: 2px 5px;
+          font-size: 12px;
+          border: 1px solid rgba(27,31,35,0.1);
+          border-radius: $base-border-radius;
+          color: #586069;
+          font-weight: 400;
+          background-color: #fff5b1 !important;
+        }
+        p.card-text {
+          padding: $base-padding;
+        }
       }
     }
-  }
-  .card.card-body.review-comments{
-    margin-top: 0;
-    padding: 10px;
-  }
-  table {
-    border-collapse: collapse;
-    width: 100%;
-    max-width: 100%;
-    td {
-      pre {
-        padding: $base-padding;
-        color: none;
-        background-color: transparent;
+    .card.card-body.review-comments{
+      margin-top: 0;
+      padding: 10px;
+    }
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      max-width: 100%;
+      td {
+        pre {
+          padding: $base-padding;
+          color: none;
+          background-color: transparent;
+          border: none;
+          margin: 0;
+          font-family: $font-code;
+          font-size: $base-font-size;
+        }
         border: none;
-        margin: 0;
-        font-family: $font-code;
-        font-size: $base-font-size;
-      }
-      border: none;
-      &.markdown-highlight {
-        font-family: $font-code;
-        font-size: $base-font-size;
-        &.bg-primary {
-          background-color: $color-gihub-blue;
-          color: $color-literal-gray;
-        }
-        &.bg-success {
-          background-color: $color-github-green;
-        }
-        &.bg-danger {
-          background-color: $color-github-red;
+        &.markdown-highlight {
+          font-family: $font-code;
+          font-size: $base-font-size;
+          &.bg-primary {
+            background-color: $color-gihub-blue;
+            color: $color-literal-gray;
+          }
+          &.bg-success {
+            background-color: $color-github-green;
+          }
+          &.bg-danger {
+            background-color: $color-github-red;
+          }
         }
       }
     }
-  }
-  .js-blob-wrapper {
-    overflow-x: auto;
+    .js-blob-wrapper {
+      overflow-x: auto;
+    }
   }
 }

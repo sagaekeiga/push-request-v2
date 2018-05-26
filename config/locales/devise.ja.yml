@@ -12,6 +12,7 @@ ja:
         title: Reviewee ログイン
         sub_titles:
           login_with_email_and_password: メールアドレスとパスワードを利用
+        forgot_password: パスワードをお忘れの方はこちらから再設定を行ってください
       create:
         title: Reviewee ログイン
 
@@ -35,7 +36,7 @@ ja:
         url_is_invalid: 無効なURLです
         redirect_profile_page: 登録後、プロフィール登録画面へ進みます
       edit:
-        title: プロフィール登録
+        title: プロフィール編集
         placeholders:
           <<: *reviewee_registrations_new_placeholders
         helpers:

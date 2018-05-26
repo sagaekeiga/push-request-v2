@@ -6,6 +6,8 @@ ja:
       reviewee:
         id: ID
         email: Eメール
+        password: パスワード
+        password_confirmation: パスワード（確認用）
   enums:
     reviewee:
       gender:

@@ -155,7 +155,7 @@ $btn-default-bg:                 #fff !default;
 $btn-default-border:             #ccc !default;
 
 $btn-primary-color:              #fff !default;
-$btn-primary-bg:                 $brand-primary !default;
+$btn-primary-bg:                 #28a745 !default;
 $btn-primary-border:             darken($btn-primary-bg, 5%) !default;
 
 $btn-success-color:              $color-black !default;
@@ -169,10 +169,6 @@ $btn-info-border:                darken($btn-info-bg, 5%) !default;
 $btn-warning-color:              #fff !default;
 $btn-warning-bg:                 $brand-warning !default;
 $btn-warning-border:             darken($btn-warning-bg, 5%) !default;
-
-$btn-danger-color:               #fff !default;
-$btn-danger-bg:                  $brand-danger !default;
-$btn-danger-border:              darken($btn-danger-bg, 5%) !default;
 
 $btn-link-disabled-color:        $gray-light !default;
 
@@ -704,43 +700,6 @@ $alert-danger-border:         $state-danger-border !default;
 // $list-group-link-heading-color: #333 !default;
 //
 //
-// //== Panels
-// //
-// //##
-//
-// $panel-bg:                    #fff !default;
-// $panel-body-padding:          15px !default;
-// $panel-heading-padding:       10px 15px !default;
-// $panel-footer-padding:        $panel-heading-padding !default;
-$panel-border-radius:         0 !default;
-//
-// //** Border color for elements within panels
-// $panel-inner-border:          #ddd !default;
-// $panel-footer-bg:             #f5f5f5 !default;
-//
-// $panel-default-text:          $gray-dark !default;
-// $panel-default-border:        #ddd !default;
-// $panel-default-heading-bg:    #f5f5f5 !default;
-//
-// $panel-primary-text:          #fff !default;
-// $panel-primary-border:        $brand-primary !default;
-// $panel-primary-heading-bg:    $brand-primary !default;
-//
-// $panel-success-text:          $state-success-text !default;
-// $panel-success-border:        $state-success-border !default;
-// $panel-success-heading-bg:    $state-success-bg !default;
-//
-// $panel-info-text:             $state-info-text !default;
-// $panel-info-border:           $state-info-border !default;
-// $panel-info-heading-bg:       $state-info-bg !default;
-//
-// $panel-warning-text:          $state-warning-text !default;
-// $panel-warning-border:        $state-warning-border !default;
-// $panel-warning-heading-bg:    $state-warning-bg !default;
-//
-// $panel-danger-text:           $state-danger-text !default;
-// $panel-danger-border:         $state-danger-border !default;
-// $panel-danger-heading-bg:     $state-danger-bg !default;
 //
 //
 // //== Thumbnails
@@ -877,4 +836,26 @@ $badge-border-radius:         0px !default;
 .px-2 {
   padding-left: ($spacer * .5) !important;
   padding-right: ($spacer * .5) !important;
+}
+
+.btn.btn-primary {
+  color: $color-white;
+  background-color: $github-primary-color;
+  background-image: linear-gradient(-180deg, #34d058 0%, $github-primary-color 90%);
+}
+
+.btn.btn-danger {
+  color: #cb2431 !important;
+  background-color: #fafbfc;
+  background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);
+  font-weight: bold;
+  border: 1px solid rgba(27,31,35,0.2);
+}
+
+.btn.btn-default {
+  color: #24292e !important;
+  background-color: #eff3f6;
+  background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);;
+  font-weight: bold;
+  border: 1px solid rgba(27,31,35,0.2);
 }

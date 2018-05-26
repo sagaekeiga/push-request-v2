@@ -43,6 +43,7 @@ class ReviewComment < ApplicationRecord
   def self.calc_working_hours
     start_time = self.first.created_at
     end_time = Time.zone.now
-    ((end_time - start_time).to_i / 60).floor
+    working_hours = ((end_time - start_time).to_i / 60).floor
+    working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 end

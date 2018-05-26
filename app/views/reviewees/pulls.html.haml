@@ -1,17 +1,22 @@
-%table.table
-  %thead
-    %tr
-      %th= t 'activerecord.models.pull'
-      %th= t 'activerecord.models.repo'
-  %tbody
-    - @pulls.each do |pull|
+- if @pulls.blank?
+  プルリクエストがありません。
+  = link_to '設定する', ENV['GITHUB_APP_PUBLIC_PAGED_URL']
+- else
+  %table.table.table-hover
+    %thead
       %tr
-        %td= link_to pull.title, pull.decorate.remote_url, target: 'blank'
-        %td= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
-        %td
-          - if pull.connected? || pull.canceled?
-            = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put
-          - elsif pull.completed?
-            = I18n.t('views.status.complete')
-          - else
-            = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put
+        %th= t 'activerecord.models.pull'
+        %th= t 'activerecord.models.repo'
+        %th= t 'activerecord.attributes.pull.status'
+    %tbody
+      - @pulls.each do |pull|
+        %tr
+          %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
+          %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
+          %td.text-center
+            - if pull.connected? || pull.canceled?
+              = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put
+            - elsif pull.completed?
+              = I18n.t('views.status.complete')
+            - else
+              = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put

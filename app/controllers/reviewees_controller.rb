@@ -8,5 +8,6 @@ class RevieweesController < Reviewees::BaseController
   end
 
   def repos
+    @repos = current_reviewee.repos
   end
 end

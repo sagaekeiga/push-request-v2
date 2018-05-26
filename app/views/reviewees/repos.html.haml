@@ -1,10 +1,14 @@
-%table.table
-  %thead
-    %tr
-      %th= t 'activerecord.models.repo'
-  %tbody
-    - current_reviewee.repos.each do |repo|
+- if @repos.blank?
+  = t 'views.github_apps.install_repositories'
+  = link_to t('.add_repo'), ENV['GITHUB_APP_URL'], target: '_blank'
+- else
+  %table.table
+    %thead
       %tr
-        %td= link_to repo.full_name, repo.decorate.remote_url, target: 'blank'
+        %th= t 'activerecord.models.repo'
+    %tbody
+      - @repos.each do |repo|
+        %tr
+          %td= link_to repo.full_name, repo.decorate.remote_url, target: 'blank'
 
-= link_to t('.add_repo'), ENV['GITHUB_APP_URL'], target: '_blank'
+  = link_to t('.add_repo'), ENV['GITHUB_APP_URL'], target: '_blank'

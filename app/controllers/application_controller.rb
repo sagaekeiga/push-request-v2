@@ -34,5 +34,6 @@ class ApplicationController < ActionController::Base
 
   def transition_dashboard!
     redirect_to reviewers_dashboard_url if reviewer_signed_in?
+    redirect_to reviewees_dashboard_url if reviewee_signed_in?
   end
 end
