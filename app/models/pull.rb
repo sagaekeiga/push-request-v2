@@ -47,11 +47,11 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   validates :token, uniqueness: true
   validates :remote_id, presence: true, uniqueness: true, on: %i(create)
-  # @TODO 重複されることが前提のカラムであるかどうかを確認
   validates :number, presence: true
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
+  validate :check_present_changed_files
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -181,5 +181,9 @@ class Pull < ApplicationRecord
     when 'open'
       connected!
     end
+  end
+
+  def check_present_changed_files
+    errors.add(:status, I18n.t('reviewees.views.no_changed_files')) if changed_files.none?
   end
 end

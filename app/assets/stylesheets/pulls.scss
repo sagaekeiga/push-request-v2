@@ -1,6 +1,9 @@
 .pull-show-tab-wrapper {
   ul {
     margin-bottom: $base-margin;
+    li {
+      border: $base-border;
+    }
   }
 }
 .pulls-show-wrapper {
@@ -21,11 +24,13 @@
   }
   .pulls-show-card {
     font-family: $font-code;
+    word-wrap: break-word;
     .changed-file-title {
       font-size: $base-font-size + 1px;
     }
     p {
       margin: 0;
+      word-wrap: break-word;
     }
     img {
     	max-width: 100%;
@@ -34,10 +39,6 @@
     .card {
       margin-top: $base-margin;
       margin-bottom: $base-margin;
-      width: 100%;
-      white-space:nowrap;
-      overflow: scroll;
-      overflow-style: marquee;
       border: $base-border;
       box-shadow: none;
       .card-header {
@@ -46,15 +47,14 @@
         font-size: $base-font-size;
         padding: $base-padding * 2;
         width: 100%;
+        padding: $base-padding * 3;
       }
       .card-body {
         padding: 0;
-      }
-      .card-text {
-        font-size: $base-font-size + 2px;
-      }
-      .marked {
-        padding: $base-padding;
+        .card-text {
+          font-size: $base-font-size + 2px;
+          padding: 0 $base-padding * 5;
+        }
       }
     }
     .review-comments {

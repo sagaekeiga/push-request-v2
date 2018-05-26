@@ -32,3 +32,5 @@ ja:
         configure_connect: GitHubアカウント連携の設定をします。
         alert:
           danger: Githubに接続してください
+    views:
+      no_changed_files: 変更のないプルリクエストです

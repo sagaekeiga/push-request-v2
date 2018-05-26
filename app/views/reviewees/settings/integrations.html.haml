@@ -8,7 +8,37 @@
     %hr
     .card
       .card-body
-        %p.card-text.text-muted= t('.configure_connect')
+        %p.card-text
+          %small.text-muted
+            GitHubアカウント連携の設定をします。
+            %br
+            アカウント情報を取得するために読み取り権限を許可します。
+        - if current_reviewee.github_account&.owner_id
+          設定済み
+        - else
+          = link_to '/auth/github', class: 'btn btn-primary' do
+            %i.github.icon
+            = t('reviewees.settings.integrations.connect')
+    .m-t-4
+    %h4
+      %i.fab.fa-github
+      = t('views.integrations.github_app')
+    %hr
+    .card
+      .card-body
+        %p.card-text
+          %small.text-muted
+            GitHubAPP連携の設定をします。
+            %br
+            レポジトリ・プルリクエストの同期、レビュワーからのコメントに必要な権限を許可する必要があります。
+          %table.text-left.table.table-bordered
+            %tbody
+              %tr
+                %th 書き込み・読み取り権限
+                %td レポジトリ/プルリクエスト/コミット
+              %tr
+                %th 読み取り権限
+                %td レポジトリのメタデータ
         - if current_reviewee.github_account&.owner_id
           = link_to t('reviewees.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-primary'
         - else

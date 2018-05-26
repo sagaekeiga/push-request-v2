@@ -11,47 +11,48 @@
         - if @pull.body.present?
           .card
             .card-body
-              %p#marked-body.card-text.marked
+              %p#marked-body.card-text
         - unless @pull.agreed?
-          // @TODO ここはnreとpartialできそう
           .changed-file-title
             %i.glyphicon.glyphicon-file
             = t 'reviewers.pulls.show.changed_files'
           %hr
-          .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-          - @changed_files.each do |changed_file|
-            .js-blob-wrapper
-              .card
-                .card-header= changed_file.filename
-                .card-body.file-border{ 'changed-file-id': changed_file.id }
-                  %p.card-text
-                    %table
-                      %thead
-                        %tr
-                          %th{ scope: 'col' }
-                      - changed_file.patch.each_line.with_index do |line, index|
-                        %tbody
+          - if @changed_files.present?
+            - @changed_files.each do |changed_file|
+              .js-blob-wrapper
+                .card
+                  .card-header= changed_file.filename
+                  .card-body.file-border{ 'changed-file-id': changed_file.id }
+                    %p.card-text
+                      %table
+                        %thead
                           %tr
-                            %td.hidden= index
-                            - if line.start_with?('+')
-                              %td.markdown-highlight.bg-success= changed_file.coderay(line)
-                            - elsif line.start_with?('-')
-                              %td.markdown-highlight.bg-danger= changed_file.coderay(line)
-                            - elsif line.start_with?('@@')
-                              %td.markdown-highlight.bg-primary= simple_format(line)
-                            - else
-                              %td.markdown-highlight= changed_file.coderay(line)
-                          - if changed_file.present_review_comment?(index)
+                            %th{ scope: 'col' }
+                        - changed_file.patch.each_line.with_index do |line, index|
+                          %tbody
                             %tr
-                              %td
-                                .review-comments
-                                  .card
-                                    - unless changed_file.reviewed?(index)
-                                      .card-header
-                                        %span.label.label-warning Pending
-                                    .card-body
-                                      %p.card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
-                                        = changed_file.review_comment_body(index)
+                              %td.hidden= index
+                              - if line.start_with?('+')
+                                %td.markdown-highlight.bg-success= changed_file.coderay(line)
+                              - elsif line.start_with?('-')
+                                %td.markdown-highlight.bg-danger= changed_file.coderay(line)
+                              - elsif line.start_with?('@@')
+                                %td.markdown-highlight.bg-primary= simple_format(line)
+                              - else
+                                %td.markdown-highlight= changed_file.coderay(line)
+                            - if changed_file.present_review_comment?(index)
+                              %tr
+                                %td
+                                  .review-comments
+                                    .card
+                                      - unless changed_file.reviewed?(index)
+                                        .card-header
+                                          %span.label.label-warning Pending
+                                      .card-body
+                                        %p.card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
+                                          = changed_file.review_comment_body(index)
+          - else
+            変更がありません
     .col-xs-12.col-sm-2
       .text-center
         .label.label-default= @pull.status_i18n
