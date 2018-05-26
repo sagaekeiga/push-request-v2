@@ -6,6 +6,8 @@ ja:
       reviewer:
         id: ID
         email: Eメール
+        password: パスワード
+        password_confirmation: パスワード（確認用）
   enums:
     reviewer:
       gender:
@@ -18,6 +20,7 @@ ja:
       show:
         conversation: Conversation
         changed_files: Changed Files
+        expiured_at: "%{time} までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。"
       update:
         already_reviewed: すでにレビュー済みのためキャンセルできません
         success: あなたがレビュー担当になりました！2時間以内にレビューをしてあげましょう。
@@ -28,6 +31,7 @@ ja:
       edit:
         alert: スキルを登録しましょう
         title: スキルの登録
+        show_related_selected_skills: 登録されたスキルに一致するプルリクエストがダッシュボードに表示されます。
       update:
         success: スキルを登録しました
     views:

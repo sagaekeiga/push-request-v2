@@ -6,6 +6,8 @@ ja:
       reviewee:
         id: ID
         email: Eメール
+        password: パスワード
+        password_confirmation: パスワード（確認用）
   enums:
     reviewee:
       gender:
@@ -19,11 +21,14 @@ ja:
       add_repo: レポジトリを追加する
     pulls:
       title: プルリクエスト
+      empty: プルリクエストがありません。
+      set_pulls: 設定する
     settings:
       integrations:
         title: 設定
         integrations: インテグレーション
         configure: 設定
         connect: Connect
+        configure_connect: GitHubアカウント連携の設定をします。
         alert:
           danger: Githubに接続してください

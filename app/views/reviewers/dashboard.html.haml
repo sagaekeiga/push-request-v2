@@ -8,8 +8,8 @@
   %tbody
     - @pulls.each do |pull|
       %tr
-        %td= link_to pull.title, reviewers_pull_path(pull)
-        %td= pull.repo_full_name
+        %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
+        %td.text-center= pull.repo_full_name
         %td.text-center
           %span.label.label-warning= pull.repo.skillings.first.skill.name
         %td.text-center= pull.repo_private

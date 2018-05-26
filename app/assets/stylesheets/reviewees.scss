@@ -1,0 +1,17 @@
+.reviewee-dashboard-wrapper {
+  .card {
+    border-radius: $base-border-radius;
+    margin-top: $base-margin * 2;
+    background-color: $color-github-light-grey;
+    border: solid 1px $color-literal-gray;
+    box-shadow: none;
+    .card-header {
+      padding-bottom: $base-padding * 3;
+      border-bottom: solid 1px gray;
+      color: $color-github-blue;
+      font-weight: bold;
+    }
+    .card-body {
+    }
+  }
+}

@@ -11,12 +11,16 @@ $color-google: #dc4e42;
 $color-line: #00c400;
 $color-grey: #F5F5F5;
 $color-black: #000000;
+$color-github-black: #24292e;
+$color-github-light-grey: #fafbfc;
 $color-blue: #428bca;
 $color-gihub-blue: #f1f8ff;
 $color-literal-gray: rgba(27,31,35,0.5);
 $color-github-green: #e6ffed;
-$color-github-red: #ffeef0;
+$color-github-red: #cb2431;
+$color-github-blue: #0366d6;
 $font-code: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
+$base-border: 1px solid rgba(27,31,35,0.2);
 
 
 // Spacing
@@ -38,3 +42,5 @@ $base-margin: 16px;
 $base-padding: 4px;
 $base-border-radius: 3px;
 $base-font-size: 12px;
+
+$github-primary-color: #28a745;

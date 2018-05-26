@@ -6,7 +6,7 @@ class CreateReviews < ActiveRecord::Migration[5.1]
       t.text :body
       t.string :state
       t.integer :event
-      t.time :working_hours
+      t.integer :working_hours
       t.datetime :deleted_at, index: true
       t.timestamps
     end

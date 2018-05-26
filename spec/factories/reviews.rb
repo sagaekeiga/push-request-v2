@@ -7,7 +7,7 @@
 #  deleted_at    :datetime
 #  event         :integer
 #  state         :string
-#  working_hours :time
+#  working_hours :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  pull_id       :bigint(8)

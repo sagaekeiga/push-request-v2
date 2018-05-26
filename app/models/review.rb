@@ -7,7 +7,7 @@
 #  deleted_at    :datetime
 #  event         :integer
 #  state         :string
-#  working_hours :time
+#  working_hours :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  pull_id       :bigint(8)
@@ -60,8 +60,7 @@ class Review < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :body, presence: true
-  # @TODO 時間を計測 & 記録する処理
-  # validates :working_hours, presence: true
+  validates :working_hours, presence: true, on: %i(update)
 
   #
   # リモートに送るレビューデータの作成・レビューコメントの更新をする
@@ -72,7 +71,9 @@ class Review < ApplicationRecord
       body: 'hoge'
     )
     review.save!
-    review_comments = review.reviewer.review_comments.where(changed_file: pull.changed_files)
+    review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
+    working_hours = review_comments.calc_working_hours
+    review.update!(working_hours: working_hours)
     review_comments.each { |review_comment| review_comment.update!(review: review) }
     review
   end

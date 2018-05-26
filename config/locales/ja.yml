@@ -22,6 +22,7 @@ ja:
     label:
       log_out: ログアウト
       reviewer:
+        remember_me: "ログイン情報を保持する"
         log_in: Reviewer ログイン
       reviewee:
         remember_me: "ログイン情報を保持する"
@@ -137,7 +138,7 @@ ja:
       year: 年
   time:
     formats:
-      default: ! '%Y年%-m月%-d日'
+      default: ! '%Y年%-m月%-d日 %-H時%-M分'
       shift: ! '%-H時間%-M分'
   views:
     pagination:
@@ -156,3 +157,8 @@ ja:
       pending: Pending
       complete: Completed
       confirm_canceled: キャンセルするとレビューされません。本当にキャンセルしてよろしいですか？
+    github:
+      connect:
+        success: GitHubとの接続に成功しました！
+    github_apps:
+      install_repositories: GitHub Appをインストールし、レポジトリ・プルリクエストを取得しましょう。

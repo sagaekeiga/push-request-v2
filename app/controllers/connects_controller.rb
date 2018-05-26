@@ -10,7 +10,7 @@ class ConnectsController < Reviewees::BaseController
     ActiveRecord::Base.transaction do
       @reviewee = current_reviewee.connect_to_github(request.env['omniauth.auth'])
     end
-    redirect_to reviewees_dashboard_url
+    redirect_to reviewees_repos_url, success: t('views.github.connect.success')
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")

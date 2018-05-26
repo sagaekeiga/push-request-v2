@@ -59,7 +59,8 @@ function addForm(elem) {
         type: 'text_area',
         name: 'reviews[body][]',
         value: '',
-        class: 'form-control body'
+        class: 'form-control md-textarea body',
+        size: '60x30'
     });
     var positionHiddenField = $('<input>').attr({
         type: 'hidden',
@@ -82,9 +83,8 @@ function addForm(elem) {
     // input追加
     $('<div class="card card-body review-comments"></div>').insertAfter($(elem).closest('.code-tr'));
     $(elem).closest('.code-tr').nextAll('.card').wrapInner(input);
-    // @TODO widthを横幅いっぱいにする
     $('<a class="btn btn-danger cancel-trigger">Cancel</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('input'));
-    $('<a class="btn btn-success review-trigger">Start a review</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('a'));
+    $('<a class="btn btn-primary review-trigger">Start a review</a>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('a'));
     positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
     pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
     changedFileIdHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
@@ -116,9 +116,9 @@ function createReviewComment(elem) {
         card.empty();
         card.wrapInner(`<p class="card-text" review-comment-id=${data.review_comment_id} />`);
         var cardText = card.find('.card-text')
-        card.prepend('<h4 class="card-title"><span class="label label-warning">Pending</h4>')
+        card.prepend('<h4 class="card-header"><span class="label label-default">Pending</h4>')
         cardText.text(data.body);
-        $('<a class="btn btn-success edit-trigger">UPDATE</a>').insertAfter(cardText);
+        $('<a class="btn btn-primary edit-trigger">UPDATE</a>').insertAfter(cardText);
         $('<a class="btn btn-danger destroy-trigger">DELETE</a>').insertAfter(cardText);
       }
     }

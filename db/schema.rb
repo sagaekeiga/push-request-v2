@@ -151,7 +151,7 @@ ActiveRecord::Schema.define(version: 20180519052157) do
     t.text "body"
     t.string "state"
     t.integer "event"
-    t.time "working_hours"
+    t.integer "working_hours"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

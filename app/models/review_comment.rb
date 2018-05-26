@@ -39,4 +39,11 @@ class ReviewComment < ApplicationRecord
   validates :body, presence: true
   validates :path, presence: true
   validates :position, presence: true, numericality: { only_integer: true }
+
+  def self.calc_working_hours
+    start_time = self.first.created_at
+    end_time = Time.zone.now
+    working_hours = ((end_time - start_time).to_i / 60).floor
+    working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
+  end
 end
