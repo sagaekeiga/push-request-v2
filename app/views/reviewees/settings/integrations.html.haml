@@ -8,7 +8,7 @@
     %hr
     .card
       .card-body
-        %p.card-text.text-muted GitHubアカウント連携の設定をします。
+        %p.card-text.text-muted= t('.configure_connect')
         - if current_reviewee.github_account&.owner_id
           = link_to t('reviewees.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-primary'
         - else

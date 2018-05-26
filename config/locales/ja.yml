@@ -22,6 +22,7 @@ ja:
     label:
       log_out: ログアウト
       reviewer:
+        remember_me: "ログイン情報を保持する"
         log_in: Reviewer ログイン
       reviewee:
         remember_me: "ログイン情報を保持する"

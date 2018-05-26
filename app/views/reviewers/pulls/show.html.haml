@@ -7,13 +7,11 @@
     .col-xs-12.col-sm-10
       .pulls-show-card
         - if @pull.agreed?
-          .text-danger
-            = l (@pull.updated_at + 2.hours).to_time
-            までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。
+          .text-danger= t '.expiured_at', time: (l (@pull.updated_at + 2.hours).to_time)
         - if @pull.body.present?
           .card
             .card-body
-              %p#marked-body.card-text
+              %p#marked-body.card-text.marked
         - unless @pull.agreed?
           // @TODO ここはnreとpartialできそう
           .changed-file-title

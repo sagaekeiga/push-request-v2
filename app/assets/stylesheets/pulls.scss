@@ -33,6 +33,7 @@
     }
     .card {
       margin-top: $base-margin;
+      margin-bottom: $base-margin;
       width: 100%;
       white-space:nowrap;
       overflow: scroll;
@@ -51,6 +52,9 @@
       }
       .card-text {
         font-size: $base-font-size + 2px;
+      }
+      .marked {
+        padding: $base-padding;
       }
     }
     .review-comments {

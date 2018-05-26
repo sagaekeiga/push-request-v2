@@ -1,6 +1,6 @@
 - if @pulls.blank?
-  プルリクエストがありません。
-  = link_to '設定する', ENV['GITHUB_APP_PUBLIC_PAGED_URL']
+  = t '.empty'
+  = link_to t('.set_pulls'), ENV['GITHUB_APP_PUBLIC_PAGED_URL']
 - else
   %table.table.table-hover
     %thead
