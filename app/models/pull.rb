@@ -47,11 +47,12 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   validates :token, uniqueness: true
   validates :remote_id, presence: true, uniqueness: true, on: %i(create)
-  # @TODO 重複されることが前提のカラムであるかどうかを確認
   validates :number, presence: true
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
+  validate :check_present_changed_files, on: %i(update)
+  validate :check_present_review, on: %i(update)
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -85,6 +86,21 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:connected]
 
+  # -------------------------------------------------------------------------------
+  # CustomValidates
+  # -------------------------------------------------------------------------------
+  def check_present_review
+    errors.add(:status, I18n.t('reviewees.views.already_reviewed')) if changed_files.review_commented?
+  end
+
+  # 変更点のないPRはレビュワーはコメントできない
+  def check_present_changed_files
+    errors.add(:status, I18n.t('reviewees.views.no_changed_files')) if changed_files.none?
+  end
+
+  # -------------------------------------------------------------------------------
+  # ClassMethods
+  # -------------------------------------------------------------------------------
   # @TODO リファクタできる気がする
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.create_or_restore!(repo)
@@ -158,6 +174,9 @@ class Pull < ApplicationRecord
     false
   end
 
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
   def already_pairing?
     agreed? || reviewed? || completed?
   end
@@ -181,5 +200,10 @@ class Pull < ApplicationRecord
     when 'open'
       connected!
     end
+  end
+
+  # レビューコメントを削除する
+  def cancel_review_comments!
+    changed_files.joins(:review_comments).each { |changed_file| changed_file.review_comments.delete_all }
   end
 end

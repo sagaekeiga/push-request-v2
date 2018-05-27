@@ -3,7 +3,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
 
   provider :github,
    ENV['GITHUB_CLIENT_ID'],
-   ENV['GITHUB_CLIENT_SECRET'], scope: 'user'
+   ENV['GITHUB_CLIENT_SECRET']
 
   on_failure do |env|
     # we need to setup env

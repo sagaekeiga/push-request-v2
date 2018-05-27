@@ -95,4 +95,8 @@ class ChangedFile < ApplicationRecord
   def reviewed?(index)
     review_comments.find_by(position: index).review.present?
   end
+
+  def self.review_commented?
+    joins(:review_comments).where.not(review_comments: { review_id: nil }).present?
+  end
 end

@@ -1,6 +1,9 @@
 .pull-show-tab-wrapper {
   ul {
     margin-bottom: $base-margin;
+    li {
+      border: $base-border;
+    }
   }
 }
 .pulls-show-wrapper {
@@ -10,51 +13,108 @@
   .col-sm-2 {
     padding-right: 0;
   }
-  .label.label-default {
+  .label {
     padding: 2px 5px;
     font-size: 12px;
-    border: 1px solid rgba(27,31,35,0.1);
+    border: 1px solid $color-github-label-border-white;
     border-radius: $base-border-radius;
-    color: #586069;
     font-weight: 400;
-    background-color: #fff5b1 !important;
+    &.label-warning {
+      color: $color-github-label-white;
+      background-color: $color-github-yellow !important;
+    }
   }
   .pulls-show-card {
     font-family: $font-code;
+    word-wrap: break-word;
     .changed-file-title {
       font-size: $base-font-size + 1px;
     }
     p {
       margin: 0;
+      word-wrap: break-word;
     }
     img {
     	max-width: 100%;
     	height: auto;
     }
-    .card {
+    .pull-body-wrapper {
+      .card {
+        margin-top: $base-margin;
+        margin-bottom: $base-margin;
+        border: $base-border;
+        box-shadow: none;
+        .card-header {
+          background-color: $color-grey;
+          font-family: $font-code;
+          font-size: $base-font-size;
+          padding: $base-padding * 2;
+          width: 100%;
+          padding: $base-padding * 3;
+        }
+        .card-body {
+          padding: $base-padding * 5;
+          .card-text {
+            font-size: $base-font-size + 2px;
+            padding: 0 $base-padding * 5;
+          }
+        }
+      }
+    }
+    .card.changed-file-wrapper {
       margin-top: $base-margin;
       margin-bottom: $base-margin;
-      width: 100%;
-      white-space:nowrap;
-      overflow: scroll;
-      overflow-style: marquee;
       border: $base-border;
       box-shadow: none;
+      max-width: 100%;
       .card-header {
         background-color: $color-grey;
         font-family: $font-code;
         font-size: $base-font-size;
         padding: $base-padding * 2;
         width: 100%;
+        padding: $base-padding * 3;
       }
       .card-body {
         padding: 0;
-      }
-      .card-text {
-        font-size: $base-font-size + 2px;
-      }
-      .marked {
-        padding: $base-padding;
+        max-width: 100%;
+        overflow-x: auto;
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          max-width: 100%;
+          padding: $base-padding / 2;
+          td {
+            pre {
+              padding: $base-padding / 2;
+              color: none;
+              background-color: transparent;
+              border: none;
+              margin: 0;
+              font-family: $font-code;
+              font-size: $base-font-size;
+            }
+            border: none;
+            &.markdown-highlight {
+              font-family: $font-code;
+              font-size: $base-font-size;
+              &.bg-primary {
+                background-color: $color-gihub-blue;
+                color: $color-literal-gray;
+              }
+              &.bg-success {
+                background-color: $color-github-green;
+              }
+              &.bg-danger {
+                background-color: $color-github-changed-file-minus-color;
+              }
+            }
+          }
+        }
+        .card-text {
+          font-size: $base-font-size + 2px;
+          padding: 0 $base-padding * 5;
+        }
       }
     }
     .review-comments {
@@ -65,57 +125,12 @@
         margin-top: 0;
         border: $base-border;
         box-shadow: none;
-        .label {
-          padding: 2px 5px;
-          font-size: 12px;
-          border: 1px solid rgba(27,31,35,0.1);
-          border-radius: $base-border-radius;
-          color: #586069;
-          font-weight: 400;
-          background-color: #fff5b1 !important;
-        }
-        p.card-text {
-          padding: $base-padding;
-        }
-      }
-    }
-    .card.card-body.review-comments{
-      margin-top: 0;
-      padding: 10px;
-    }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 100%;
-      td {
-        pre {
-          padding: $base-padding;
-          color: none;
-          background-color: transparent;
-          border: none;
-          margin: 0;
-          font-family: $font-code;
-          font-size: $base-font-size;
-        }
-        border: none;
-        &.markdown-highlight {
-          font-family: $font-code;
-          font-size: $base-font-size;
-          &.bg-primary {
-            background-color: $color-gihub-blue;
-            color: $color-literal-gray;
-          }
-          &.bg-success {
-            background-color: $color-github-green;
-          }
-          &.bg-danger {
-            background-color: $color-github-red;
+        .card-body {
+          padding: $base-padding * 5;
+          p.card-text {
           }
         }
       }
-    }
-    .js-blob-wrapper {
-      overflow-x: auto;
     }
   }
 }

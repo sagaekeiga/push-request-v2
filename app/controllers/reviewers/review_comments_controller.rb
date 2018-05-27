@@ -18,7 +18,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
       reviewer: reviewer
     )
 
-    if review_comment.save
+    if review_comment.save!
       render json: {
         status: 'success',
         review_comment_id: review_comment.id,
