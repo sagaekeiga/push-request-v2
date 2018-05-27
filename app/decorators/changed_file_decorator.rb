@@ -23,6 +23,8 @@ class ChangedFileDecorator < ApplicationDecorator
       :css
     when '.yml'
       :yaml
+    when '.haml'
+      :html
     else
       :html
     end
