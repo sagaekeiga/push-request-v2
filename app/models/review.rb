@@ -55,6 +55,7 @@ class Review < ApplicationRecord
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :event, default: events[:pending]
+  attribute :body, default: Settings.reviews.body
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -67,8 +68,7 @@ class Review < ApplicationRecord
   #
   def self.ready_to_review!(pull)
     review = new(
-      pull: pull,
-      body: Settings.reviews.body
+      pull: pull
     )
     review.save!
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
