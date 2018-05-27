@@ -13,3 +13,7 @@ github:
       accept: application/vnd.github.machine-man-preview+json
 review_comments:
   max_working_hours: 30
+reviews:
+  body: PullRequestへようこそ！私はあなたにインラインでいくつかのコメントを残しました。
+    ほとんどはスタイルを改善するコメントですが、コメントをさらに主観的にするため開発中です。
+    インラインで問題に返信してもらったり、特定のタイプのフィードバックを多かれ少なかれ見たいと思ったらお知らせください。

@@ -39,6 +39,7 @@
               %tr
                 %th 読み取り権限
                 %td レポジトリのメタデータ
+          .text-danger ※ 選択したレポジトリの情報以外は取得されません。同期後も簡単に変更・取消が可能です。
         - if current_reviewee.github_account&.owner_id
           = link_to t('reviewees.settings.integrations.title'), ENV['GITHUB_APP_URL'], target: '_blank', class: 'btn btn-primary'
         - else

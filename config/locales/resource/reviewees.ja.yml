@@ -34,3 +34,4 @@ ja:
           danger: Githubに接続してください
     views:
       no_changed_files: 変更のないプルリクエストです
+      already_reviewed: すでにレビューされているためキャンセルできません

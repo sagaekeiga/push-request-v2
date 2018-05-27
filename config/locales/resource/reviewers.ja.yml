@@ -21,6 +21,7 @@ ja:
         conversation: Conversation
         changed_files: Changed Files
         expiured_at: "%{time} までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。"
+        review_comment: Reviewee Comment
       update:
         already_reviewed: すでにレビュー済みのためキャンセルできません
         success: あなたがレビュー担当になりました！2時間以内にレビューをしてあげましょう。

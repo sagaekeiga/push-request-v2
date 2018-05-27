@@ -68,7 +68,7 @@ class Review < ApplicationRecord
   def self.ready_to_review!(pull)
     review = new(
       pull: pull,
-      body: 'hoge'
+      body: Settings.reviews.body
     )
     review.save!
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
@@ -83,7 +83,7 @@ class Review < ApplicationRecord
   #
   def reflect!
     ActiveRecord::Base.transaction do
-      request_body = { body: 'hoge', event: 'COMMENT', comments: [] }
+      request_body = { body: body, event: 'COMMENT', comments: [] }
       review_comments.each do |review_comment|
         comment = {
           path: review_comment.path,
