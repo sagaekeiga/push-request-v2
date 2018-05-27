@@ -1,39 +1,36 @@
-// highright.jsを読み込んだあとに関数を走らせる
-$(window).on('load', function() {
-  hoverColor();
+hoverColor();
 
-  $('.hljs-addition').click(function() {
-    addForm($(this));
-  })
+$('.hljs-addition').click(function() {
+  addForm($(this));
+})
 
-  $(document).on('click', '.cancel-trigger', function () {
-    removeForm($(this));
-  })
+$(document).on('click', '.cancel-trigger', function () {
+  removeForm($(this));
+})
 
-  $(document).on('click', '.review-trigger', function () {
-    createReviewComment($(this));
-  })
+$(document).on('click', '.review-trigger', function () {
+  createReviewComment($(this));
+})
 
-  $(document).on('click', '.destroy-trigger', function () {
-    destroyReviewComment($(this));
-  })
+$(document).on('click', '.destroy-trigger', function () {
+  destroyReviewComment($(this));
+})
 
-  $(document).on('click', '.edit-trigger', function () {
-    editReviewCommentForm($(this));
-  })
+$(document).on('click', '.edit-trigger', function () {
+  editReviewCommentForm($(this));
+})
 
-  $(document).on('click', '.update-trigger', function () {
-    updateReviewComment($(this));
-  })
+$(document).on('click', '.update-trigger', function () {
+  updateReviewComment($(this));
+})
 
-  $(document).on('click', '.cancel-update-trigger', function () {
-    cancelUpdateReviewComment($(this));
-  })
+$(document).on('click', '.cancel-update-trigger', function () {
+  cancelUpdateReviewComment($(this));
+})
 
-  $(document).on('click', '#submit_review_button', function () {
-    $(this).prop('disabled', true);
-  })
-});
+$(document).on('click', '#submit_review_button', function () {
+  $(this).prop('disabled', true);
+})
 
 function hoverColor() {
   $('.hljs-addition').each(function(i, elem) {

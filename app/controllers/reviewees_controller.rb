@@ -10,4 +10,8 @@ class RevieweesController < Reviewees::BaseController
   def repos
     @repos = current_reviewee.repos.order(created_at: :desc)
   end
+
+  def synchronizes
+    Repo.check_installation_repositories(current_reviewee.github_account)
+  end
 end

@@ -174,6 +174,34 @@ class Pull < ApplicationRecord
     false
   end
 
+  def self.update_diff_or_create!(repo)
+    ActiveRecord::Base.transaction do
+      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls"
+      response_pulls_in_json_format.each do |response_pull|
+        attributes = {
+          remote_id: response_pull['id'],
+          number: response_pull['number'],
+          state: response_pull['state'],
+          reviewee: repo.reviewee,
+          title: response_pull['title'],
+          body: response_pull['body']
+        }
+        pull = find_by(remote_id: response_pull['id'])
+        pull = create!(attributes) if pull.nil?
+        if pull.present? && !pull.changed_files&.review_commented? && !pull.changed_files.none?
+          pull.update!(attributes)
+          pull.restore if pull&.deleted?
+          pull.update_status_by!(response_pull['state'])
+        end
+        ChangedFile.create_or_restore!(pull)
+      end
+    end
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    fail I18n.t('views.error.failed_create_pull')
+  end
+
   # -------------------------------------------------------------------------------
   # InstanceMethods
   # -------------------------------------------------------------------------------
