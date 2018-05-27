@@ -51,7 +51,8 @@ class Pull < ApplicationRecord
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
-  validate :check_present_changed_files
+  validate :check_present_changed_files, on: %i(update)
+  validate :check_present_review, on: %i(update)
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -89,9 +90,7 @@ class Pull < ApplicationRecord
   # CustomValidates
   # -------------------------------------------------------------------------------
   def check_present_review
-    if changed_files.joins(:review_comments).where.not(review_comments: { review_id: nil })
-      errors.add(:status, I18n.t('reviewees.views.already_reviewed'))
-    end
+    errors.add(:status, I18n.t('reviewees.views.already_reviewed')) if changed_files.review_commented?
   end
 
   # 変更点のないPRはレビュワーはコメントできない

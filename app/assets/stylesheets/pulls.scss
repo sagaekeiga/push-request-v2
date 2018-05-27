@@ -66,6 +66,7 @@
       margin-bottom: $base-margin;
       border: $base-border;
       box-shadow: none;
+      max-width: 100%;
       .card-header {
         background-color: $color-grey;
         font-family: $font-code;
@@ -76,6 +77,40 @@
       }
       .card-body {
         padding: 0;
+        max-width: 100%;
+        overflow-x: auto;
+        table {
+          border-collapse: collapse;
+          width: 100%;
+          max-width: 100%;
+          padding: $base-padding / 2;
+          td {
+            pre {
+              padding: $base-padding / 2;
+              color: none;
+              background-color: transparent;
+              border: none;
+              margin: 0;
+              font-family: $font-code;
+              font-size: $base-font-size;
+            }
+            border: none;
+            &.markdown-highlight {
+              font-family: $font-code;
+              font-size: $base-font-size;
+              &.bg-primary {
+                background-color: $color-gihub-blue;
+                color: $color-literal-gray;
+              }
+              &.bg-success {
+                background-color: $color-github-green;
+              }
+              &.bg-danger {
+                background-color: $color-github-changed-file-minus-color;
+              }
+            }
+          }
+        }
         .card-text {
           font-size: $base-font-size + 2px;
           padding: 0 $base-padding * 5;
@@ -97,39 +132,8 @@
         }
       }
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      max-width: 100%;
-      td {
-        pre {
-          padding: $base-padding;
-          color: none;
-          background-color: transparent;
-          border: none;
-          margin: 0;
-          font-family: $font-code;
-          font-size: $base-font-size;
-        }
-        border: none;
-        &.markdown-highlight {
-          font-family: $font-code;
-          font-size: $base-font-size;
-          &.bg-primary {
-            background-color: $color-gihub-blue;
-            color: $color-literal-gray;
-          }
-          &.bg-success {
-            background-color: $color-github-green;
-          }
-          &.bg-danger {
-            background-color: $color-github-red;
-          }
-        }
-      }
-    }
-    .js-blob-wrapper {
-      overflow-x: auto;
-    }
+    // .js-blob-wrapper {
+    //   overflow-x: auto;
+    // }
   }
 }

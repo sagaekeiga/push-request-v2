@@ -3,7 +3,7 @@ class ChangedFileDecorator < ApplicationDecorator
   # 言語をシンボルで返す
   def symbolized_lang
     case File.extname(ChangedFile.last.filename)
-    when '.rb'
+    when '.rb', '.rake'
       :ruby
     when '.cc', '.cp', '.cpp', '.cxx', '.c'
       :c
@@ -17,12 +17,14 @@ class ChangedFileDecorator < ApplicationDecorator
       :html
     when '.php'
       :php
-    when '.sass', 'scss'
+    when '.sass', '.scss'
       :sass
     when '.css'
       :css
     when '.yml'
       :yaml
+    else
+      :html
     end
   end
 
