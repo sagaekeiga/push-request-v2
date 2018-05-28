@@ -51,7 +51,6 @@ class Pull < ApplicationRecord
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
-  validate :check_present_changed_files, on: %i(update)
   validate :check_present_review, on: %i(update)
 
   # -------------------------------------------------------------------------------
@@ -91,11 +90,6 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   def check_present_review
     errors.add(:status, I18n.t('reviewees.views.already_reviewed')) if changed_files.review_commented?
-  end
-
-  # 変更点のないPRはレビュワーはコメントできない
-  def check_present_changed_files
-    errors.add(:status, I18n.t('reviewees.views.no_changed_files')) if changed_files.none?
   end
 
   # -------------------------------------------------------------------------------
@@ -215,7 +209,7 @@ class Pull < ApplicationRecord
 
   def last_committed_changed_files
     changed_file = changed_files.order(:id).last
-    changed_files.order(:id).where(head_commit_id: changed_file&.head_commit_id)
+    changed_files.order(:id).where(commit_id: changed_file&.commit_id)
   end
 
   # stateのパラメータに対応したstatusに更新する

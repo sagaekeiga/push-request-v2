@@ -31,7 +31,7 @@
                         %thead
                           %tr
                             %th{ scope: 'col' }
-                        - changed_file.patch.each_line.with_index do |line, index|
+                        - changed_file.patch&.each_line&.with_index do |line, index|
                           %tbody
                             %tr
                               %td.hidden= index
