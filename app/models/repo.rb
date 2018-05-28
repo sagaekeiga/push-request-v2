@@ -82,6 +82,7 @@ class Repo < ApplicationRecord
   def self.check_installation_repositories(github_account)
     ActiveRecord::Base.transaction do
       reviewee = github_account.reviewee
+      remote_ids = []
       response_repos_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/installation/repositories"
       response_repos_in_json_format['repositories'].each do |response_repo|
         repo = reviewee.repos.with_deleted.find_by(remote_id: response_repo['id'])
@@ -92,6 +93,7 @@ class Repo < ApplicationRecord
           private: response_repo['private']
         }
         if repo&.deleted?
+          repo.restore
           skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
           skillings.each(&:restore) if skillings.present?
         end
@@ -107,7 +109,9 @@ class Repo < ApplicationRecord
         target_deleting_skilling.delete_all if target_deleting_skilling
 
         repo.pulls.with_deleted.update_diff_or_create!(repo)
+        remote_ids << response_repo['id']
       end
+      reviewee.repos.where.not(remote_id: remote_ids)&.each(&:destroy)
     end
     true
   rescue => e

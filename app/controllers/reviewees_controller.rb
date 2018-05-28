@@ -12,6 +12,7 @@ class RevieweesController < Reviewees::BaseController
   end
 
   def synchronizes
-    Repo.check_installation_repositories(current_reviewee.github_account)
+    SynchronizesInstallationResourcesJob.perform_later(current_reviewee.github_account)
+    redirect_to request.referrer
   end
 end
