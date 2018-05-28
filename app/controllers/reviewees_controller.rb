@@ -10,4 +10,9 @@ class RevieweesController < Reviewees::BaseController
   def repos
     @repos = current_reviewee.repos.order(created_at: :desc)
   end
+
+  def synchronizes
+    SynchronizesInstallationResourcesJob.perform_later(current_reviewee.github_account)
+    redirect_to request.referrer
+  end
 end

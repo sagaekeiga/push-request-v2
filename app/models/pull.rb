@@ -51,7 +51,6 @@ class Pull < ApplicationRecord
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
-  validate :check_present_changed_files, on: %i(update)
   validate :check_present_review, on: %i(update)
 
   # -------------------------------------------------------------------------------
@@ -91,11 +90,6 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   def check_present_review
     errors.add(:status, I18n.t('reviewees.views.already_reviewed')) if changed_files.review_commented?
-  end
-
-  # 変更点のないPRはレビュワーはコメントできない
-  def check_present_changed_files
-    errors.add(:status, I18n.t('reviewees.views.no_changed_files')) if changed_files.none?
   end
 
   # -------------------------------------------------------------------------------
@@ -174,6 +168,34 @@ class Pull < ApplicationRecord
     false
   end
 
+  def self.update_diff_or_create!(repo)
+    ActiveRecord::Base.transaction do
+      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls"
+      response_pulls_in_json_format.each do |response_pull|
+        attributes = {
+          remote_id: response_pull['id'],
+          number: response_pull['number'],
+          state: response_pull['state'],
+          reviewee: repo.reviewee,
+          title: response_pull['title'],
+          body: response_pull['body']
+        }
+        pull = find_by(remote_id: response_pull['id'])
+        pull = create!(attributes) if pull.nil?
+        if pull.present? && !pull.changed_files&.review_commented? && !pull.changed_files.none?
+          pull.update!(attributes)
+          pull.restore if pull&.deleted?
+          pull.update_status_by!(response_pull['state'])
+        end
+        ChangedFile.create_or_restore!(pull)
+      end
+    end
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    fail I18n.t('views.error.failed_create_pull')
+  end
+
   # -------------------------------------------------------------------------------
   # InstanceMethods
   # -------------------------------------------------------------------------------
@@ -187,7 +209,7 @@ class Pull < ApplicationRecord
 
   def last_committed_changed_files
     changed_file = changed_files.order(:id).last
-    changed_files.order(:id).where(head_commit_id: changed_file&.head_commit_id)
+    changed_files.order(:id).where(commit_id: changed_file&.commit_id)
   end
 
   # stateのパラメータに対応したstatusに更新する

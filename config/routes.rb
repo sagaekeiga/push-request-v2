@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewees do
-      get :dashboard, :pulls, :repos
+      get :dashboard, :pulls, :repos, :synchronizes
       get 'settings/integrations'
       resources :pulls, only: %i(update)
     end
@@ -66,6 +66,14 @@ Rails.application.routes.draw do
         end
       end
       resources :review_comments, only: %i(create update destroy show)
+    end
+
+    if !Rails.env.production? && defined?(LetterOpenerWeb)
+      mount LetterOpenerWeb::Engine, at: '/letter_opener'
+    end
+
+    if !Rails.env.production? && defined?(Sidekiq::Web)
+      mount Sidekiq::Web => '/sidekiq'
     end
   end
 end

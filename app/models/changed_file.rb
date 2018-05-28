@@ -2,22 +2,22 @@
 #
 # Table name: changed_files
 #
-#  id             :bigint(8)        not null, primary key
-#  additions      :integer
-#  blob_url       :string
-#  contents_url   :string
-#  deleted_at     :datetime
-#  deletions      :integer
-#  difference     :integer
-#  filename       :string
-#  patch          :text
-#  raw_url        :string
-#  sha            :string
-#  status         :string
-#  created_at     :datetime         not null
-#  updated_at     :datetime         not null
-#  head_commit_id :string
-#  pull_id        :bigint(8)
+#  id           :bigint(8)        not null, primary key
+#  additions    :integer
+#  blob_url     :string
+#  contents_url :string
+#  deleted_at   :datetime
+#  deletions    :integer
+#  difference   :integer
+#  filename     :string
+#  patch        :text
+#  raw_url      :string
+#  sha          :string
+#  status       :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  commit_id    :string
+#  pull_id      :bigint(8)
 #
 # Indexes
 #
@@ -55,7 +55,8 @@ class ChangedFile < ApplicationRecord
             filename: response_changed_file['filename'],
             patch: response_changed_file['patch'],
             raw_url: response_changed_file['raw_url'],
-            status: response_changed_file['status']
+            status: response_changed_file['status'],
+            commit_id: response_changed_file['contents_url'].match(/ref=/).post_match
           )
         end
         changed_file.restore if changed_file&.deleted?
@@ -81,7 +82,8 @@ class ChangedFile < ApplicationRecord
           filename: response_changed_file['filename'],
           patch: response_changed_file['patch'],
           raw_url: response_changed_file['raw_url'],
-          status: response_changed_file['status']
+          status: response_changed_file['status'],
+          commit_id: response_changed_file['contents_url'].match(/ref=/).post_match
         )
       end
     end
