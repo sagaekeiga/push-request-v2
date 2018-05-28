@@ -17,6 +17,7 @@
       }
       .card-body {
         padding: 0;
+        overflow-x: auto;
         .card-text {
           font-size: $base-font-size + 2px;
         }

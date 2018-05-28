@@ -5,7 +5,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
     @review = Review.new
-    @changed_files = @pull.changed_files.order(:id).decorate
+    @changed_files = @pull.last_committed_changed_files.decorate
   end
 
   # POST /reviewers/pulls/:pull_id/reviews

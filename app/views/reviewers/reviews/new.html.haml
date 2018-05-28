@@ -18,7 +18,7 @@
                       %tr
                         %th{ scope: 'col' }
                     %tbody
-                      - changed_file.patch.each_line.with_index do |line, index|
+                      - changed_file.patch&.each_line&.with_index do |line, index|
                         %tr.code-tr{ 'data-line-number': index }
                           - if line.start_with?('+')
                             %td.markdown-highlight.bg-success.hljs-addition= changed_file.coderay(line)
