@@ -51,7 +51,6 @@ class Pull < ApplicationRecord
   validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
-  validate :check_present_review, on: %i(update)
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -84,13 +83,6 @@ class Pull < ApplicationRecord
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:connected]
-
-  # -------------------------------------------------------------------------------
-  # CustomValidates
-  # -------------------------------------------------------------------------------
-  def check_present_review
-    errors.add(:status, I18n.t('reviewees.views.already_reviewed')) if changed_files.review_commented?
-  end
 
   # -------------------------------------------------------------------------------
   # ClassMethods
