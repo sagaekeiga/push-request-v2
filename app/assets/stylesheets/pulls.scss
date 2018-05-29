@@ -57,6 +57,15 @@
           .card-text {
             font-size: $base-font-size + 2px;
             padding: 0 $base-padding * 5;
+            pre {
+              border-radius: none;
+              border: none;
+              margin-top: $base-margin;
+              margin-bottom: $base-margin;
+              font-family: none;
+              font-size: $base-font-size;
+              background-color: $bg-color-pre-code;
+            }
           }
         }
       }
@@ -72,8 +81,8 @@
         font-family: $font-code;
         font-size: $base-font-size;
         padding: $base-padding * 2;
-        width: 100%;
         padding: $base-padding * 3;
+        max-width: 100%;
       }
       .card-body {
         padding: 0;
@@ -84,7 +93,7 @@
           width: 100%;
           max-width: 100%;
           padding: $base-padding / 2;
-          td {
+          td.file-code {
             pre {
               padding: $base-padding / 2;
               color: none;
@@ -117,17 +126,23 @@
         }
       }
     }
-    .review-comments {
-      padding: 0;
+    .card.review-comments {
+      border-radius: $base-border-radius;
       margin: 0;
-      .card {
-        border-radius: $base-border-radius;
-        margin-top: 0;
-        border: $base-border;
-        box-shadow: none;
-        .card-body {
-          padding: $base-padding * 5;
-          p.card-text {
+      border: $base-border;
+      box-shadow: none;
+      .card-body {
+        padding: $base-padding * 5;
+        table {
+          border-collapse: collapse;
+          pre {
+            border-radius: none;
+            border: none;
+            margin-top: $base-margin;
+            margin-bottom: $base-margin;
+            font-family: none;
+            font-size: $base-font-size;
+            background-color: $bg-color-pre-code;
           }
         }
       }

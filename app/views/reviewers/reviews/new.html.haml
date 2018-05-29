@@ -21,14 +21,14 @@
                       - changed_file.patch&.each_line&.with_index do |line, index|
                         %tr.code-tr{ 'data-line-number': index }
                           - if line.start_with?('+')
-                            %td.markdown-highlight.bg-success.hljs-addition= changed_file.coderay(line)
+                            %td.markdown-highlight.bg-success.hljs-addition.file-code= changed_file.coderay(line)
                           - elsif line.start_with?('-')
-                            %td.markdown-highlight.bg-danger.hljs-addition= changed_file.coderay(line)
+                            %td.markdown-highlight.bg-danger.hljs-addition.file-code= changed_file.coderay(line)
                           - elsif line.start_with?('@@')
-                            %td.markdown-highlight.bg-primary.hljs-addition
+                            %td.markdown-highlight.bg-primary.hljs-addition.file-code
                               %pre= line
                           - else
-                            %td.markdown-highlight.hljs-addition= changed_file.coderay(line)
+                            %td.markdown-highlight.hljs-addition.file-code= changed_file.coderay(line)
                         - review_comment = changed_file.review_comments.find_by(position: index)
                         - if changed_file.present_review_comment?(index)
                           %tr
@@ -39,8 +39,8 @@
                                     .card-header
                                       %span.label.label-warning Pending
                                   .card-body
-                                    %p.card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
-                                      = changed_file.review_comment_body(index)
+                                    .card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
+                                      = markdown(changed_file.review_comment_body(index))
                                     .flex-row.text-right
                                       %button{ type: 'button', class: 'btn btn-danger card-link destroy-trigger', data: { confirm: '本当によろしいですか？' } }
                                         %span.glyphicon.glyphicon-trash

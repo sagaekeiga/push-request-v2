@@ -116,6 +116,7 @@ gem 'paranoia'
 gem 'marked-rails'
 gem 'friendly_id', '~> 5.1.0'
 gem 'coderay'
+gem 'redcarpet'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'
