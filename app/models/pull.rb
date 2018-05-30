@@ -172,12 +172,13 @@ class Pull < ApplicationRecord
           title: response_pull['title'],
           body: response_pull['body']
         }
-        pull = find_by(remote_id: response_pull['id'])
+        pull = with_deleted.find_by(remote_id: response_pull['id'])
         pull = create!(attributes) if pull.nil?
-        if pull.present? && !pull.changed_files&.review_commented? && !pull.changed_files.none?
+        if pull.can_update?
           pull.update!(attributes)
           pull.restore if pull&.deleted?
-          pull.update_status_by!(response_pull['state'])
+          # request_reviewed/agreed/reviewed の場合にconnectedにならぬように。
+          pull.connected! if completed?
         end
         ChangedFile.create_or_restore!(pull)
       end
@@ -207,13 +208,15 @@ class Pull < ApplicationRecord
   # stateのパラメータに対応したstatusに更新する
   def update_status_by!(state_params)
     case state_params
-    when 'closed'
-      completed!
-    when 'merged'
+    when 'closed', 'merged'
       completed!
     when 'open'
       connected!
     end
+  end
+
+  def can_update?
+    present? && !changed_files&.review_commented? && changed_files.exists?
   end
 
   # レビューコメントを削除する
