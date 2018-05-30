@@ -63,123 +63,126 @@
         }
       }
     }
-    table {
-      border-collapse: collapse;
-      width: 100%;
-      td.file-code {
-        pre {
-          padding: $base-padding;
-          color: none;
-          background-color: transparent;
+    .table-wrapper {
+      overflow-x: scroll;
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        td.file-code {
+          pre {
+            padding: $base-padding;
+            color: none;
+            background-color: transparent;
+            border: none;
+            margin: 0;
+            font-family: $font-code;
+            font-size: $base-font-size;
+          }
           border: none;
-          margin: 0;
-          font-family: $font-code;
-          font-size: $base-font-size;
-        }
-        border: none;
-        &.markdown-highlight {
-          font-family: $font-code;
-          font-size: $base-font-size;
-          &.bg-primary {
-            background-color: $color-gihub-blue;
-            pre {
-              color: $color-literal-gray;
+          &.markdown-highlight {
+            font-family: $font-code;
+            font-size: $base-font-size;
+            &.bg-primary {
+              background-color: $color-gihub-blue;
+              pre {
+                color: $color-literal-gray;
+              }
+            }
+            &.bg-success {
+              background-color: $color-github-green;
+            }
+            &.bg-danger {
+              background-color: $color-github-changed-file-minus-color;;
             }
           }
-          &.bg-success {
-            background-color: $color-github-green;
-          }
-          &.bg-danger {
-            background-color: $color-github-changed-file-minus-color;;
-          }
-        }
-        .review-comments-wrapper {
-          .card {
-            border-radius: $base-border-radius;
-            margin-top: 0;
-            border: $base-border;
-            box-shadow: none;
-            .label {
-              padding: 2px 5px;
-              font-size: 12px;
-              border: 1px solid $color-github-label-border-white;
+          .review-comments-wrapper {
+            .card {
               border-radius: $base-border-radius;
-              font-weight: 400;
-              &.label-warning {
-                color: $color-github-label-white;
-                background-color: $color-github-yellow !important;
-              }
-              &.label-primary {
-                margin-left: $base-margin / 2;
-                color: $color-github-label-white;
-                background-color: $color-github-green !important;
-              }
-            }
-            .card-body {
-              padding: $base-padding $base-padding * 3;
-              textarea {
-                height: 150px;
-              }
-            }
-          }
-        }
-      }
-      td {
-        border: none;
-        &.markdown-highlight {
-          font-family: $font-code;
-          font-size: $base-font-size;
-          &.bg-primary {
-            background-color: $color-gihub-blue;
-            pre {
-              color: $color-literal-gray;
-            }
-          }
-          &.bg-success {
-            background-color: $color-github-green;
-          }
-          &.bg-danger {
-            background-color: $color-github-changed-file-minus-color;;
-          }
-        }
-        .review-comments-wrapper {
-          padding: 0;
-          .card {
-            border-radius: $base-border-radius;
-            margin-top: 0;
-            border: $base-border;
-            box-shadow: none;
-            .label {
-              padding: 2px 5px;
-              font-size: 12px;
-              border: 1px solid $color-github-label-border-white;
-              border-radius: $base-border-radius;
-              font-weight: 400;
-              &.label-warning {
-                color: $color-github-label-white;
-                background-color: $color-github-yellow !important;
-              }
-              &.label-primary {
-                margin-left: $base-margin / 2;
-                color: $color-github-label-white;
-                background-color: $color-github-green !important;
-              }
-            }
-            .card-body {
-              padding: $base-padding $base-padding * 3;
-              .card-text {
-                pre {
-                  border-radius: none;
-                  border: none;
-                  margin-top: $base-margin;
-                  margin-bottom: $base-margin;
-                  font-family: none;
-                  font-size: $base-font-size;
-                  background-color: $bg-color-pre-code;
+              margin-top: 0;
+              border: $base-border;
+              box-shadow: none;
+              .label {
+                padding: 2px 5px;
+                font-size: 12px;
+                border: 1px solid $color-github-label-border-white;
+                border-radius: $base-border-radius;
+                font-weight: 400;
+                &.label-warning {
+                  color: $color-github-label-white;
+                  background-color: $color-github-yellow !important;
+                }
+                &.label-primary {
+                  margin-left: $base-margin / 2;
+                  color: $color-github-label-white;
+                  background-color: $color-github-green !important;
                 }
               }
-              textarea {
-                height: 150px;
+              .card-body {
+                padding: $base-padding $base-padding * 3;
+                textarea {
+                  height: 150px;
+                }
+              }
+            }
+          }
+        }
+        td {
+          border: none;
+          &.markdown-highlight {
+            font-family: $font-code;
+            font-size: $base-font-size;
+            &.bg-primary {
+              background-color: $color-gihub-blue;
+              pre {
+                color: $color-literal-gray;
+              }
+            }
+            &.bg-success {
+              background-color: $color-github-green;
+            }
+            &.bg-danger {
+              background-color: $color-github-changed-file-minus-color;;
+            }
+          }
+          .review-comments-wrapper {
+            padding: 0;
+            .card {
+              border-radius: $base-border-radius;
+              margin-top: 0;
+              border: $base-border;
+              box-shadow: none;
+              .label {
+                padding: 2px 5px;
+                font-size: 12px;
+                border: 1px solid $color-github-label-border-white;
+                border-radius: $base-border-radius;
+                font-weight: 400;
+                &.label-warning {
+                  color: $color-github-label-white;
+                  background-color: $color-github-yellow !important;
+                }
+                &.label-primary {
+                  margin-left: $base-margin / 2;
+                  color: $color-github-label-white;
+                  background-color: $color-github-green !important;
+                }
+              }
+              .card-body {
+                padding: $base-padding $base-padding * 3;
+                .card-text {
+                  pre {
+                    border-radius: none;
+                    border: none;
+                    margin-top: $base-margin;
+                    margin-bottom: $base-margin;
+                    font-family: none;
+                    font-size: $base-font-size;
+                    background-color: $bg-color-pre-code;
+                  }
+                }
+                textarea {
+                  height: 150px;
+                }
               }
             }
           }
