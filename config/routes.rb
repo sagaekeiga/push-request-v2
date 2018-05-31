@@ -56,7 +56,7 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewers do
-      get :dashboard
+      get :dashboard, :my_page
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
