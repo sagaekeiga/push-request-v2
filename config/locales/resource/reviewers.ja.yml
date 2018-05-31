@@ -16,6 +16,13 @@ ja:
   reviewers:
     dashboard:
       title: ダッシュボード
+    my_page:
+      title: マイページ
+      working_pulls_count: 作業中
+      reviewed_pulls_count: 完了
+      sum_working_hours: 合計作業時間（月）
+      unit_minutes: "%{working_hours} 分"
+      unit_hour_and_minutes: "%{working_hours} 時間 %{working_minutes} 分"
     pulls:
       show:
         conversation: Conversation

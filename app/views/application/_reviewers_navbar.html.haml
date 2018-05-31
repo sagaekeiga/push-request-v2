@@ -17,6 +17,10 @@
             &nbsp;
             = t('reviewers.dashboard.title')
         %li
+          = link_to reviewers_my_page_path do
+            &nbsp;
+            = t('reviewers.my_page.title')
+        %li
           = link_to destroy_reviewer_session_path, method: :delete do
             &nbsp;
             = t('helpers.label.log_out')

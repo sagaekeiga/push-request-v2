@@ -1,0 +1,31 @@
+%table.table.table-bordered.text-center
+  %thead
+    %tr
+      %th= t '.working_pulls_count'
+      %th= t '.reviewed_pulls_count'
+      %th= t '.sum_working_hours'
+  %tbody
+    %tr
+      %td= current_reviewer.pulls.agreed.count
+      %td= current_reviewer.pulls.where(status: %i(reviewed completed)).count
+      %td= t '.unit_minutes', working_hours: @reviews.sum(:working_hours)
+
+.page-header
+  %h3 作業中
+%table.table.table-hover.pulls-on-dashboard-wrapper
+  %thead
+    %tr
+      %th= t 'activerecord.attributes.pull.title'
+      %th= t 'activerecord.models.skill'
+      %th= t 'activerecord.attributes.repo.private'
+      %th 残り時間
+      %th
+  %tbody
+    - @working_pulls.each do |pull|
+      %tr
+        %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
+        %td.text-center
+          %span.label.label-warning= pull.repo.skillings.first.skill.name
+        %td.text-center= pull.repo_private
+        %td.text-center= pull.remaining_time
+        %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull)

@@ -37,6 +37,7 @@ class Reviewer < ApplicationRecord
   has_many :review_comments
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
+  has_many :pulls
   accepts_nested_attributes_for :skillings, allow_destroy: true
 
   # -------------------------------------------------------------------------------

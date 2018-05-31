@@ -33,4 +33,13 @@ class PullDecorator < ApplicationDecorator
       'btn-danger'
     end
   end
+
+  def remaining_time
+    sum_minutes = ((Time.at(updated_at) + 2.hours) - Time.now) / 60
+    if (sum_minutes / 60)&.floor == 0
+      I18n.t 'reviewers.my_page.unit_minutes', working_hours: (sum_minutes % 60)&.floor.to_s
+    else
+      I18n.t 'reviewers.my_page.unit_hour_and_minutes', working_hours: (sum_minutes / 60)&.floor.to_s, working_minutes: (sum_minutes % 60)&.floor.to_s
+    end
+  end
 end
