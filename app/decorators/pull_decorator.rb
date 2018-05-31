@@ -34,6 +34,7 @@ class PullDecorator < ApplicationDecorator
     end
   end
 
+  # 残り時間を返す
   def remaining_time
     sum_minutes = ((Time.at(updated_at) + 2.hours) - Time.now) / 60
     if (sum_minutes / 60)&.floor == 0

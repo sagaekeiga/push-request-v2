@@ -11,14 +11,14 @@
       %td= t '.unit_minutes', working_hours: @reviews.sum(:working_hours)
 
 .page-header
-  %h3 作業中
+  %h3= t '.working_pulls_count'
 %table.table.table-hover.pulls-on-dashboard-wrapper
   %thead
     %tr
       %th= t 'activerecord.attributes.pull.title'
       %th= t 'activerecord.models.skill'
       %th= t 'activerecord.attributes.repo.private'
-      %th 残り時間
+      %th= t '.remaining_time'
       %th
   %tbody
     - @working_pulls.each do |pull|
