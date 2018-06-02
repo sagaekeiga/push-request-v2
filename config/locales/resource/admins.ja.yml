@@ -1,0 +1,20 @@
+ja:
+  activerecord:
+    models:
+      admin: 管理者
+    attributes:
+      admin:
+        id: ID
+        email: Eメール
+        password: パスワード
+        password_confirmation: パスワード（確認用）
+  admins:
+    dashboard:
+      title: ダッシュボード
+    reviewers:
+      show:
+        agreed: 承認する
+        quit: 退会させる
+        rejected: 承認しない
+      update:
+        success: ステータスを変更しました

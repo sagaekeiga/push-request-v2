@@ -1,0 +1,37 @@
+.row
+  .col-sm-3
+    = render 'admins/shared/side_nav'
+  .col-sm-9
+    %table.table.table-hover.pulls-on-dashboard-wrapper.text-center
+      %tbody
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.nickname'
+          %td= link_to @reviewer.github_account&.nickname, @reviewer.github_account&.html_url, target: '_blank'
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.avatar_url'
+          %td
+            - if @reviewer.github_account&.avatar_url
+              = image_tag @reviewer.github_account&.avatar_url, class: 'img-responsive center-block', style: 'width: 50px;'
+            - else
+              ×
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.email'
+          %td= @reviewer.github_account&.email
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.user_type'
+          %td= @reviewer.github_account&.user_type
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.public_repos'
+          %td= @reviewer.github_account&.public_repos
+        %tr
+          %th= t 'activerecord.attributes.reviewer/github.public_gists'
+          %td= @reviewer.github_account&.public_gists
+        %tr
+          %th= t 'activerecord.attributes.reviewer.status'
+          %td= @reviewer.status_i18n
+    %table.table.text-center
+      %tr
+        - if @reviewer.pending?
+          %td= link_to t('.agreed'), admins_reviewer_path(@reviewer, status: @reviewer.status), method: :put, class: 'btn btn-primary'
+          %td= link_to t('.rejected'), admins_reviewer_path(@reviewer, status: 'rejected'), method: :put, class: 'btn btn-warning'
+        %td= link_to t('.quit'), admins_reviewer_path(@reviewer, status: 'quit'), method: :put, class: 'btn btn-danger'

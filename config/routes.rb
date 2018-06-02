@@ -81,6 +81,7 @@ Rails.application.routes.draw do
 
     namespace :admins do
       get :dashboard
+      resources :reviewers, only: %i(show update)
     end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)

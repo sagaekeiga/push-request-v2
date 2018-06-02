@@ -9,6 +9,7 @@ ja:
         email: Eメール
         password: パスワード
         password_confirmation: パスワード（確認用）
+        status: ステータス
       reviewer/github:
         login: ログイン名
         owner_id: オーナーID
@@ -31,6 +32,11 @@ ja:
       gender:
         woman: 女性
         man: 男性
+      status:
+        pending: 審査待ち
+        active: 活動中
+        rejected: 非承認
+        quit: 退会済み
   reviewers:
     dashboard:
       title: ダッシュボード
