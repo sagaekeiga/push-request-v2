@@ -11,6 +11,7 @@ ja:
   admins:
     dashboard:
       title: ダッシュボード
+      reviewers: 審査レビュワー一覧
     reviewers:
       show:
         agreed: 承認する
