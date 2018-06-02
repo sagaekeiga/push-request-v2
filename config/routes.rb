@@ -49,6 +49,7 @@ Rails.application.routes.draw do
     #
     # Reviewer
     #
+
     devise_for :reviewers, path: 'reviewers', controllers: {
       registrations: 'reviewers/registrations',
       confirmations: 'reviewers/confirmations',
@@ -57,6 +58,7 @@ Rails.application.routes.draw do
 
     namespace :reviewers do
       get :dashboard, :my_page
+      get 'settings/integrations'
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
@@ -66,6 +68,20 @@ Rails.application.routes.draw do
         end
       end
       resources :review_comments, only: %i(create update destroy show)
+    end
+
+    #
+    # Admin
+    #
+    devise_for :admins, path: 'admins', controllers: {
+      registrations: 'admins/registrations',
+      confirmations: 'admins/confirmations',
+      sessions: 'admins/sessions'
+    }
+
+    namespace :admins do
+      get :dashboard
+      resources :reviewers, only: %i(show update)
     end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)

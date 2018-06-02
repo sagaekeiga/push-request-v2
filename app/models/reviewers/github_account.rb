@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: reviewees_github_accounts
+# Table name: reviewers_github_accounts
 #
 #  id                  :bigint(8)        not null, primary key
 #  avatar_url          :string
@@ -22,19 +22,19 @@
 #  updated_at          :datetime         not null
 #  gravatar_id         :string
 #  owner_id            :integer
-#  reviewee_id         :bigint(8)
+#  reviewer_id         :bigint(8)
 #
 # Indexes
 #
-#  index_reviewees_github_accounts_on_deleted_at   (deleted_at)
-#  index_reviewees_github_accounts_on_reviewee_id  (reviewee_id)
+#  index_reviewers_github_accounts_on_deleted_at   (deleted_at)
+#  index_reviewers_github_accounts_on_reviewer_id  (reviewer_id)
 #
 # Foreign Keys
 #
-#  fk_rails_...  (reviewee_id => reviewees.id)
+#  fk_rails_...  (reviewer_id => reviewers.id)
 #
 
-class Reviewees::GithubAccount < ApplicationRecord
+class Reviewers::GithubAccount < ApplicationRecord
   acts_as_paranoid
   # -------------------------------------------------------------------------------
   # Validations
