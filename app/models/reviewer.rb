@@ -14,6 +14,7 @@
 #  reset_password_sent_at :datetime
 #  reset_password_token   :string
 #  sign_in_count          :integer          default(0), not null
+#  status                 :integer
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #
@@ -38,7 +39,30 @@ class Reviewer < ApplicationRecord
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
   has_many :pulls
+  has_one :github_account, class_name: 'Reviewers::GithubAccount'
   accepts_nested_attributes_for :skillings, allow_destroy: true
+
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # ステータス
+  #
+  # - pending         : 登録済み（承認待ち）
+  # - active          : 活動中
+  # - rejected        : 非承認済み
+  # - quit            : 退会済み
+  #
+  enum status: {
+    pending:  1000,
+    active:   2000,
+    rejected: 3000,
+    quit:     4000
+  }
+
+  # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:pending]
 
   # -------------------------------------------------------------------------------
   # InstanceMethods
@@ -53,5 +77,28 @@ class Reviewer < ApplicationRecord
     if target_review_comments(pull).present?
       target_review_comments(pull).delete_all
     end
+  end
+
+  # GitHub連携をする
+  def connect_to_github(auth)
+    reviewer_github_account = build_github_account(
+      login: auth['extra']['raw_info']['login'],
+      owner_id: auth['extra']['raw_info']['id'],
+      avatar_url: auth['extra']['raw_info']['avatar_url'],
+      gravatar_id: auth['extra']['raw_info']['gravatar_id'],
+      email: auth['info']['email'],
+      url: auth['info']['url'],
+      html_url: auth['extra']['raw_info']['html_url'],
+      user_type: auth['extra']['raw_info']['type'],
+      nickname: auth['info']['nickname'],
+      name: auth['info']['name'],
+      company: auth['info']['company'],
+       location: auth['extra']['raw_info']['location'],
+      public_gists: auth['extra']['raw_info']['public_gists'],
+      public_repos: auth['extra']['raw_info']['public_repos'],
+      reviewee_created_at: auth['extra']['raw_info']['created_at'],
+      reviewee_updated_at: auth['extra']['raw_info']['updated_at']
+    )
+    reviewer_github_account.save!
   end
 end

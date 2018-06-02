@@ -1,5 +1,4 @@
-class ConnectsController < Reviewees::BaseController
-  skip_before_action :connect_github!
+class ConnectsController < ApplicationController
   # GET /auth/github/callback
   def github
     callback_from :github
@@ -8,12 +7,15 @@ class ConnectsController < Reviewees::BaseController
   # GET /auth/facebook/callback
   def callback_from(_provider)
     ActiveRecord::Base.transaction do
-      @reviewee = current_reviewee.connect_to_github(request.env['omniauth.auth'])
+      @reviewee = current_reviewee.connect_to_github(request.env['omniauth.auth']) if reviewee_signed_in?
+      @reviewer = current_reviewer.connect_to_github(request.env['omniauth.auth']) if reviewer_signed_in?
     end
-    redirect_to reviewees_repos_url, success: t('views.github.connect.success')
+    return redirect_to reviewees_repos_url, success: t('views.github.connect.success') if reviewee_signed_in?
+    return redirect_to reviewers_dashboard_url, success: t('views.github.connect.success') if reviewer_signed_in?
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
-    redirect_to new_reviewee_registration_url, danger: (t 'views.failed', resource: I18n.t('activerecord.models.github_info'))
+    return redirect_to new_reviewee_registration_url, danger: (t 'views.failed', resource: I18n.t('activerecord.models.github_info')) if reviewee_signed_in?
+    return redirect_to new_reviewer_registration_url, danger: (t 'views.failed', resource: I18n.t('activerecord.models.github_info')) if reviewer_signed_in?
   end
 end

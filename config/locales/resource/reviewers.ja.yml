@@ -1,13 +1,31 @@
 ja:
   activerecord:
     models:
-      reviewer: 従業員
+      reviewer: レビュワー
+      user_profile: GitHubアカウント
     attributes:
       reviewer:
         id: ID
         email: Eメール
         password: パスワード
         password_confirmation: パスワード（確認用）
+      reviewer/github:
+        login: ログイン名
+        owner_id: オーナーID
+        avatar_url: イメージ
+        gravatar_id: グラーベーター
+        email: Eメール
+        url: URL
+        html_url: GiHubアカウントページ
+        user_type: ユーザータイプ
+        name: 名前
+        nickname: ニックネーム
+        company: 会社
+        location: 場所
+        public_repos: 公開レポジトリ
+        public_gists: 公開Gist
+        reviewee_created_at: GitHub登録日
+        reviewee_updated_at: GitHub更新日
   enums:
     reviewer:
       gender:
