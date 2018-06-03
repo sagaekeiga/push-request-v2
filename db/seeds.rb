@@ -11,4 +11,5 @@ skills = Skill.create([
   { name: 'Node.js', category: :language },
   { name: 'PHP', category: :language },
   { name: 'Perl', category: :language }
+  { name: 'CSS', category: :language }
 ])
