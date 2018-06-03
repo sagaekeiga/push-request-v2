@@ -1,7 +1,7 @@
 .col-xs-12
   .page-header{ 'pull-id': @pull.id }
     %h3= @pull.title
-  = render 'reviewers/shared/tab', pull: @pull
+  = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
 
   = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
     .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
@@ -36,23 +36,28 @@
                               %td
                                 .review-comments-wrapper
                                   .card
-                                    - unless changed_file.reviewed?(index)
+                                    - if review_comment.pending?
                                       .card-header
                                         %span.label.label-warning Pending
                                     .card-body
+                                      -# @TODO アイコン追加
+                                      -# - if changed_file.reviewer?(index)
+                                      -#   = image_tag current_reviewer.github_account.avatar_url, class: 'float-left', style: 'width: 50px;'
                                       .card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
                                         = markdown(changed_file.review_comment_body(index))
-                                      .flex-row.text-right
-                                        %button{ type: 'button', class: 'btn btn-danger card-link destroy-trigger', data: { confirm: '本当によろしいですか？' } }
-                                          %span.glyphicon.glyphicon-trash
-                                        %button{ type: 'button', class: 'btn btn-primary card-link edit-trigger' }
-                                          %span.glyphicon.glyphicon-pencil
-                                        = hidden_field_tag 'reviews[changed_file_ids][]', changed_file.id, class: 'changed_file_id'
-                                        = hidden_field_tag 'reviews[path][]', changed_file.review_comment_path(index), class: 'path'
-                                        = hidden_field_tag 'reviews[position][]', changed_file.review_comment_position(index), class: 'position'
-
-
-    .text-center= f.text_area :state, class: 'form-control'
+                                      - if changed_file.reviewer?(index)
+                                        .flex-row.text-right
+                                          %button{ type: 'button', class: 'btn btn-danger card-link destroy-trigger', data: { confirm: '本当によろしいですか？' } }
+                                            %span.glyphicon.glyphicon-trash
+                                          %button{ type: 'button', class: 'btn btn-primary card-link edit-trigger' }
+                                            %span.glyphicon.glyphicon-pencil
+                                          = hidden_field_tag 'reviews[changed_file_ids][]', changed_file.id, class: 'changed_file_id'
+                                          = hidden_field_tag 'reviews[path][]', changed_file.review_comment_path(index), class: 'path'
+                                          = hidden_field_tag 'reviews[position][]', changed_file.review_comment_position(index), class: 'position'
+    %hr
+    = f.label :body, for: 'review_body'
+    = f.text_area :body, id: 'review_body', class: 'form-control', rows: '3', required: true
+    %small.form-text.text-muted= t '.body_helper'
     .text-center= f.submit t('helpers.links.review'), id: 'submit_review_button', class: 'btn btn-primary'
 
 = javascript_pack_tag 'reviews'

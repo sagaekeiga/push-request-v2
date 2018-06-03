@@ -92,9 +92,15 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.text "body"
     t.string "path"
     t.integer "position"
+    t.integer "github_id"
+    t.integer "status"
+    t.datetime "github_created_at"
+    t.datetime "github_updated_at"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["changed_file_id"], name: "index_review_comments_on_changed_file_id"
+    t.index ["deleted_at"], name: "index_review_comments_on_deleted_at"
     t.index ["review_id"], name: "index_review_comments_on_review_id"
     t.index ["reviewer_id"], name: "index_review_comments_on_reviewer_id"
   end

@@ -1,3 +1,6 @@
+require 'action_view'
+require 'action_view/helpers'
+include ActionView::Helpers::DateHelper
 class Reviewers::ReviewCommentsController < ApplicationController
   protect_from_forgery except: %i(create)
   before_action :set_changed_file, only: %i(create)
@@ -18,11 +21,18 @@ class Reviewers::ReviewCommentsController < ApplicationController
       reviewer: reviewer
     )
 
-    if review_comment.save!
+    review_comment.status = :commented if params[:status]
+
+    if review_comment.save!(context: :pending)
+      # @TODO review_commentにもcommit_idカラム追加
+      review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
         status: 'success',
         review_comment_id: review_comment.id,
-        body: params[:body]
+        body: params[:body],
+        img: reviewer.github_account.avatar_url,
+        name: reviewer.github_account.nickname,
+        time: time_ago_in_words(review_comment.updated_at) + '前'
       }
     else
       render json: { status: 'failed' }

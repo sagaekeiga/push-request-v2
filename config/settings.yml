@@ -6,7 +6,7 @@ api:
     get_repositories_via_installation_url: https://api.github.com/installations/repositories
 github:
   web_domain: https://github.com/
-  api_domain: api.github.com
+  api_domain: https://api.github.com/
   request:
     access_token_uri: https://api.github.com/installations/<%= ENV['GITHUB_APP_INSTALLATION_ID'] %>/access_tokens
     header:

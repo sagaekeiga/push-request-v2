@@ -35,7 +35,7 @@ class ChangedFile < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   belongs_to :pull
-  has_many :review_comments
+  has_many :review_comments, dependent: :destroy
 
   # @TODO リファクタできる気がする
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
@@ -61,6 +61,7 @@ class ChangedFile < ApplicationRecord
         end
         changed_file.restore if changed_file&.deleted?
       end
+      ReviewComment.create_or_restore!(pull)
     end
   rescue => e
     Rails.logger.error e
@@ -100,5 +101,13 @@ class ChangedFile < ApplicationRecord
 
   def self.review_commented?
     joins(:review_comments).where.not(review_comments: { review_id: nil }).present?
+  end
+
+  def reviewed_and_reviewer?(index)
+    !reviewed?(index) && review_comments.find_by(position: index)&.reviewer.nil?
+  end
+
+  def reviewer?(index)
+    review_comments.find_by(position: index)&.reviewer.present?
   end
 end

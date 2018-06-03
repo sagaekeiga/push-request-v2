@@ -43,5 +43,5 @@ class Reviewees::GithubAccount < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewer
+  belongs_to :reviewee
 end

@@ -1,9 +1,11 @@
 class Reviewers::PullsController < Reviewers::BaseController
-  before_action :set_pull, only: %i(show update)
+  before_action :set_pull, only: %i(show update files)
+  before_action :set_changed_files, only: %i(show files)
   before_action :check_reviewer, only: %i(show update)
 
   def show
-    @changed_files = @pull.last_committed_changed_files.decorate
+    @pull = Pull.includes(changed_files: :review_comments).order('review_comments.created_at asc').friendly.find(params[:token])
+    @double_review_comments = @pull.changed_files.map{ |changed_file| changed_file.review_comments }
     respond_to do |format|
       format.html
       format.json do
@@ -12,6 +14,9 @@ class Reviewers::PullsController < Reviewers::BaseController
         }
       end
     end
+  end
+
+  def files
   end
 
   def update
@@ -32,7 +37,11 @@ class Reviewers::PullsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.friendly.find(params[:token])
+    @pull = Pull.friendly.find(params[:token] || params[:pull_token])
+  end
+
+  def set_changed_files
+    @changed_files = @pull.last_committed_changed_files.decorate
   end
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい
