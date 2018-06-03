@@ -39,9 +39,7 @@ function submitReply(elem) {
     },
     element: elem,
     success: function(data) {
-      console.log(data);
       if (data.status === 'success') {
-        console.log(1111);
         replyWrapper = elem.closest('.reply-wrapper');
         $(`<div class="col-xs-1 comment-img"><img class="review-comment-img avatar img-responsive rounded-circle" src="${data.img}"></div>`).insertAfter(replyWrapper.prev('.comment-body'));
         $(`<div class="col-xs-11 comment-body">
