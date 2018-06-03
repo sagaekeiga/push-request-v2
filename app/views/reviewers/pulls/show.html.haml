@@ -53,23 +53,25 @@
                         %small.text-muted= date_format(review_comment.github_updated_at)
                         .col-xs-12= markdown(review_comment.body)
                       - next unless index == review_comments.size
-                      .col-xs-12.reply-wrapper
-                        .reply-hidden-target-element
-                          .col-xs-1
-                            = image_tag current_reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive'
-                          .col-xs-11
-                            %input.form-control.input-reply{ placeholder: 'Reply' }
-                        .reply-show-target-element.hidden
-                          .col-xs-12
-                            %textarea.form-control.md-textarea{ placeholder: 'Leave Comment', rows: '5' }
-                            .text-right
-                              %button{ type: 'button', class: 'btn btn-default reply-cancel-btn' } Cancel
-                              %button{ type: 'button', class: 'btn btn-success reply-submit-btn' } Comment
-                              %input{ type: 'hidden', value: review_comment.path, class: 'path' }
-                              %input{ type: 'hidden', value: review_comment.position, class: 'position' }
-                              %input{ type: 'hidden', value: current_reviewer.id, class: 'reviewer_id' }
-                              %input{ type: 'hidden', value: review_comment.changed_file.id, class: 'changed_file_id' }
-                              %input{ type: 'hidden', value: review_comment.changed_file.commit_id, class: 'commit_id' }
+                      - if @pull.agreed?
+                        .col-xs-12.reply-wrapper
+                          .reply-hidden-target-element
+                            .col-xs-1
+                              = image_tag current_reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive'
+                            .col-xs-11
+                              %input.form-control.input-reply{ placeholder: 'Reply' }
+                          .reply-show-target-element.hidden
+                            .col-xs-12
+                              %textarea.form-control.md-textarea{ placeholder: 'Leave Comment', rows: '5' }
+                              .text-right
+                                %button{ type: 'button', class: 'btn btn-default reply-cancel-btn' } Cancel
+                                %button{ type: 'button', class: 'btn btn-success reply-submit-btn' } Comment
+                                %input{ type: 'hidden', value: review_comment.path, class: 'path' }
+                                %input{ type: 'hidden', value: review_comment.position, class: 'position' }
+                                %input{ type: 'hidden', value: current_reviewer.id, class: 'reviewer_id' }
+                                %input{ type: 'hidden', value: review_comment.changed_file.id, class: 'changed_file_id' }
+                                %input{ type: 'hidden', value: review_comment.changed_file.commit_id, class: 'commit_id' }
+                                %input{ type: 'hidden', value: review_comment.github_id, class: 'github_id' }
     .col-xs-12.col-sm-2
       .text-center
         .label.label-default= @pull.status_i18n

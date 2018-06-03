@@ -93,6 +93,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.string "path"
     t.integer "position"
     t.integer "github_id"
+    t.integer "in_reply_to_id"
     t.integer "status"
     t.datetime "github_created_at"
     t.datetime "github_updated_at"

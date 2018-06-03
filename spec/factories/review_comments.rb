@@ -14,6 +14,7 @@
 #  updated_at        :datetime         not null
 #  changed_file_id   :bigint(8)
 #  github_id         :integer
+#  in_reply_to_id    :integer
 #  review_id         :bigint(8)
 #  reviewer_id       :bigint(8)
 #

@@ -34,11 +34,14 @@ function submitReply(elem) {
       body: elem.closest('.text-right').prevAll('textarea').val(),
       reviewer_id: elem.nextAll('.reviewer_id').val(),
       commit_id: elem.nextAll('.commit_id').val(),
-      status: 'commented'
+      status: 'commented',
+      github_id: elem.nextAll('.github_id').val()
     },
     element: elem,
     success: function(data) {
+      console.log(data);
       if (data.status === 'success') {
+        console.log(1111);
         replyWrapper = elem.closest('.reply-wrapper');
         $(`<div class="col-xs-1 comment-img"><img class="review-comment-img avatar img-responsive rounded-circle" src="${data.img}"></div>`).insertAfter(replyWrapper.prev('.comment-body'));
         $(`<div class="col-xs-11 comment-body">
@@ -53,6 +56,7 @@ function submitReply(elem) {
         replyWrapper.find('.reply-hidden-target-element').removeClass('hidden');
         replyWrapper.find('.reply-show-target-element').addClass('hidden')
         replyWrapper.find('.reply-show-target-element').find('textarea').val('');
+        replyWrapper.find('.reply-show-target-element').find('.github_id').val(data.github_id);
       }
     }
   });

@@ -14,6 +14,7 @@
 #  updated_at        :datetime         not null
 #  changed_file_id   :bigint(8)
 #  github_id         :integer
+#  in_reply_to_id    :integer
 #  review_id         :bigint(8)
 #  reviewer_id       :bigint(8)
 #
@@ -91,6 +92,7 @@ class ReviewComment < ApplicationRecord
           position: response_review_comment['position'],
           reviewer: reviewer,
           status: :commented,
+          in_reply_to_id: response_review_comment['in_reply_to_id'],
           github_created_at: response_review_comment['created_at'],
           github_updated_at: response_review_comment['updated_at']
         )
@@ -122,6 +124,7 @@ class ReviewComment < ApplicationRecord
           changed_file: changed_file,
           reviewer: reviewer,
           status: :commented,
+          in_reply_to_id: params[:comment][:in_reply_to_id],
           github_created_at: params[:comment][:created_at],
           github_updated_at: params[:comment][:updated_at]
         )
@@ -152,14 +155,13 @@ class ReviewComment < ApplicationRecord
 
   def send_github!(commit_id)
     comment = {
-      path: path,
-      position: position.to_i,
       body: body,
-      commit_id: commit_id
+      in_reply_to: in_reply_to_id
     }
     response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json
-    p response
-    if response.code == '200'
+    if response.code == '201'
+      response = JSON.load(response.body)
+      update!(github_id: response['id'])
       p 'OK'
     else
       fail response.body

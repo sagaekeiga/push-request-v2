@@ -18,7 +18,8 @@ class Reviewers::ReviewCommentsController < ApplicationController
       position: params[:position],
       path: params[:path]&.gsub('\n', ''),
       body: params[:body],
-      reviewer: reviewer
+      reviewer: reviewer,
+      in_reply_to_id: params[:github_id]
     )
 
     review_comment.status = :commented if params[:status]
@@ -32,7 +33,8 @@ class Reviewers::ReviewCommentsController < ApplicationController
         body: params[:body],
         img: reviewer.github_account.avatar_url,
         name: reviewer.github_account.nickname,
-        time: time_ago_in_words(review_comment.updated_at) + '前'
+        time: time_ago_in_words(review_comment.updated_at) + '前',
+        github_id: review_comment.github_id
       }
     else
       render json: { status: 'failed' }
