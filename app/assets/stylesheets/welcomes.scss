@@ -1,0 +1,19 @@
+.welcome-index-wrapper {
+  div.col-sm-1 {
+    padding-right: 5px;
+    padding-left: 5px;
+    border-right: 2px dotted #CCC;
+    .list-group-item {
+      padding: 0;
+      border: none;
+      margin-bottom: $base-margin;
+       a {
+         color: $color-black;
+         text-decoration: none;
+         small {
+           font-size: $base-font-size / 2;
+         }
+       }
+    }
+  }
+}

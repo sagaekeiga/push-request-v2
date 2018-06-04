@@ -16,7 +16,7 @@
         = render 'reviewers_navbar'
       - else
         = render 'navbar'
-      .m-b-4
+    .container-fluid
       - !content_for?(:flash) && flash && flash.each do |key, message|
         .col-xs-12
           .alert{ class: "alert-#{key}", role: 'alert' }
