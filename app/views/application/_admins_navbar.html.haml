@@ -1,0 +1,18 @@
+%nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      %button.navbar-toggle.collapsed{ type: 'button',
+        aria: { contorls: 'navbar', expanded: 'false' },
+        data: { target: '#navbar', toggle: 'collapse' } }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      = link_to Settings.meta.site, root_path, class: 'navbar-brand'
+
+    #navbar.collapse.navbar-collapse
+      %ul.nav.navbar-nav.pull-right
+        %li
+          = link_to destroy_admin_session_path, method: :delete do
+            &nbsp;
+            = t('helpers.label.log_out')

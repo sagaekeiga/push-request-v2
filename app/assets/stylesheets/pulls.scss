@@ -1,3 +1,6 @@
+.review-comment-img {
+  border-radius: $base-border-radius;
+}
 .pull-show-tab-wrapper {
   ul {
     margin-bottom: $base-margin;
@@ -6,70 +9,9 @@
     }
   }
 }
-.pulls-show-wrapper {
+.pulls-files-wrapper {
   .col-sm-10 {
     padding-left: 0;
-  }
-  .col-sm-2 {
-    padding-right: 0;
-  }
-  .label {
-    padding: 2px 5px;
-    font-size: 12px;
-    border: 1px solid $color-github-label-border-white;
-    border-radius: $base-border-radius;
-    font-weight: 400;
-    &.label-warning {
-      color: $color-github-label-white;
-      background-color: $color-github-yellow !important;
-    }
-  }
-  .pulls-show-card {
-    font-family: $font-code;
-    word-wrap: break-word;
-    .changed-file-title {
-      font-size: $base-font-size + 1px;
-    }
-    p {
-      margin: 0;
-      word-wrap: break-word;
-    }
-    img {
-    	max-width: 100%;
-    	height: auto;
-    }
-    .pull-body-wrapper {
-      .card {
-        margin-top: $base-margin;
-        margin-bottom: $base-margin;
-        border: $base-border;
-        box-shadow: none;
-        .card-header {
-          background-color: $color-grey;
-          font-family: $font-code;
-          font-size: $base-font-size;
-          padding: $base-padding * 2;
-          width: 100%;
-          padding: $base-padding * 3;
-        }
-        .card-body {
-          padding: $base-padding * 5;
-          .card-text {
-            font-size: $base-font-size + 2px;
-            padding: 0 $base-padding * 5;
-            pre {
-              border-radius: none;
-              border: none;
-              margin-top: $base-margin;
-              margin-bottom: $base-margin;
-              font-family: none;
-              font-size: $base-font-size;
-              background-color: $bg-color-pre-code;
-            }
-          }
-        }
-      }
-    }
     .card.changed-file-wrapper {
       margin-top: $base-margin;
       margin-bottom: $base-margin;
@@ -149,5 +91,148 @@
         }
       }
     }
+  }
+  .col-sm-2 {
+    padding-right: 0;
+  }
+}
+
+
+.pulls-conversation-wrapper {
+  .col-sm-10 {
+    padding-left: 0;
+    .pull-body-wrapper {
+      font-family: $font-code;
+      word-wrap: break-word;
+      .card {
+        margin-top: $base-margin;
+        margin-bottom: $base-margin;
+        border: $base-border;
+        box-shadow: none;
+        .card-header {
+          background-color: $color-grey;
+          font-family: $font-code;
+          font-size: $base-font-size;
+          padding: $base-padding * 2;
+          width: 100%;
+          padding: $base-padding * 3;
+        }
+        .card-body {
+          padding: $base-padding * 5;
+          .card-text {
+            font-size: $base-font-size + 2px;
+            padding: 0 $base-padding * 5;
+            pre {
+              border-radius: none;
+              border: none;
+              margin-top: $base-margin;
+              margin-bottom: $base-margin;
+              font-family: none;
+              font-size: $base-font-size;
+              background-color: $bg-color-pre-code;
+            }
+          }
+        }
+      }
+    }
+    .pulls-review-comment-wrapper {
+      .card {
+        margin-top: $base-margin;
+        margin-bottom: $base-margin;
+        border: $base-border;
+        box-shadow: none;
+        max-width: 100%;
+        .card-header {
+          background-color: $bg-color-github-panel;
+          font-family: $font-code;
+          font-size: $base-font-size;
+          padding: $base-padding * 2;
+          padding: $base-padding * 3;
+          max-width: 100%;
+        }
+        .card-body {
+          padding: 0;
+          max-width: 100%;
+          .table-wrapper {
+            overflow-x: scroll;
+            table {
+              border-collapse: collapse;
+              width: 100%;
+              max-width: 100%;
+              padding: $base-padding / 2;
+              td.file-code {
+                pre {
+                  padding: $base-padding / 2;
+                  color: none;
+                  background-color: transparent;
+                  border: none;
+                  margin: 0;
+                  font-family: $font-code;
+                  font-size: $base-font-size;
+                }
+                border: none;
+                &.markdown-highlight {
+                  font-family: $font-code;
+                  font-size: $base-font-size;
+                  &.bg-primary {
+                    background-color: $color-gihub-blue;
+                    color: $color-literal-gray;
+                  }
+                  &.bg-success {
+                    background-color: $color-github-green;
+                  }
+                  &.bg-danger {
+                    background-color: $color-github-changed-file-minus-color;
+                  }
+                }
+              }
+            }
+          }
+          .card-text {
+            font-size: $base-font-size + 2px;
+            padding-top: $base-padding * 4;
+            .col-xs-11 {
+              padding-left: 0px;
+              padding-bottom: $base-padding * 3;
+              .nickname {
+                font-weight: bold;
+                display: inline-block;
+              }
+              small {
+                display: inline-block;
+              }
+              .col-xs-12 {
+                padding-top: $base-padding;
+                padding-left: 0px;
+                padding-right: 0px;
+                font-weight: lighter;
+                pre {
+                  border-radius: none;
+                  border: none;
+                  margin-top: $base-margin / 2;
+                  margin-bottom: $base-margin / 2;
+                  font-family: none;
+                  font-size: $base-font-size;
+                  background-color: $bg-color-pre-code;
+                }
+              }
+            }
+            .col-xs-12.reply-wrapper {
+              background-color: $bg-color-github-panel;
+              padding-left: 0px;
+              padding-right: 0px;
+              padding-top: $base-padding;
+              padding-bottom: $base-padding;
+              .col-xs-11 {
+                padding-bottom: 0px;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .col-sm-2 {
+    padding-right: 0;
   }
 }

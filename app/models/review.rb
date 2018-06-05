@@ -74,7 +74,10 @@ class Review < ApplicationRecord
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
     working_hours = review_comments.calc_working_hours
     review.update!(working_hours: working_hours)
-    review_comments.each { |review_comment| review_comment.update!(review: review) }
+    review_comments.each do |review_comment|
+      review_comment.review = review
+      review_comment.save!(context: :pending)
+    end
     review
   end
 
@@ -96,6 +99,12 @@ class Review < ApplicationRecord
       json_format_request_body = request_body.to_json
       response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body
       if response.code == '200'
+        review_comments.each do |review_comment|
+          review_comment.status = :commented
+          review_comment.github_created_at = review_comment.updated_at
+          review_comment.github_updated_at = review_comment.updated_at
+          review_comment.save!(context: :pending)
+        end
         comment!
         pull.reviewed!
       else

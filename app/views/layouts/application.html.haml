@@ -14,6 +14,8 @@
         = render 'reviewees_navbar'
       - elsif reviewer_signed_in?
         = render 'reviewers_navbar'
+      - elsif admin_signed_in?
+        = render 'admins_navbar'
       - else
         = render 'navbar'
     .container-fluid

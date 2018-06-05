@@ -21,6 +21,9 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:github_app][:pull_request][:head][:user][:id])
       status = @github_account.reviewee.pulls.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
+    when 'pull_request_review_comment'
+      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:comment][:user][:id])
+      status = ReviewComment.recieve_immediate_review_comment!(params)
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
