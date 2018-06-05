@@ -1,0 +1,30 @@
+.side-bar-wrapper {
+  .navbar {
+    min-height: 0px;
+    margin-bottom: 0px;
+  }
+  div.col-sm-1 {
+    padding-right: 5px;
+    padding-left: 5px;
+    border-right: 2px dotted #CCC;
+    .list-group-item {
+      padding: 0;
+      border: none;
+      margin-bottom: $base-margin;
+       a {
+         color: $color-black;
+         text-decoration: none;
+         i.fa-tachometer-alt {
+           margin-top: 10px;
+         }
+         i {
+           font-size: 20px;
+           margin-bottom: $base-margin / 2;
+         }
+         small.setting {
+           margin-left: -5px;
+         }
+       }
+    }
+  }
+}
