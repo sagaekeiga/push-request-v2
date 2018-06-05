@@ -13,8 +13,8 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  changed_file_id   :bigint(8)
-#  github_id         :integer
-#  in_reply_to_id    :integer
+#  github_id         :bigint(8)
+#  in_reply_to_id    :bigint(8)
 #  review_id         :bigint(8)
 #  reviewer_id       :bigint(8)
 #

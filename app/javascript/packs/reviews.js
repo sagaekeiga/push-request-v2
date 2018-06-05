@@ -94,6 +94,7 @@ function removeForm(elem) {
 };
 
 function createReviewComment(elem) {
+  elem.prop('disabled', true);
   $.ajax({
     type: 'POST',
     url: `/reviewers/review_comments`,
@@ -118,6 +119,7 @@ function createReviewComment(elem) {
         cardText.nextAll('.flex-row').prepend('<button class="btn btn-primary edit-trigger" type="button"><span class="glyphicon glyphicon-pencil"></span></button>');
         cardText.nextAll('.flex-row').prepend('<button class="btn btn-danger destroy-trigger" type="button" data-confirm="本当にキャンセルしてよろしいですか？"><span class="glyphicon glyphicon-trash"></span></button>');
       }
+      elem.prop('disabled', false);
     }
   });
 };

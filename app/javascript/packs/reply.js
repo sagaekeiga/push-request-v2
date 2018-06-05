@@ -23,6 +23,7 @@ function cancelReply(elem) {
 };
 
 function submitReply(elem) {
+  elem.prop('disabled', true);
   $.ajax({
     type: 'POST',
     url: `/reviewers/review_comments`,
@@ -56,6 +57,7 @@ function submitReply(elem) {
         replyWrapper.find('.reply-show-target-element').find('textarea').val('');
         replyWrapper.find('.reply-show-target-element').find('.github_id').val(data.github_id);
       }
+      elem.prop('disabled', false);
     }
   });
 };

@@ -13,8 +13,8 @@
 #  created_at        :datetime         not null
 #  updated_at        :datetime         not null
 #  changed_file_id   :bigint(8)
-#  github_id         :integer
-#  in_reply_to_id    :integer
+#  github_id         :bigint(8)
+#  in_reply_to_id    :bigint(8)
 #  review_id         :bigint(8)
 #  reviewer_id       :bigint(8)
 #
@@ -104,16 +104,18 @@ class ReviewComment < ApplicationRecord
     fail I18n.t('views.error.failed_create_review_comment')
   end
 
-  def self.recieve_immediate_review_comment!(params)
+  def self.receive_immediate_review_comment!(params)
     ActiveRecord::Base.transaction do
       review_comment = ReviewComment.with_deleted.find_or_initialize_by(github_id: params[:comment][:id])
       pull = Pull.find_by(remote_id: params[:pull_request][:id])
       reviewer = Reviewers::GithubAccount.find_by(owner_id: params[:comment][:user][:id])&.reviewer
+      sender = Reviewers::GithubAccount.find_by(owner_id: params[:sender][:id])&.reviewer
       changed_file = pull.changed_files.find_by(
         commit_id: params[:comment][:commit_id],
         filename: params[:comment][:path]
       )
-      if review_comment.persisted? && review_comment.body == params[:comment][:body]
+      # github appからのコメントはsenderが一致しない
+      if review_comment.persisted? && review_comment.body == params[:comment][:body] && sender.present?
         review_comment.destroy
       else
         review_comment.update_attributes!(
@@ -122,12 +124,12 @@ class ReviewComment < ApplicationRecord
           path: params[:comment][:path],
           position: params[:comment][:position],
           changed_file: changed_file,
-          reviewer: reviewer,
           status: :commented,
           in_reply_to_id: params[:comment][:in_reply_to_id],
           github_created_at: params[:comment][:created_at],
           github_updated_at: params[:comment][:updated_at]
         )
+        review_comment.update_attributes!(reviewer: reviewer) if reviewer.present?
       end
     end
     true
