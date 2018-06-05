@@ -1,5 +1,5 @@
 %nav.navbar.navbar-default.navbar-fixed-top
-  .container-fluid
+  .container-fluid.naved
     .navbar-header
       %button.navbar-toggle.collapsed{ type: 'button',
         aria: { contorls: 'navbar', expanded: 'false' },
@@ -9,25 +9,3 @@
         %span.icon-bar
         %span.icon-bar
       = link_to Settings.meta.site, root_path, class: 'navbar-brand'
-
-    #navbar.collapse.navbar-collapse
-      %ul.nav.navbar-nav.pull-right
-        %li
-          = link_to reviewees_dashboard_path do
-            &nbsp;
-            = t('reviewers.dashboard.title')
-        %li
-          = link_to reviewees_repos_path do
-            &nbsp;
-            = t('reviewees.repos.title')
-        %li
-          = link_to reviewees_pulls_path do
-            &nbsp;
-            = t('reviewees.pulls.title')
-        %li
-          = link_to reviewees_settings_integrations_path do
-            &nbsp;
-            = t('reviewees.settings.integrations.title')
-        %li
-          = link_to reviewees_synchronizes_path do
-            %i.fas.fa-redo

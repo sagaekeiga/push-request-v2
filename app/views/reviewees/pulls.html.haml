@@ -1,24 +1,23 @@
-.col-xs-12
-  = render 'error_messages', resource: @pull if @pull
-  - if @pulls.blank?
-    = t '.empty'
-    = link_to t('.set_pulls'), ENV['GITHUB_APP_PUBLIC_PAGED_URL']
-  - else
-    %table.table.table-hover
-      %thead
+= render 'error_messages', resource: @pull if @pull
+- if @pulls.blank?
+  = t '.empty'
+  = link_to t('.set_pulls'), ENV['GITHUB_APP_PUBLIC_PAGED_URL']
+- else
+  %table.table.table-hover
+    %thead
+      %tr
+        %th= t 'activerecord.models.pull'
+        %th= t 'activerecord.models.repo'
+        %th= t 'activerecord.attributes.pull.status'
+    %tbody
+      - @pulls.each do |pull|
         %tr
-          %th= t 'activerecord.models.pull'
-          %th= t 'activerecord.models.repo'
-          %th= t 'activerecord.attributes.pull.status'
-      %tbody
-        - @pulls.each do |pull|
-          %tr
-            %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
-            %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
-            %td.text-center
-              - if pull.connected? || pull.canceled?
-                = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put
-              - elsif pull.completed?
-                = I18n.t('views.status.complete')
-              - else
-                = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put
+          %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
+          %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
+          %td.text-center
+            - if pull.connected? || pull.canceled?
+              = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put
+            - elsif pull.completed?
+              = I18n.t('views.status.complete')
+            - else
+              = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put

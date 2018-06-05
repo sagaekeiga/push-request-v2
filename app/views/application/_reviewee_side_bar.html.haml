@@ -1,0 +1,32 @@
+.col-sm-1.col-lg-1
+  %nav.navbar.navbar-default.navbar-fixed-side
+  %ul.list-group.text-center
+    %li.list-group-item
+      = link_to reviewees_dashboard_path do
+        %i.fas.fa-tachometer-alt
+        %br
+        %small= t('reviewers.dashboard.title')
+    %hr
+    %li.list-group-item
+      = link_to reviewees_pulls_path do
+        %i.fas.fa-check-circle
+        %br
+        %small= t('reviewees.pulls.title')
+    %hr
+    %li.list-group-item
+      = link_to reviewees_repos_path do
+        %i.fas.fa-table
+        %br
+        %small= t('reviewees.repos.title')
+    %hr
+    %li.list-group-item
+      = link_to reviewees_settings_integrations_path do
+        %i.fas.fa-cogs
+        %br
+        %small.setting= t('reviewees.settings.integrations.title')
+    %hr
+    %li.list-group-item
+      = link_to reviewees_synchronizes_path do
+        %i.fas.fa-redo
+        %br
+        %small.setting= t('views.synchronizes')

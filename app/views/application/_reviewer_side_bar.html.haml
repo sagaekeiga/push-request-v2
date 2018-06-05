@@ -1,0 +1,15 @@
+.col-sm-1.col-lg-1
+  %nav.navbar.navbar-default.navbar-fixed-side
+  %ul.list-group.text-center
+    %li.list-group-item
+      = link_to reviewers_dashboard_path do
+        %i.fas.fa-tachometer-alt
+        %br
+        %small= t('reviewers.dashboard.title')
+    %hr
+    %li.list-group-item
+      = link_to reviewers_my_page_path do
+        %i.fas.fa-user
+        %br
+        %small= t('reviewers.my_page.title')
+    %hr
