@@ -153,6 +153,7 @@ ja:
     error:
       failed_create_pull: プルリクエストの保存に失敗しました。
       failed_create_changed_file: changed fileの保存に失敗しました。
+      failed_create_review_comment: review commentの保存に失敗しました。
     status:
       request_reviewed: レビュワーに公開する
       pending: 公開中
@@ -163,3 +164,4 @@ ja:
         success: GitHubとの接続に成功しました！
     github_apps:
       install_repositories: GitHub Appをインストールし、レポジトリ・プルリクエストを取得しましょう。
+    synchronizes: 同期

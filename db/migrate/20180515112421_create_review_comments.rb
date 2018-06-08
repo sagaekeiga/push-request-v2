@@ -7,6 +7,12 @@ class CreateReviewComments < ActiveRecord::Migration[5.1]
       t.text :body
       t.string :path
       t.integer :position
+      t.bigint :github_id
+      t.bigint :in_reply_to_id
+      t.integer :status
+      t.timestamp :github_created_at
+      t.timestamp :github_updated_at
+      t.datetime :deleted_at, index: true
       t.timestamps
     end
   end
