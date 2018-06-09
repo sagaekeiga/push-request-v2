@@ -165,3 +165,7 @@ ja:
     github_apps:
       install_repositories: GitHub Appをインストールし、レポジトリ・プルリクエストを取得しましょう。
     synchronizes: 同期
+  mailer:
+    reviewer_mailer:
+      notice_comment_by_reviewee:
+        title: コメントがつきました。
