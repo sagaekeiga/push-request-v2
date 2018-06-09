@@ -39,9 +39,9 @@
     - else
       .container-fluid.top
         - unless controller_name == 'welcome'
-          .container-fluid.no-login
+          .container-fluid.body-container
             - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key} no-log-in", role: 'alert' }
+              .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
         = yield
     - if controller_name == 'welcome'
