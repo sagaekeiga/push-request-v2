@@ -36,6 +36,12 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
+    - elsif admin_signed_in?
+      .container-fluid.body-container
+        - !content_for?(:flash) && flash && flash.each do |key, message|
+          .alert{ class: "alert-#{key}", role: 'alert' }
+            %strong= message
+        = yield
     - else
       .container-fluid.top
         - unless controller_name == 'welcome'
