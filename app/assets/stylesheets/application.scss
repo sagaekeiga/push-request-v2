@@ -50,8 +50,17 @@
 
 .container-fluid.naved {
   background-color: $color-github-black;
+  font-family: $font-static;
 }
 
 .container-fluid.body-container {
   padding-top: ($navbar-height / 2) - 5px;
+}
+
+.no-log-in {
+  margin-top: $base-margin;
+}
+
+.container-fluid.no-login {
+  padding-top: $navbar-height;
 }
