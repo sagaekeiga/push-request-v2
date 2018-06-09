@@ -1,30 +1,59 @@
-.reviewee-dashboard-wrapper
-  .card.text-center
-    %h4.card-header STEP1 GitHub Appのインストール
-    .card-body
-      %p.card-text
-        あなたのレポジトリをPushRequestに同期するためにGitHub Appをインストールしましょう
+.container-fluid.head
+  %p.filter= image_tag 'top.png', class: 'img-responsive filter-img'
+  %p
+    %h1.top-literal PushRequest
+    %p.top-literal.text-center
+      PushRequestはコードレビューのマーケットプレイスです
+      %br
+      あなたのプルリクエストを公開することでコードの品質を上げることができます
+.container
+  .reviewee-dashboard-wrapper
+    .demo-wrapper
+      %h1.text-center Demo
+      .text-center.text-muted.sub-demo-line
+        PushRequestでは簡単にレビューをもらうことができる仕組みを構築しています
         %br
-        GitHub Appはレポジトリ単位で管理することが可能です。
-        GitHub上で更新された情報を即座にPushRequestに反映します。
-      = link_to 'インストール画面へ', ENV['GITHUB_APP_URL'], class: 'btn btn-primary', target: 'blank'
-
-  .card.text-center
-    %h4.card-header STEP2 レポジトリの同期
-    .card-body
-      %p.card-text
-        接続したGitHubアカウント上にあるレポジトリ・プルリクエストを同期しましょう。
+        GitHub Appとの連携を終えたあとに2ステップであなたのコードの品質を上げることができます
+      .col-xs-12.step-1.text-center
+        %h3 STEP 1 あなたのプルリクエストをレビュワーに公開しましょう
+        %small.text-muted
+          GitHubから取得したあなたのプルリクエストをレビュワーに公開してみましょう
+          「公開する」ボタンを押してください
+        %hr
+        %table.table.table-hover
+          %thead
+            %tr
+              %th= t 'activerecord.models.pull'
+              %th= t 'activerecord.models.repo'
+              %th= t 'activerecord.attributes.pull.status'
+          %tbody
+            %tr
+              %td.text-center 決済機能の実装
+              %td
+              %td.text-center
+                %button{ type: 'button', class: 'btn btn-primary demo-request-btn' } 公開する
+      #demo_img.hidden.col-xs-12.step-1.text-center
+        %h3 STEP 2 レビュワーからコメントが届く
+        %small.text-muted
+          レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
+        %hr
+        = image_tag 'demo.png', class: 'img-responsive'
+.container-fluid.footer
+  %hr
+  .container
+    .text-center.start-wrapper
+      %h1 Get Started!
+      .text-center.start-line
+        PushRequestはすぐに利用することができます
+        不明点がある方は運営にお問い合わせください
+    .col-xs-6
+      .text-center
+        初めての方はこちらへ
         %br
-        それらはあなた自身で選択することができます。
-        同期後も簡単に変更・取消が可能です。
-      = link_to '同期画面へ', ENV['GITHUB_APP_PUBLIC_PAGED_URL'], class: 'btn btn-primary', target: 'blank'
-
-  .card.text-center
-    %h4.card-header STEP3 プルリクエストの公開
-    .card-body
-      %p.card-text
-        プルリクエストを公開することによって、レビュワーがあなたのコードにコメントすることができるようになります。
+        = link_to 'Sign up', new_reviewee_registration_path, class: 'btn btn-block btn-primary'
+    .col-xs-6
+      .text-center
+        すでに登録している方はこちらへ
         %br
-        レビュワーのコメントはGitHub上のプルリクエストに反映されます。
-        あなたはコードはより洗練されたコードに修正することができます。
-      = link_to '公開画面へ', reviewees_pulls_path, class: 'btn btn-primary'
+        = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
+= javascript_pack_tag 'demo'

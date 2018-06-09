@@ -18,8 +18,8 @@
         = render 'admins_navbar'
       - else
         = render 'navbar'
-    .container-fluid.body-container
-      - if reviewee_signed_in?
+    - if reviewee_signed_in?
+      .container-fluid.body-container
         .row.side-bar-wrapper
           = render 'reviewee_side_bar'
           .col-sm-11
@@ -27,7 +27,8 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
-      - elsif reviewer_signed_in?
+    - elsif reviewer_signed_in?
+      .container-fluid.body-container
         .row.side-bar-wrapper
           = render 'reviewer_side_bar'
           .col-sm-11
@@ -35,9 +36,13 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
-      - else
-        .container
-          - !content_for?(:flash) && flash && flash.each do |key, message|
-            .alert{ class: "alert-#{key}", role: 'alert' }
-              %strong= message
-          = yield
+    - else
+      .container-fluid.top
+        - unless controller_name == 'welcome'
+          .container-fluid.body-container
+            - !content_for?(:flash) && flash && flash.each do |key, message|
+              .alert{ class: "alert-#{key}", role: 'alert' }
+                %strong= message
+        = yield
+    - if controller_name == 'welcome'
+      = render 'footer'

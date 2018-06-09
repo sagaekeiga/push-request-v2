@@ -1,0 +1,94 @@
+.container-fluid.head {
+  padding: 0;
+  margin: 0;
+  position: relative;
+  .filter {
+    background: $opacity-black;
+  }
+  .filter-img {
+   display: block;
+   opacity: .6;
+  }
+  h1.top-literal {
+    position: absolute;
+    top: 40%;
+    left: 50%;
+    -ms-transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin:0;
+    padding:0;
+    color: $color-white;
+    font-size: $base-font-size * 6;
+    font-weight: $base-font-weight * 4;
+  }
+  p.top-literal {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    -ms-transform: translate(-50%,-50%);
+    -webkit-transform: translate(-50%,-50%);
+    transform: translate(-50%,-50%);
+    margin:0;
+    padding:0;
+    color: $color-white;
+    font-weight: $base-font-weight * 4;
+  }
+}
+.container-fluid.top {
+  padding: 0px;
+  margin: 0px;
+  font-family: $font-static;
+  .demo-wrapper {
+    background-color: $color-white;
+    h1 {
+      margin-top: $base-margin * 3;
+      font-size: $base-font-size * 4;
+      font-weight: $base-font-weight * 4;
+    }
+    .sub-demo-line {
+      font-size: $base-font-size * 1.5;
+      margin-bottom: $base-margin * 4;
+    }
+    .step-1 {
+      margin-top: $base-margin * 2;
+      margin-bottom: $base-margin * 6;
+      h3 {
+        font-weight: $base-font-weight * 4;
+        font-size: $base-font-size * 2;
+        color: $pullrequest-blue;
+      }
+      table {
+        margin-top: $base-margin * 6;
+      }
+      img {
+        margin-top: $base-margin * 4;
+      }
+    }
+  }
+}
+
+.container-fluid.footer {
+  padding: 0;
+  margin-bottom: - $base-margin;
+  color: $color-white;
+  hr {
+    padding-top: 0;
+    margin-top: 0;
+  }
+  .container {
+    margin-top: $base-margin * 4;
+    margin-bottom: $base-margin * 6;
+  }
+  background-color: $color-github-black;
+  .start-wrapper {
+    h1 {
+      font-size: $base-font-size * 4;
+      font-weight: $base-font-weight * 4;
+    }
+    .start-line {
+      margin-bottom: $base-margin * 6;
+      font-size: $base-font-size * 1.5;
+    }
+  }
+}
