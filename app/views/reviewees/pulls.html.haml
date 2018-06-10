@@ -1,7 +1,8 @@
 = render 'error_messages', resource: @pull if @pull
 - if @pulls.blank?
   = t '.empty'
-  = link_to t('.set_pulls'), ENV['GITHUB_APP_PUBLIC_PAGED_URL']
+  = link_to t('.set_pulls'), ENV['GITHUB_APP_URL'], target: '_blank'
+  = link_to t('reviewees.views.configure_github_app'), Settings.qiita.about_install_github_app, target: '_blank'
 - else
   %table.table.table-hover
     %thead

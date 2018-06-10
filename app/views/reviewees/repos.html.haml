@@ -1,6 +1,7 @@
 - if @repos.blank?
   = t 'views.github_apps.install_repositories'
   = link_to t('.add_repo'), ENV['GITHUB_APP_URL'], target: '_blank'
+  = link_to t('reviewees.views.configure_github_app'), Settings.qiita.about_install_github_app, target: '_blank'
 - else
   %table.table
     %thead
