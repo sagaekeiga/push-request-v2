@@ -155,8 +155,8 @@ ja:
       failed_create_changed_file: changed fileの保存に失敗しました。
       failed_create_review_comment: review commentの保存に失敗しました。
     status:
-      request_reviewed: レビュワーに公開する
-      pending: 公開中
+      request_reviewed: レビューしてもらう
+      pending: レビュー待ち
       complete: 完了
       confirm_canceled: キャンセルするとレビューされません。本当にキャンセルしてよろしいですか？
     github:
