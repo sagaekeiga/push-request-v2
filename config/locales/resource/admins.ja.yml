@@ -19,3 +19,6 @@ ja:
         rejected: 承認しない
       update:
         success: ステータスを変更しました
+    reviews:
+      index:
+        title: レビュー一覧

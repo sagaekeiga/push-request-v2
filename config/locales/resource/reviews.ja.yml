@@ -4,4 +4,8 @@ ja:
       review: プルリクエスト
     attributes:
       review:
+        id: ID
         body: 総括
+        event: イベント
+        state: ステート
+        working_hours: 作業時間（分）
