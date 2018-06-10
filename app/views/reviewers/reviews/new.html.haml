@@ -58,6 +58,8 @@
     = f.label :body, for: 'review_body'
     = f.text_area :body, id: 'review_body', class: 'form-control', rows: '3', required: true
     %small.form-text.text-muted= t '.body_helper'
-    .text-center= f.submit t('helpers.links.review'), id: 'submit_review_button', class: 'btn btn-primary'
+    .text-center
+      = f.submit t('helpers.links.review'), id: 'submit_review_button', class: 'btn btn-primary'
+      = image_tag 'loading.gif', class: 'loading hidden'
 
 = javascript_pack_tag 'reviews'

@@ -52,7 +52,9 @@
                 font-size: $base-font-size;
                 &.bg-primary {
                   background-color: $color-gihub-blue;
-                  color: $color-literal-gray;
+                  pre {
+                    color: $color-literal-gray;
+                  }
                 }
                 &.bg-success {
                   background-color: $color-github-green;
@@ -119,6 +121,9 @@
         }
         .card-body {
           padding: $base-padding * 5;
+          img {
+            width: 100%;
+          }
           .card-text {
             font-size: $base-font-size + 2px;
             padding: 0 $base-padding * 5;
@@ -176,7 +181,6 @@
                   font-size: $base-font-size;
                   &.bg-primary {
                     background-color: $color-gihub-blue;
-                    color: $color-literal-gray;
                   }
                   &.bg-success {
                     background-color: $color-github-green;
