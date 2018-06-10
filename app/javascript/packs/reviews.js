@@ -29,7 +29,6 @@ $(document).on('click', '.cancel-update-trigger', function () {
 })
 
 $(document).on('click', '#submit_review_button', function () {
-  $(this).prop('disabled', true);
 })
 
 function hoverColor() {
