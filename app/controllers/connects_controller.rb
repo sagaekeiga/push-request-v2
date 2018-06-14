@@ -7,7 +7,6 @@ class ConnectsController < ApplicationController
   # GET /auth/facebook/callback
   def callback_from(_provider)
     ActiveRecord::Base.transaction do
-      puts JSON.pretty_generate(request.env['omniauth.auth'])
       @reviewee = current_reviewee.connect_to_github(request.env['omniauth.auth']) if reviewee_signed_in?
       @reviewer = current_reviewer.connect_to_github(request.env['omniauth.auth']) if reviewer_signed_in?
     end
