@@ -38,9 +38,9 @@ module GithubAPI
       access_token
     end
 
-    def receive_api_response_in_json_format_on(target_uri)
+    def receive_api_response_in_json_format_on(target_uri, recource)
       parsed_uri = URI.parse target_uri
-      target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}", 'get')
+      target_request = generate_request_according_to(parsed_uri, "token #{recource.github_account.access_token}", 'get')
       req_options = {
         use_ssl: parsed_uri.scheme == 'https'
       }
