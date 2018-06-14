@@ -76,7 +76,7 @@ class ReviewComment < ApplicationRecord
 
   def self.create_or_restore!(pull)
     ActiveRecord::Base.transaction do
-      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
+      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments", pull.repo.reviewee
       response_review_comments_in_json_format.each do |response_review_comment|
         reviewer = Reviewers::GithubAccount.find_by(owner_id: response_review_comment['user']['id'])&.reviewer
         changed_file = pull.changed_files.find_by(

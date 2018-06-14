@@ -127,6 +127,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewees_github_accounts", force: :cascade do |t|
     t.bigint "reviewee_id"
+    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"
@@ -172,6 +173,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewers_github_accounts", force: :cascade do |t|
     t.bigint "reviewer_id"
+    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"
