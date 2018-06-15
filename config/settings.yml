@@ -8,7 +8,7 @@ github:
   web_domain: https://github.com/
   api_domain: https://api.github.com/
   request:
-    access_token_uri: https://api.github.com/installations/<%= ENV['GITHUB_APP_INSTALLATION_ID'] %>/access_tokens
+    access_token_uri: https://api.github.com/installations/191420/access_tokens
     header:
       accept: application/vnd.github.machine-man-preview+json
 review_comments:
