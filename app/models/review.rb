@@ -97,7 +97,7 @@ class Review < ApplicationRecord
       end
 
       json_format_request_body = request_body.to_json
-      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body
+      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body, reviewer
       if response.code == '200'
         review_comments.each do |review_comment|
           review_comment.status = :commented
@@ -117,5 +117,4 @@ class Review < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     false
   end
-
 end

@@ -51,9 +51,9 @@ module GithubAPI
       JSON.load(response.body)
     end
 
-    def receive_api_request_in_json_format_on(target_uri, body)
+    def receive_api_request_in_json_format_on(target_uri, body, recource)
       parsed_uri = URI.parse target_uri
-      target_request = generate_request_according_to(parsed_uri, "token #{get_access_token}", 'post')
+      target_request = generate_request_according_to(parsed_uri, "token #{recource.github_account.access_token}", 'post')
       target_request.body = body
 
       req_options = {
