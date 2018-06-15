@@ -10,7 +10,7 @@ Dotenv.load
 
 
 # Private key contents
-private_pem = Rails.env.production? ? ENV['PRIVATE_PEM'] : File.read(ENV['PATH_TO_PEM_FILE'])
+private_pem = ENV['PRIVATE_PEM']
 private_key = OpenSSL::PKey::RSA.new(private_pem)
 
 
