@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewees do
-      get :dashboard, :pulls, :repos, :synchronizes
+      get :dashboard, :pulls, :repos
       get 'settings/integrations'
       resources :pulls, only: %i(update)
     end
