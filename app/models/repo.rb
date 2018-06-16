@@ -2,15 +2,16 @@
 #
 # Table name: repos
 #
-#  id          :bigint(8)        not null, primary key
-#  deleted_at  :datetime
-#  full_name   :string
-#  name        :string
-#  private     :boolean
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  remote_id   :integer
-#  reviewee_id :bigint(8)
+#  id              :bigint(8)        not null, primary key
+#  deleted_at      :datetime
+#  full_name       :string
+#  name            :string
+#  private         :boolean
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  installation_id :bigint(8)
+#  remote_id       :integer
+#  reviewee_id     :bigint(8)
 #
 # Indexes
 #
@@ -38,6 +39,7 @@ class Repo < ApplicationRecord
   validates :name, presence: true
   validates :full_name, presence: true, uniqueness: true
   validates :private, inclusion: { in: [true, false] }
+  # @TODO installation_idにバリデーションをかける
 
   # -------------------------------------------------------------------------------
   # Attributes
@@ -52,19 +54,22 @@ class Repo < ApplicationRecord
   #
   # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
-  def self.create_or_restore!(repositories_added_params)
+  def self.create_or_restore!(installation_repositories_params)
     ActiveRecord::Base.transaction do
-      repo = with_deleted.find_by(remote_id: repositories_added_params[0][:id])
-      if repo.nil?
-        repo = create!(
-          remote_id: repositories_added_params[0][:id],
-          name: repositories_added_params[0][:name],
-          full_name: repositories_added_params[0][:full_name],
-          private: repositories_added_params[0][:private]
-        )
+      installation_repositories_params[:repositories_added].each do |installation_repository_params|
+        repo = with_deleted.find_by(remote_id: installation_repository_params[:id])
+        if repo.nil?
+          repo = create!(
+            remote_id: installation_repository_params[:id],
+            name: installation_repository_params[:name],
+            full_name: installation_repository_params[:full_name],
+            private: installation_repository_params[:private],
+            installation_id: installation_repositories_params[:installation][:id]
+          )
+        end
+        repo.restore if repo&.deleted?
+        Pull.create_or_restore!(repo)
       end
-      repo.restore if repo&.deleted?
-      Pull.create_or_restore!(repo)
     end
     true
   rescue => e
