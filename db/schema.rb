@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.string "name"
     t.string "full_name"
     t.boolean "private"
+    t.bigint "installation_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
