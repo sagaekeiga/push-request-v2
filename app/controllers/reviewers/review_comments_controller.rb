@@ -19,7 +19,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
       path: params[:path]&.gsub('\n', ''),
       body: params[:body],
       reviewer: reviewer,
-      in_reply_to_id: @changed_file.review_comments.last.in_reply_to_id
+      in_reply_to_id: params[:reply].present? ? @changed_file.review_comments.last.github_id : nil
     )
 
     review_comment.status = :commented if params[:status]

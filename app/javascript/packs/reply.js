@@ -36,7 +36,8 @@ function submitReply(elem) {
       reviewer_id: elem.nextAll('.reviewer_id').val(),
       commit_id: elem.nextAll('.commit_id').val(),
       status: 'commented',
-      github_id: elem.nextAll('.github_id').val()
+      github_id: elem.nextAll('.github_id').val(),
+      reply: true
     },
     element: elem,
     success: function(data) {
