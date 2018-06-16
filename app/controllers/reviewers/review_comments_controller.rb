@@ -19,12 +19,12 @@ class Reviewers::ReviewCommentsController < ApplicationController
       path: params[:path]&.gsub('\n', ''),
       body: params[:body],
       reviewer: reviewer,
-      in_reply_to_id: params[:github_id]
+      in_reply_to_id: @changed_file.review_comments.last.in_reply_to_id
     )
 
     review_comment.status = :commented if params[:status]
 
-    if review_comment.save!(context: :pending)
+    if review_comment.save(context: :pending)
       # @TODO review_commentにもcommit_idカラム追加
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
