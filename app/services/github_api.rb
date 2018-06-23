@@ -1,7 +1,7 @@
 module GithubAPI
   # @TODO ファイル名をリネーム
   class << self
-    def get_jwt
+    def  get_jwt
       # Private key contents
       private_pem = Rails.env.production? ? ENV['PRIVATE_PEM'] : File.read(ENV['PATH_TO_PEM_FILE'])
       private_key = OpenSSL::PKey::RSA.new(private_pem)
@@ -18,7 +18,7 @@ module GithubAPI
       jwt = JWT.encode payload, private_key, 'RS256'
       jwt
     end
-
+    #
     def get_access_token
       parsed_uri = URI.parse Settings.github.request.access_token_uri
       target_request = Net::HTTP::Post.new(parsed_uri)
