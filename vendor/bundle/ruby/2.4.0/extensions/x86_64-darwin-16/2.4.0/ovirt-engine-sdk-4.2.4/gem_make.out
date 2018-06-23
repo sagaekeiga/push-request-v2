@@ -1,5 +1,5 @@
 current directory: /Users/sagaeminami/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/ovirt-engine-sdk-4.2.4/ext/ovirtsdk4c
-/usr/local/opt/ruby/bin/ruby -r ./siteconf20180623-76059-84z7mg.rb extconf.rb
+/usr/local/opt/ruby/bin/ruby -r ./siteconf20180623-98343-1fjex83.rb extconf.rb
 checking for xml2-config... yes
 checking for curl-config... yes
 creating Makefile
