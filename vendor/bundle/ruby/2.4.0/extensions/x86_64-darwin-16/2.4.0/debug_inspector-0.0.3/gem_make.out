@@ -1,0 +1,15 @@
+current directory: /Users/sagaeminami/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+/usr/local/opt/ruby/bin/ruby -r ./siteconf20180623-58686-132o7ai.rb extconf.rb
+creating Makefile
+
+current directory: /Users/sagaeminami/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR=" clean
+
+current directory: /Users/sagaeminami/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR="
+compiling debug_inspector.c
+linking shared-object debug_inspector.bundle
+
+current directory: /Users/sagaeminami/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/debug_inspector-0.0.3/ext/debug_inspector
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 debug_inspector.bundle ./.gem.20180623-58686-7nnrob
