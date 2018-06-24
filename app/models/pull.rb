@@ -92,11 +92,6 @@ class Pull < ApplicationRecord
   def self.create_or_restore!(repo)
     ActiveRecord::Base.transaction do
       response_pulls_in_json_format = Github::Response.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls", repo.installation_id
-      p "==============================="
-      p repo.installation_id
-      p "#{repo.full_name}"
-      puts response_pulls_in_json_format
-      p "==============================="
       response_pulls_in_json_format.each do |response_pull|
         pull = repo.pulls.with_deleted.find_by(remote_id: response_pull['id'], reviewee: repo.reviewee)
         if pull.nil?
