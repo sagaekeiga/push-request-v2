@@ -1,3 +1,4 @@
+require 'bundler'
 require 'openssl'
 require 'jwt'
 require 'net/http'
