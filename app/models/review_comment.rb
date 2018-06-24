@@ -160,7 +160,7 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    response = Github.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
+    response = Github::Request.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
     if response.code == '201'
       response = JSON.load(response.body)
       update!(github_id: response['id'])

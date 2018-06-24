@@ -22,9 +22,6 @@ module Github
       def get_access_token(installation_id)
         parsed_uri = URI.parse Settings.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
         target_request = Net::HTTP::Post.new(parsed_uri)
-        p "==========================="
-        p Github::Request.get_jwt
-        p "==========================="
         target_request['Authorization'] = "Bearer #{Github::Request.get_jwt}"
         target_request['Accept'] = Settings.github.request.header.accept
 
@@ -39,6 +36,21 @@ module Github
         response_in_json_format = JSON.load(response.body)
         access_token = response_in_json_format['token']
         access_token
+      end
+
+      def receive_api_request_in_json_format_on(target_uri, body, installation_id)
+        parsed_uri = URI.parse target_uri
+        target_request = Github.generate_request_according_to(parsed_uri, "token #{Github::Request.get_access_token(installation_id)}", 'post')
+        target_request.body = body
+
+        req_options = {
+          use_ssl: parsed_uri.scheme == 'https'
+        }
+
+        response = Net::HTTP.start(parsed_uri.hostname, parsed_uri.port, req_options) do |http|
+          http.request(target_request)
+        end
+        response
       end
     end
   end
