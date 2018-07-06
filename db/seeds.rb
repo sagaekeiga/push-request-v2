@@ -4,7 +4,7 @@ skills = Skill.create([
   { name: 'Ruby on Rails', category: :language },
   { name: 'Vue.js', category: :language },
   { name: 'Java', category: :language },
-  { name: 'Javascript', category: :language },
+  { name: 'JavaScript', category: :language },
   { name: 'TypeScript', category: :language },
   { name: 'React.js', category: :language },
   { name: 'Python', category: :language },

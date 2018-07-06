@@ -2,7 +2,7 @@ require 'action_view'
 require 'action_view/helpers'
 include ActionView::Helpers::DateHelper
 class Reviewers::ReviewCommentsController < ApplicationController
-  protect_from_forgery except: %i(create)
+  protect_from_forgery except: %i(create update)
   before_action :set_changed_file, only: %i(create)
   before_action :set_pull, only: %i(create)
   before_action :check_pull, only: %i(create)
@@ -24,7 +24,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
 
     review_comment.status = :commented if params[:status]
 
-    if review_comment.save(context: :pending)
+    if review_comment.save
       # @TODO review_commentにもcommit_idカラム追加
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
