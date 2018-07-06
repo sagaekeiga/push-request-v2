@@ -76,7 +76,7 @@ class Review < ApplicationRecord
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|
       review_comment.review = review
-      review_comment.save!(context: :pending)
+      review_comment.save!
     end
     review
   end
@@ -103,7 +103,7 @@ class Review < ApplicationRecord
           review_comment.status = :commented
           review_comment.github_created_at = review_comment.updated_at
           review_comment.github_updated_at = review_comment.updated_at
-          review_comment.save!(context: :pending)
+          review_comment.save!
         end
         comment!
         pull.reviewed!

@@ -62,7 +62,6 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :github_id, uniqueness: true, unless: -> { validation_context == :pending }
   validates :body, presence: true
   validates :path, presence: true
   validates :position, presence: true, numericality: { only_integer: true }
