@@ -42,7 +42,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
   end
 
   def update
-    if @review_comment.update!(body: params[:body])
+    if @review_comment.update(body: params[:body])
       render json: {
         status: 'success',
         body: params[:body]
