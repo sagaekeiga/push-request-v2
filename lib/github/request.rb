@@ -1,27 +1,14 @@
 module Github
   class Request
     include HTTParty
-    base_uri Settings.aossms.api_url
 
     class << self
-      #
-      # ショートメッセージ送信
-      #
-      # - message      : 最大70文字の文字列
-      # - phone_number : 送信先電話番号 日本国内形式(070xxxxxxxx/080xxxxxxxx/090xxxxxxxx)、国際電話番号形式も可
-      #
-      # @param [Hash] params
-      #
-      # @return [Hash]
-      #
-      def github_exec_review_comment!(params)
-        _request 'mt.json', params
-      end
 
       # レビュー送信
-      def github_exec_review!(params, review)
-        sub_url = "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
-        _request
+      def github_exec_review!(params, pull)
+        sub_url = "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
+        installation_id = pull.repo.installation_id
+        _request params, sub_url, installation_id
       end
 
       private
@@ -32,26 +19,55 @@ module Github
       # @param [String] endpoint エンドポイント ex. mt.json
       # @param [Hash] params 送信パラメータ { message: xxxxxx, phone_number: xxxyyyyzzzz}
       #
-      def _request(sub_url, params)
-        request_params = {
-          token:       ENV['AOS_ACCESS_TOKEN'],
-          clientId:    ENV['AOS_CLIENT_ID'],
-          smsCode:     ENV['AOS_SMS_CODE'],
-          message:     params[:message],
-          phoneNumber: params[:phone_number],
-          charset:     'utf8'
+      def _request(params, sub_url, installation_id)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{get_access_token(installation_id)}",
+          'Accept': Settings.github.request.header.accept
         }
 
-        return {} if ENV['DO_NOT_REQUEST'].present?
+        res = post Settings.github.api_domain + sub_url, headers: headers, body: params
 
-        res = post Settings.github.api_domain + endpoint, body: request_params
-        unless res['responseCode'] == 0
-          logger.error "[Github][#{endpoint}] responseCode => #{res['responseCode']}"
-          logger.error "[Github][#{endpoint}] responseMessage => #{res['responseMessage']}"
-          logger.error "[Github][#{endpoint}] phoneNumber => #{res['phoneNumber']}"
-          logger.error "[Github][#{endpoint}] smsMessage => #{res['smsMessage']}"
+        unless res.code == '200'
+          logger.error "[Github][#{sub_url}] responseCode => #{res['responseCode']}"
+          logger.error "[Github][#{sub_url}] responseMessage => #{res['responseMessage']}"
+          logger.error "[Github][#{sub_url}] phoneNumber => #{res['phoneNumber']}"
+          logger.error "[Github][#{sub_url}] smsMessage => #{res['smsMessage']}"
         end
         res
+      end
+
+      def get_access_token(installation_id)
+        request_url = Settings.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "Bearer #{get_jwt}",
+          'Accept': Settings.github.request.header.accept
+        }
+
+        res = post request_url, headers: headers
+
+        res = JSON.load(res.body)
+        access_token = res['token']
+        access_token
+      end
+
+      def get_jwt
+        # Private key contents
+        private_pem = Rails.env.production? ? ENV['PRIVATE_PEM'] : File.read(ENV['PATH_TO_PEM_FILE'])
+        private_key = OpenSSL::PKey::RSA.new(private_pem)
+        # Generate the JWT
+        payload = {
+          # issued at time
+          iat: Time.now.to_i,
+          # JWT expiration time (10 minute maximum)
+          exp: Time.now.to_i + (10 * 60),
+          # GitHub App's identifier
+          iss: ENV['GITHUB_APP_PAYLOAD_ISS_ID']
+        }
+
+        jwt = JWT.encode payload, private_key, 'RS256'
+        jwt
       end
 
       #
