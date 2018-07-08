@@ -15,7 +15,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
       @review = current_reviewer.reviews.ready_to_review!(@pull)
     end
     ActiveRecord::Base.transaction do
-      @review.reflect!
+      @review.github_exec_review!
     end
     redirect_to [:reviewers, @pull], success: t('.success')
   rescue => e

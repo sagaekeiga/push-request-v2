@@ -84,9 +84,10 @@ class Review < ApplicationRecord
   #
   # リモートのPRにレビューする
   #
-  def reflect!
+  def github_exec_review!
     ActiveRecord::Base.transaction do
       request_body = { body: body, event: 'COMMENT', comments: [] }
+
       review_comments.each do |review_comment|
         comment = {
           path: review_comment.path,
@@ -96,9 +97,10 @@ class Review < ApplicationRecord
         request_body[:comments] << comment
       end
 
-      json_format_request_body = request_body.to_json
-      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body, pull.repo.installation_id
-      if response.code == '200'
+      request_params = request_body.to_json
+      res = Github::Request.github_exec_review!(request_params, pull)
+
+      if res.code == '200'
         review_comments.each do |review_comment|
           review_comment.status = :commented
           review_comment.github_created_at = review_comment.updated_at
@@ -108,7 +110,7 @@ class Review < ApplicationRecord
         comment!
         pull.reviewed!
       else
-        fail response.body
+        fail res.body
       end
     end
     true
