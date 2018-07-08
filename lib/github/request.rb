@@ -16,8 +16,8 @@ module Github
       #
       # リクエストの送信処理
       #
-      # @param [String] endpoint エンドポイント ex. mt.json
-      # @param [Hash] params 送信パラメータ { message: xxxxxx, phone_number: xxxyyyyzzzz}
+      # @param [String] sub_url github api urlの後続のURL ex. /repos/:owner/:repo/pulls/comments/:comment_id
+      # @param [Hash] params 送信パラメータ { path: xxxx, position: yyyy, body: zzzz }
       #
       def _request(params, sub_url, installation_id)
         headers = {

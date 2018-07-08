@@ -109,6 +109,8 @@ class Review < ApplicationRecord
         end
         comment!
         pull.reviewed!
+      else
+        fail res.body
       end
     end
     true
