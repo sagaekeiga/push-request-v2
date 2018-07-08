@@ -40,6 +40,7 @@ ja:
   reviewers:
     dashboard:
       title: ダッシュボード
+      use: 使い方
     my_page:
       title: マイページ
       working_pulls_count: 作業中
