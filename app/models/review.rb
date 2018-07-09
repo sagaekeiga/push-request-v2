@@ -88,7 +88,7 @@ class Review < ApplicationRecord
     ActiveRecord::Base.transaction do
       request_body = { body: body, event: 'COMMENT', comments: [] }
 
-      review_comments.each do |review_comment|
+      review_comments.where.not(reviewer: nil).pending.each do |review_comment|
         comment = {
           path: review_comment.path,
           position: review_comment.position.to_i,
@@ -100,8 +100,8 @@ class Review < ApplicationRecord
       request_params = request_body.to_json
       res = Github::Request.github_exec_review!(request_params, pull)
 
-      if res.code == '200'
-        review_comments.each do |review_comment|
+      if res.code == 200
+        review_comments.where.not(reviewer: nil).pending.each do |review_comment|
           review_comment.status = :commented
           review_comment.github_created_at = review_comment.updated_at
           review_comment.github_updated_at = review_comment.updated_at
