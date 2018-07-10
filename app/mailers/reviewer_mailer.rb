@@ -1,5 +1,8 @@
 class ReviewerMailer < ApplicationMailer
-  def notice_comment_by_reviewee(review_comment)
-    mail(subject: t('.title'), to: review_comment.email) if resource.email
+  def comment(review_comment)
+    @review_comment = review_comment
+    @reviewer = review_comment.reviewer
+    @pull = review_comment.changed_file.pull
+    mail(subject: t('.title'), to: @reviewer.email)
   end
 end

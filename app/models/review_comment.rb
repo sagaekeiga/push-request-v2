@@ -129,7 +129,8 @@ class ReviewComment < ApplicationRecord
           github_updated_at: params[:comment][:updated_at]
         )
         review_comment.update_attributes!(reviewer: reviewer) if reviewer.present?
-        # @TODO Reviewerにメールで通知
+        p review_comment.reviewer
+        ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
       end
     end
     true
