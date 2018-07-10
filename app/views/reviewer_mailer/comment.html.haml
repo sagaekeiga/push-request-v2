@@ -1,0 +1,11 @@
+= @reviewer.github_account.name
+さん、こんにちは。
+
+= link_to @pull.title, Settings.reviewers.pulls.show + @pull.token.to_s
+にコメントがつきました。
+%br
+%br
+%small= simple_format(@review_comment.body)
+%br
+%br
+= link_to 'View on PushRequest', Settings.reviewers.pulls.show + @pull.token.to_s
