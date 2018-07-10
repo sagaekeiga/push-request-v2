@@ -29,7 +29,6 @@ class Reviewers::PullsController < Reviewers::BaseController
       current_reviewer.cancel_review_comments!(@pull)
       @pull.canceled!
       @pull.update(reviewer: nil)
-      RevieweeMailer.cancel(@pull).deliver_later
       return redirect_to [:reviewers, @pull], success: t('reviewers.views.canceled')
     end
     redirect_to file_reviewers_pull_reviews_url(@pull), success: t('.success')

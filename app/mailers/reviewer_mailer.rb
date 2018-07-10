@@ -1,4 +1,5 @@
 class ReviewerMailer < ApplicationMailer
+  # GitHub上でレビュイーがコメントした時
   def comment(review_comment)
     @review_comment = review_comment
     @reviewer = review_comment.reviewer
