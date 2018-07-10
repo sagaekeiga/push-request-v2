@@ -11,7 +11,7 @@ Rails.application.config.middleware.use OmniAuth::Builder do
       env["devise.mapping"] = Devise.mappings[:reviewee]
     end
 
-    AuthenticationsController.action(:failure).call(env)
+    ConnectsController.action(:failure).call(env)
   end
 
   configure do |config|

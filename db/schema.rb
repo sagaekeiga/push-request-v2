@@ -78,6 +78,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.string "name"
     t.string "full_name"
     t.boolean "private"
+    t.bigint "installation_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -127,6 +128,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewees_github_accounts", force: :cascade do |t|
     t.bigint "reviewee_id"
+    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"
@@ -172,6 +174,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewers_github_accounts", force: :cascade do |t|
     t.bigint "reviewer_id"
+    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"

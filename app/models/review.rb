@@ -76,7 +76,7 @@ class Review < ApplicationRecord
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|
       review_comment.review = review
-      review_comment.save!(context: :pending)
+      review_comment.save!
     end
     review
   end
@@ -84,10 +84,11 @@ class Review < ApplicationRecord
   #
   # リモートのPRにレビューする
   #
-  def reflect!
+  def github_exec_review!
     ActiveRecord::Base.transaction do
       request_body = { body: body, event: 'COMMENT', comments: [] }
-      review_comments.each do |review_comment|
+
+      review_comments.where.not(reviewer: nil).pending.each do |review_comment|
         comment = {
           path: review_comment.path,
           position: review_comment.position.to_i,
@@ -96,19 +97,20 @@ class Review < ApplicationRecord
         request_body[:comments] << comment
       end
 
-      json_format_request_body = request_body.to_json
-      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body
-      if response.code == '200'
-        review_comments.each do |review_comment|
+      request_params = request_body.to_json
+      res = Github::Request.github_exec_review!(request_params, pull)
+
+      if res.code == 200
+        review_comments.where.not(reviewer: nil).pending.each do |review_comment|
           review_comment.status = :commented
           review_comment.github_created_at = review_comment.updated_at
           review_comment.github_updated_at = review_comment.updated_at
-          review_comment.save!(context: :pending)
+          review_comment.save!
         end
         comment!
         pull.reviewed!
       else
-        fail response.body
+        fail res.body
       end
     end
     true
@@ -117,5 +119,4 @@ class Review < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     false
   end
-
 end

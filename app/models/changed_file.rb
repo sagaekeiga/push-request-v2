@@ -41,7 +41,7 @@ class ChangedFile < ApplicationRecord
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
   def self.create_or_restore!(pull)
     ActiveRecord::Base.transaction do
-      response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
+      response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files", pull.repo.installation_id
       response_changed_files_in_json_format.each do |response_changed_file|
         changed_file = pull.changed_files.with_deleted.find_by(sha: response_changed_file['sha'])
         if changed_file.nil?
@@ -71,7 +71,7 @@ class ChangedFile < ApplicationRecord
 
   def self.check_and_update!(pull, sha)
     ActiveRecord::Base.transaction do
-      response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
+      response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files", pull.repo.installation_id
       response_changed_files_in_json_format.each do |response_changed_file|
         changed_file = pull.changed_files.find_or_create_by!(
           sha: sha,

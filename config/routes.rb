@@ -41,7 +41,7 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewees do
-      get :dashboard, :pulls, :repos, :synchronizes
+      get :dashboard, :pulls, :repos
       get 'settings/integrations'
       resources :pulls, only: %i(update)
     end
@@ -83,6 +83,7 @@ Rails.application.routes.draw do
     namespace :admins do
       get :dashboard
       resources :reviewers, only: %i(show update)
+      resources :reviews, only: %i(index show)
     end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)

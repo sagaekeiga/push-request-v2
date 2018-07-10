@@ -50,6 +50,20 @@ p json = JSON.load(response.body)
 p json['token']
 
 
+## Oauth
+uri = URI.parse "https://github.com/login/oauth/authorize?client_id=Iv1.d8707dc6ca494ac7&redirect_uri=http://push-request-v2.test/auth/github/callback"
+request = Net::HTTP::Get.new(uri)
+request["Accept"] = "application/vnd.github.machine-man-preview+json"
+
+req_options = {
+  use_ssl: uri.scheme == "https",
+}
+
+response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+  http.request(request)
+end
+
+p response
 
 ## Get Repository ##
 # uri = URI.parse("https://api.github.com/installation/repositories")
@@ -104,20 +118,20 @@ p json['token']
 
 
 # Get Pullrequest ##
-# uri = URI.parse("https://api.github.com/repos/sagaekeiga/reviewers-prototype/pulls")
-# request = Net::HTTP::Get.new(uri)
-# request["Authorization"] = "token #{json['token']}"
-# request["Accept"] = "application/vnd.github.machine-man-preview+json"
-#
-# req_options = {
-#   use_ssl: uri.scheme == "https",
-# }
-#
-# response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-#   http.request(request)
-# end
-#
-# puts JSON.pretty_generate(JSON.load(response.body))
+uri = URI.parse("https://api.github.com/repos/sagaeminami/original/pulls")
+request = Net::HTTP::Get.new(uri)
+request["Authorization"] = "token #{json['token']}"
+request["Accept"] = "application/vnd.github.machine-man-preview+json"
+
+req_options = {
+  use_ssl: uri.scheme == "https",
+}
+
+response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+  http.request(request)
+end
+
+puts JSON.pretty_generate(JSON.load(response.body))
 
 ## Get PRFile ##
 # uri = URI.parse("https://api.github.com/repos/sagaekeiga/github-api-sample/pulls/1/files")
@@ -137,21 +151,21 @@ p json['token']
 # puts JSON.pretty_generate(JSON.load(response.body))
 
 ## Get PRFile ##
-uri = URI.parse("https://api.github.com/repos/sagaekeiga/github-api-sample/pulls/24/comments")
-request = Net::HTTP::Get.new(uri)
-request["Authorization"] = "token #{json['token']}"
-request["Accept"] = "application/vnd.github.machine-man-preview+json"
-
-req_options = {
-  use_ssl: uri.scheme == "https",
-}
-
-response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
-  http.request(request)
-end
-
-
-puts JSON.pretty_generate(JSON.load(response.body))
+# uri = URI.parse("https://api.github.com/repos/sagaekeiga/github-api-sample/pulls/24/comments")
+# request = Net::HTTP::Get.new(uri)
+# request["Authorization"] = "token #{json['token']}"
+# request["Accept"] = "application/vnd.github.machine-man-preview+json"
+#
+# req_options = {
+#   use_ssl: uri.scheme == "https",
+# }
+#
+# response = Net::HTTP.start(uri.hostname, uri.port, req_options) do |http|
+#   http.request(request)
+# end
+#
+#
+# puts JSON.pretty_generate(JSON.load(response.body))
 
 ## POST Review ##
 # uri = URI.parse("https://api.github.com/repos/sagaekeiga/github-api-sample/pulls/1/reviews")

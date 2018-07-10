@@ -62,7 +62,6 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :github_id, uniqueness: true, unless: -> { validation_context == :pending }
   validates :body, presence: true
   validates :path, presence: true
   validates :position, presence: true, numericality: { only_integer: true }
@@ -76,7 +75,7 @@ class ReviewComment < ApplicationRecord
 
   def self.create_or_restore!(pull)
     ActiveRecord::Base.transaction do
-      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
+      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments", pull.repo.installation_id
       response_review_comments_in_json_format.each do |response_review_comment|
         reviewer = Reviewers::GithubAccount.find_by(owner_id: response_review_comment['user']['id'])&.reviewer
         changed_file = pull.changed_files.find_by(
@@ -104,7 +103,7 @@ class ReviewComment < ApplicationRecord
     fail I18n.t('views.error.failed_create_review_comment')
   end
 
-  def self.receive_immediate_review_comment!(params)
+  def self.recieve_immediate_review_comment!(params)
     ActiveRecord::Base.transaction do
       review_comment = ReviewComment.with_deleted.find_or_initialize_by(github_id: params[:comment][:id])
       pull = Pull.find_by(remote_id: params[:pull_request][:id])
@@ -161,7 +160,7 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json
+    response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
     if response.code == '201'
       response = JSON.load(response.body)
       update!(github_id: response['id'])

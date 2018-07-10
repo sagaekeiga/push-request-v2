@@ -84,6 +84,7 @@
             font-size: $base-font-size;
             &.bg-primary {
               background-color: $color-gihub-blue;
+              color: $color-literal-gray;
               pre {
                 color: $color-literal-gray;
               }
