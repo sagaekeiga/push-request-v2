@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     namespace :reviewers do
       get :dashboard, :my_page
       get 'settings/integrations'
+      resources :settings, only: %i(index)
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end

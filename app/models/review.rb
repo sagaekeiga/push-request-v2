@@ -55,7 +55,6 @@ class Review < ApplicationRecord
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :event, default: events[:pending]
-  attribute :body, default: Settings.reviews.body
 
   # -------------------------------------------------------------------------------
   # Validations

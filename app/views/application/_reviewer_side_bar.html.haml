@@ -14,6 +14,18 @@
         %small= t('reviewers.my_page.title')
     %hr
     %li.list-group-item
+      = link_to :reviewers_settings do
+        %i.fas.fa-cogs
+        %br
+        %small.setting= t('reviewees.settings.integrations.title')
+    %hr
+    %li.list-group-item
+      = link_to :skills_reviewers_skillings do
+        %i.fas.fa-rocket
+        %br
+        %small= t 'reviewers.dashboard.skill'
+    %hr
+    %li.list-group-item
       = link_to 'https://qiita.com/k_s/private/7389692e39b5bea8177a', target: '_blank' do
         %i.fas.fa-info-circle
         %br

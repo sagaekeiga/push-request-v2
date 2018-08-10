@@ -3,12 +3,10 @@
     %tr
       %th= t '.working_pulls_count'
       %th= t '.reviewed_pulls_count'
-      %th= t '.sum_working_hours'
   %tbody
     %tr
       %td= current_reviewer.pulls.agreed.count
       %td= current_reviewer.pulls.where(status: %i(reviewed completed)).count
-      %td= t '.unit_minutes', working_hours: @reviews.sum(:working_hours)
 
 .page-header
   %h3= t '.working_pulls_count'
