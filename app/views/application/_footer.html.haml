@@ -1,7 +1,14 @@
-%footer.footer
-  .container
-    .col-xs-5
-      = link_to 'twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
-    .col-xs-2
-    .col-xs-5
-      = link_to 'facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+- if controller_name == 'welcome'
+  %footer.footer
+    .container
+      .col-xs-5
+        = link_to 'twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
+      .col-xs-2
+      .col-xs-5
+        = link_to 'facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+- else
+  %footer.footer
+    .container
+      %hr
+      .col-xs-12
+        = link_to 'contact', 'https://sagae528.sarahah.com/', target: '_blank'

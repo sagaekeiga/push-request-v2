@@ -50,5 +50,4 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
         = yield
-    - if controller_name == 'welcome'
-      = render 'footer'
+    = render 'footer'
