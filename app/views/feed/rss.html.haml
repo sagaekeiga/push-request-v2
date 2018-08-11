@@ -1,0 +1,11 @@
+.col-xs-12
+  %table.table.table-hover
+    %thead
+      %tr
+        %th スキル
+        %th URL
+    %tbody
+      - Skill.all.each do |skill|
+        %tr
+          %td= skill.name
+          %td= link_to "#{Settings.rss.skill_url}#{skill.name}", "#{Settings.rss.skill_url}#{skill.name}"

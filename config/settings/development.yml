@@ -1,3 +1,5 @@
 reviewers:
   pulls:
     show: http://<%= ENV['WEB_DOMAIN'] %>/reviewers/pulls/
+rss:
+  skill_url: http://<%= ENV['WEB_DOMAIN'] %>/feed?format=rss&skill_name=

@@ -62,7 +62,7 @@ class Reviewer < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:pending]
+  attribute :status, default: statuses[:active]
 
   # -------------------------------------------------------------------------------
   # InstanceMethods
