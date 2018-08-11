@@ -4,7 +4,7 @@ class FeedController < ApplicationController
     @pulls = Pull.order(created_at: :desc)
     if @skill
       repos = Repo.joins(:skillings).where(skillings: { skill_id: @skill.id })
-      @pulls = Pull.where(repo: repos).order(created_at: :desc).last(10)
+      @pulls = Pull.where(repo: repos).order(created_at: :desc).first(10)
     end
     respond_to do |format|
       format.rss { render layout: false }
