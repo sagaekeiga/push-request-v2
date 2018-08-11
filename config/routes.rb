@@ -85,7 +85,10 @@ Rails.application.routes.draw do
       resources :review_comments, only: %i(create update destroy show)
     end
 
-
+    #
+    # RSS
+    #
+    resources :feed, only: %i(index)
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)
       mount LetterOpenerWeb::Engine, at: '/letter_opener'
