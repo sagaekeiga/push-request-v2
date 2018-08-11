@@ -12,7 +12,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   def create
     # データの作成とGHAへのリクエストを分離することで例外処理に対応する
     ActiveRecord::Base.transaction do
-      @review = current_reviewer.reviews.ready_to_review!(@pull)
+      @review = current_reviewer.reviews.ready_to_review!(@pull, params[:review][:body])
       @review.github_exec_review!
     end
     redirect_to [:reviewers, @pull], success: t('.success')

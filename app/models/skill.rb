@@ -20,7 +20,7 @@ class Skill < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_many :skillings, dependent: :destroy
-  has_many :reviewers, through: :skillings
+  has_many :reviewers
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -37,4 +37,8 @@ class Skill < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :name, presence: true, uniqueness: true
+
+  def self.top_match_by(alphabet)
+    language.where("name like '#{alphabet}%'").or(language.where("name like '#{alphabet.upcase}%'"))
+  end
 end

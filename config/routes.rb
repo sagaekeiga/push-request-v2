@@ -13,6 +13,20 @@ class AdminDomainConstraint
 end
 
 Rails.application.routes.draw do
+  namespace :admin do
+    resources :reviewees
+    resources :reviewers
+    resources :changed_files
+    resources :pulls
+    resources :repos
+    resources :reviews
+    resources :review_comments
+    resources :skills
+    resources :skillings
+
+    root to: "reviewees#index"
+  end
+
   scope module: :api do
     scope module: :v1 do
       namespace :github_apps do
@@ -72,19 +86,9 @@ Rails.application.routes.draw do
     end
 
     #
-    # Admin
+    # RSS
     #
-    devise_for :admins, path: 'admins', controllers: {
-      registrations: 'admins/registrations',
-      confirmations: 'admins/confirmations',
-      sessions: 'admins/sessions'
-    }
-
-    namespace :admins do
-      get :dashboard
-      resources :reviewers, only: %i(show update)
-      resources :reviews, only: %i(index show)
-    end
+    resources :feed, only: %i(index)
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)
       mount LetterOpenerWeb::Engine, at: '/letter_opener'

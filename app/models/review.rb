@@ -55,20 +55,19 @@ class Review < ApplicationRecord
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :event, default: events[:pending]
-  attribute :body, default: Settings.reviews.body
 
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :body, presence: true
   validates :working_hours, presence: true, on: %i(update)
 
   #
   # リモートに送るレビューデータの作成・レビューコメントの更新をする
   #
-  def self.ready_to_review!(pull)
+  def self.ready_to_review!(pull, param_body)
     review = new(
-      pull: pull
+      pull: pull,
+      body: param_body
     )
     review.save!
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)

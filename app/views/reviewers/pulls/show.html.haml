@@ -3,7 +3,7 @@
     %h3= @pull.title
   = render 'reviewers/shared/tab', pull: @pull,  changed_files: @changed_files
   .pulls-conversation-wrapper
-    .col-xs-12.col-sm-10
+    .col-xs-12.col-sm-8
       .pulls-body-wrapper
         - if @pull.agreed?
           .text-danger= t '.expiured_at', time: (l (@pull.updated_at + 2.hours).to_time)
@@ -72,7 +72,7 @@
                                 %input{ type: 'hidden', value: review_comment.changed_file.id, class: 'changed_file_id' }
                                 %input{ type: 'hidden', value: review_comment.changed_file.commit_id, class: 'commit_id' }
                                 %input{ type: 'hidden', value: review_comment.github_id, class: 'github_id' }
-    .col-xs-12.col-sm-2
+    .col-xs-12.col-sm-4
       .text-center
         .label.label-default= @pull.status_i18n
       %hr

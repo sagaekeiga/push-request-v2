@@ -14,8 +14,6 @@
         = render 'reviewees_navbar'
       - elsif reviewer_signed_in?
         = render 'reviewers_navbar'
-      - elsif admin_signed_in?
-        = render 'admins_navbar'
       - else
         = render 'navbar'
     - if reviewee_signed_in?
@@ -36,12 +34,6 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
-    - elsif admin_signed_in?
-      .container-fluid.body-container
-        - !content_for?(:flash) && flash && flash.each do |key, message|
-          .alert{ class: "alert-#{key}", role: 'alert' }
-            %strong= message
-        = yield
     - else
       .container-fluid.top
         - unless controller_name == 'welcome'
@@ -50,5 +42,4 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
         = yield
-    - if controller_name == 'welcome'
-      = render 'footer'
+    = render 'footer'
