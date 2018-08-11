@@ -42,6 +42,7 @@ ja:
       title: ダッシュボード
       use: 使い方
       skill: スキル
+      logout: ログアウト
     my_page:
       title: マイページ
       working_pulls_count: 作業中

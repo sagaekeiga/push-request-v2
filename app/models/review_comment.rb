@@ -67,6 +67,7 @@ class ReviewComment < ApplicationRecord
   validates :position, presence: true, numericality: { only_integer: true }
 
   def self.calc_working_hours
+    return 0 if self.first.nil?
     start_time = self.first.created_at
     end_time = Time.zone.now
     working_hours = ((end_time - start_time).to_i / 60).floor

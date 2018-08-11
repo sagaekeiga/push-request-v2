@@ -20,7 +20,7 @@ class Skill < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_many :skillings, dependent: :destroy
-  has_many :reviewers, through: :skillings
+  has_many :reviewers
 
   # -------------------------------------------------------------------------------
   # Enumerables
