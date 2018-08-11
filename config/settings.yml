@@ -19,3 +19,12 @@ reviews:
     インラインで問題に返信してもらったり、特定のタイプのフィードバックを多かれ少なかれ見たいと思ったらお知らせください。
 qiita:
   about_install_github_app: https://qiita.com/k_s/private/3b5354aab17edc6af33a
+site:
+  name: PushRequest
+  page_title: PushRequest
+  page_description: コードレビューのマーケットプレイス
+  page_keywords: プルリクエスト、pullrequest、レビュー、エンジニア、独学、個人
+  meta:
+    ogp:
+      type: 'website'
+      image_path: 'top'
