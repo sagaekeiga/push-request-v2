@@ -964,6 +964,8 @@ GEM
       haml (>= 4.0, < 6)
       nokogiri (>= 1.6.0)
       ruby_parser (~> 3.5)
+    html_truncator (0.4.2)
+      nokogiri (~> 1.5)
     htmlentities (4.3.4)
     http-cookie (1.0.3)
       domain_name (~> 0.5)
@@ -1365,6 +1367,7 @@ DEPENDENCIES
   hirb
   hirb-unicode
   hiredis
+  html_truncator (~> 0.2)
   httparty
   i18n-tasks
   inky-rb

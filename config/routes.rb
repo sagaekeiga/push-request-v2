@@ -88,7 +88,9 @@ Rails.application.routes.draw do
     #
     # RSS
     #
-    resources :feed, only: %i(index)
+    resources :feed, only: %i(index) do
+      get :rss, on: :collection
+    end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)
       mount LetterOpenerWeb::Engine, at: '/letter_opener'
