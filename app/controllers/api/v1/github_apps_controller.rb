@@ -8,11 +8,11 @@ class Api::V1::GithubAppsController < ApplicationController
   # POST /github_apps/receive_webhook
   def receive_webhook
     case request.headers['X-GitHub-Event']
-    when 'installation_repositories'
+    when 'installation_repositories', 'installation'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
       return response_internal_server_error if @github_account.nil?
       # Add
-      CreateRepoJob.perform_later(@github_account, params.to_json) if params[:repositories_added].present?
+      CreateRepoJob.perform_later(@github_account, params.to_json) if params[:repositories_added].present? || params[:repositories].present?
       # Remove
       if params[:github_app][:repositories_removed].present?
         params[:github_app][:repositories_removed].each do |repositories_removed_params|

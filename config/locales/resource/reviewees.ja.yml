@@ -1,7 +1,7 @@
 ja:
   activerecord:
     models:
-      reviewee: 従業員
+      reviewee: レビュイー
     attributes:
       reviewee:
         id: ID

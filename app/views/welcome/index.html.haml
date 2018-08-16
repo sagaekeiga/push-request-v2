@@ -38,6 +38,65 @@
           レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
         %hr
         = image_tag 'demo.png', class: 'img-responsive'
+.container-fluid.teaser-wrapper
+  %hr
+  .container
+    %br
+    %br
+    %h1.text-center Best Practice
+    %br
+    .text-center.text-muted.sub-demo-line
+      期待した結果を得るためにもっとも効果的なリクエストをしてください。
+      %br
+      レビュワーはあなたが書いたコードの背景を理解している訳ではありません。
+      %br
+      %br
+      %br
+      = link_to 'より良いプルリクエストのための10のヒント(原文)', 'http://blog.ploeh.dk/2015/01/15/10-tips-for-better-pull-requests/'
+      を読む
+      %br
+      = link_to 'より良いプルリクエストのための10のヒント(翻訳)', 'https://yakst.com/ja/posts/1625'
+      を読む
+      %br
+      %br
+      %br
+      %h2
+        %b.text-center Example
+      例えば、Docker構築へのレビューをもらいたい場合、
+      %br
+      関連ファイルだけをpullrequestに用意してリクエストしてください。
+      %br
+      %br
+      = image_tag 'docker.mov', class: 'img-responsive center-block'
+      %br
+      %br
+      %br
+      %br
+      トレンドだけど、キャッチアップできていない分野だけのリクエストもおすすめです。
+      %br
+      以下の記事を参考にしてください。
+      %br
+      %br
+      = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
+.container-fluid.teaser-wrapper
+  %hr
+  .container
+    %br
+    %br
+    %h1.text-center To corporate technical staff
+    %br
+    .text-center.text-muted.sub-demo-line
+      コミッターがあなたのプロジェクトのコードレビューを行います。
+      %br
+      技術負債の削減・脆弱性の発見と解決案提示を行い、堅牢で綺麗なコードに仕上げることができます。
+      %br
+      %br
+      %br
+      = link_to 'ティザーサイト', 'https://pushrequest.jp/'
+      を用意しています
+      %br
+      %br
+      %br
 .container-fluid.footer
   %hr
   .container

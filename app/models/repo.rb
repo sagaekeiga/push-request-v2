@@ -55,25 +55,33 @@ class Repo < ApplicationRecord
   # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
   def self.fetch_repo!(repositories_params)
-    ActiveRecord::Base.transaction do
-      repositories_params['repositories_added'].each do |repository|
-        repo = with_deleted.find_or_create_by(remote_id: repository['id'])
-        repo.restore if repo&.deleted?
-        repo.update_attributes!(
-          remote_id: repository['id'],                               # レポジトリID
-          name: repository['name'],                                  # レポジトリ名
-          full_name: repository['full_name'],                        # ニックネーム + レポジトリ名
-          private: repository['private'],                            # プライベート
-          installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
-        )
-        Pull.create_or_restore!(repo)
+    repos =
+      if repositories_params['repositories_added'].present?
+        repositories_params['repositories_added']
+      else
+        repositories_params['repositories']
+      end
+    repos.each do |repository|
+      begin
+        ActiveRecord::Base.transaction do
+          repo = with_deleted.find_or_create_by(remote_id: repository['id'])
+          repo.restore if repo&.deleted?
+          repo.update_attributes!(
+            remote_id: repository['id'],                               # レポジトリID
+            name: repository['name'],                                  # レポジトリ名
+            full_name: repository['full_name'],                        # ニックネーム + レポジトリ名
+            private: repository['private'],                            # プライベート
+            installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
+          )
+          Pull.create_or_restore!(repo)
+        end
+        true
+      rescue => e
+        Rails.logger.error e
+        Rails.logger.error e.backtrace.join("\n")
+        false
       end
     end
-    true
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    false
   end
 
   # レビュワーのスキルに合致するPRを取得する

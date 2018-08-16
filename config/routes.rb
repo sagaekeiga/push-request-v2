@@ -100,4 +100,5 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
   end
+  get '*path', to: 'application#render_404'
 end
