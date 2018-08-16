@@ -7,6 +7,10 @@
         = link_to 'facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
         |
         = link_to 'rss一覧', :rss_feed_index
+        |
+        = link_to 'プロジェクトにコードレビューの導入を検討する', 'https://pushrequest.jp/'
+        %hr
+        = render 'social_button'
 - else
   %footer.footer
     .container
@@ -17,3 +21,5 @@
         = link_to 'rss', 'https://feedly.com/i/subscription/feed%2Fhttps%3A%2F%2Fpush-request-v2-staging.herokuapp.com%2Ffeed%3Fformat%3Drss'
         |
         = link_to 'rss一覧', :rss_feed_index
+        |
+        = link_to 'プロジェクトにコードレビューの導入を検討する', 'https://pushrequest.jp/'

@@ -36,4 +36,32 @@ class ApplicationController < ActionController::Base
     redirect_to reviewers_dashboard_url if reviewer_signed_in?
     redirect_to reviewees_dashboard_url if reviewee_signed_in?
   end
+
+  rescue_from Exception,                        with: :render_500
+  rescue_from ActiveRecord::RecordNotFound,     with: :render_404
+  rescue_from ActionController::RoutingError,   with: :render_404
+
+  def render_404(e = nil)
+    logger.info "Rendering 404 with exception: #{e.message}" if e
+
+    format = params[:format] == :json ? :json : :html
+    render template: 'errors/error_404', status: 404, layout: 'lp', content_type: 'text/html'
+  end
+
+  def render_500(e = nil)
+    if e
+      logger.error "Rendering 500 with exception: #{e.message}"
+      logger.error e.backtrace.join("\n")
+    end
+    render template: 'errors/error_500', status: 500, layout: 'lp', content_type: 'text/html'
+  end
+
+  force_ssl if: :use_ssl?
+
+  #
+  # 本番環境かどうかを返す
+  #
+  def use_ssl?
+    Rails.env.production?
+  end
 end

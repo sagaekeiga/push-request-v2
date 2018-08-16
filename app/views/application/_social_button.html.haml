@@ -1,0 +1,23 @@
+.share
+  .twitter
+    %a.twitter-share-button{"data-show-count" => "false", href: "https://twitter.com/share?ref_src=twsrc%5Etfw"} Tweet
+    %script{async: "", charset: "utf-8", src: "https://platform.twitter.com/widgets.js"}
+  .facebook
+    .fb-like{ "data-action" => "like", "data-href" => "https://www.push-request.com/", "data-layout" => "button_count", "data-share" => "true", "data-show-faces" => "true", "data-size" => "small"}
+    #fb-root
+    :javascript
+      (function(d, s, id) {
+        var js, fjs = d.getElementsByTagName(s)[0];
+        if (d.getElementById(id)) return;
+        js = d.createElement(s); js.id = id;
+        js.src = 'https://connect.facebook.net/ja_JP/sdk.js#xfbml=1&version=v3.1&appId=1904557289603983&autoLogAppEvents=1';
+        fjs.parentNode.insertBefore(js, fjs);
+      }(document, 'script', 'facebook-jssdk'));
+  .hatena
+    %a.hatena-bookmark-button{"data-hatena-bookmark-lang" => "ja", "data-hatena-bookmark-layout" => "basic-label-counter", href: "http://b.hatena.ne.jp/entry/s/www.push-request.com/", title: "このエントリーをはてなブックマークに追加"}
+      %img{alt: "このエントリーをはてなブックマークに追加", height: "20", src: "https://b.st-hatena.com/images/entry-button/button-only@2x.png", style: "border: none;", width: "20"}/
+    %script{async: "async", charset: "utf-8", src: "https://b.st-hatena.com/js/bookmark_button.js", type: "text/javascript"}
+  .pocket
+    %a.pocket-btn{"data-lang" => "en", "data-pocket-count" => "horizontal", "data-pocket-label" => "pocket"}
+    :javascript
+      !function(d,i){if(!d.getElementById(i)){var j=d.createElement("script");j.id=i;j.src="https://widgets.getpocket.com/v1/j/btn.js?v=1";var w=d.getElementById(i);d.body.appendChild(j);}}(document,"pocket-btn-js");
