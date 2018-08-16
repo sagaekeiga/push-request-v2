@@ -15,7 +15,7 @@
         %br
         GitHub Appとの連携を終えたあとに2ステップであなたのコードの品質を上げることができます
       .col-xs-12.step-1.text-center
-        %h3 STEP 1 あなたのプルリクエストをレビュワーに公開しましょう
+        %h3 STEP 1 プルリクエストの公開
         %small.text-muted
           GitHubから取得したあなたのプルリクエストをレビュワーに公開してみましょう
           「公開する」ボタンを押してください
@@ -24,22 +24,19 @@
           %thead
             %tr
               %th= t 'activerecord.models.pull'
-              %th= t 'activerecord.models.repo'
               %th= t 'activerecord.attributes.pull.status'
           %tbody
             %tr
               %td.text-center 決済機能の実装
-              %td
               %td.text-center
                 %button{ type: 'button', class: 'btn btn-primary demo-request-btn' } 公開する
       #demo_img.hidden.col-xs-12.step-1.text-center
-        %h3 STEP 2 レビュワーからコメントが届く
+        %h3 STEP 2 レビュワーからのコメント
         %small.text-muted
           レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
         %hr
         = image_tag 'demo.png', class: 'img-responsive'
-.container-fluid.teaser-wrapper
-  %hr
+.container-fluid.example-wrapper
   .container
     %br
     %br
@@ -67,7 +64,7 @@
       関連ファイルだけをpullrequestに用意してリクエストしてください。
       %br
       %br
-      = image_tag 'docker.mov', class: 'img-responsive center-block'
+      = image_tag 'docker.mov', class: 'docker img-responsive center-block'
       %br
       %br
       %br
@@ -79,7 +76,6 @@
       %br
       = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
 .container-fluid.teaser-wrapper
-  %hr
   .container
     %br
     %br
