@@ -6,11 +6,23 @@
       PushRequestはコードレビューのマーケットプレイスです
       %br
       あなたのプルリクエストを公開することでコードの品質を上げることができます
+    .container
+      .col-xs-12
+        .col-xs-6
+          .text-center
+            初めての方
+            %br
+            = link_to 'Sign up', new_reviewee_registration_path, class: 'btn btn-block btn-primary'
+        .col-xs-6
+          .text-center
+            登録済みの方
+            %br
+            = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
 .container
   .reviewee-dashboard-wrapper
     .demo-wrapper
       %h1.text-center Demo
-      .text-center.text-muted.sub-demo-line
+      .text-center.text-muted.sub-line
         PushRequestでは簡単にレビューをもらうことができる仕組みを構築しています
         %br
         GitHub Appとの連携を終えたあとに2ステップであなたのコードの品質を上げることができます
@@ -38,77 +50,71 @@
         = image_tag 'demo.png', class: 'img-responsive'
 .container-fluid.example-wrapper
   .container
-    %br
-    %br
     %h1.text-center Best Practice
     %br
-    .text-center.text-muted.sub-demo-line
-      期待した結果を得るためにもっとも効果的なリクエストをしてください。
-      %br
-      レビュワーはあなたが書いたコードの背景を理解している訳ではありません。
-      %br
-      %br
-      %br
-      = link_to 'より良いプルリクエストのための10のヒント(原文)', 'http://blog.ploeh.dk/2015/01/15/10-tips-for-better-pull-requests/'
-      を読む
-      %br
-      = link_to 'より良いプルリクエストのための10のヒント(翻訳)', 'https://yakst.com/ja/posts/1625'
-      を読む
-      %br
-      %br
-      %br
-      %h2
-        %b.text-center Example
-      例えば、Docker構築へのレビューをもらいたい場合、
-      %br
-      関連ファイルだけをpullrequestに用意してリクエストしてください。
-      %br
-      %br
-      = image_tag 'docker.mov', class: 'docker img-responsive center-block'
-      %br
-      %br
-      %br
-      %br
-      トレンドだけど、キャッチアップできていない分野だけのリクエストもおすすめです。
-      %br
-      以下の記事を参考にしてください。
-      %br
-      %br
-      = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
+    .text-center.text-muted.sub-line
+      .best-practice-description
+        期待した結果を得るために
+        %br
+        効果的なリクエストをしてください。
+        %br
+        .br
+        レビュワーはあなたが書いたコードの背景を
+        %br
+        理解している訳ではありません。
+      .quote-first
+        = link_to 'より良いプルリクエストのための10のヒント(原文)', 'http://blog.ploeh.dk/2015/01/15/10-tips-for-better-pull-requests/'
+      .quote
+        = link_to 'より良いプルリクエストのための10のヒント(翻訳)', 'https://yakst.com/ja/posts/1625', class: 'quote'
+      .example
+        %h2
+          %b.text-center Example
+        簡潔なタイトルと最小限の変更にしましょう。
+        %br
+        例えば、Docker構築のレビューをもらう場合、
+        %br
+        関連ファイルだけをpullrequestにプッシュしてください。
+        = image_tag 'docker.mov', class: 'docker img-responsive center-block'
+      .recommend
+        %h2
+          %b.text-center Recommend
+        .sub-line
+          キャッチアップできていない分野だけのレビュー
+          %br
+          時間がない人向けに部分的なコードレビューもオススメです
+        .quote
+          = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
+          （Qiitaより引用）
 .container-fluid.teaser-wrapper
   .container
-    %br
-    %br
     %h1.text-center To corporate technical staff
     %br
     .text-center.text-muted.sub-demo-line
-      コミッターがあなたのプロジェクトのコードレビューを行います。
+      コミッターがプロジェクトのコードレビューをします。
       %br
       技術負債の削減・脆弱性の発見と解決案提示を行い、堅牢で綺麗なコードに仕上げることができます。
       %br
       %br
       %br
-      = link_to 'ティザーサイト', 'https://pushrequest.jp/'
-      を用意しています
+      = link_to '詳しく読む', 'https://pushrequest.jp/'
       %br
       %br
-      %br
-.container-fluid.footer
-  %hr
+.container-fluid.get-started
   .container
     .text-center.start-wrapper
       %h1 Get Started!
       .text-center.start-line
         PushRequestはすぐに利用することができます。
         不明点がある方は運営にお問い合わせください
-    .col-xs-6
-      .text-center
-        初めての方はこちらへ
-        %br
-        = link_to 'Sign up', new_reviewee_registration_path, class: 'btn btn-block btn-primary'
-    .col-xs-6
-      .text-center
-        すでに登録している方はこちらへ
-        %br
-        = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
+      .col-xs-12
+        .col-xs-6
+          .text-center
+            初めての方
+            %br
+            = link_to 'Sign up', new_reviewee_registration_path, class: 'btn btn-block btn-primary'
+        .col-xs-6
+          .text-center
+            登録済みの方
+            %br
+            = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
 = javascript_pack_tag 'demo'

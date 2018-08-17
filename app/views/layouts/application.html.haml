@@ -41,4 +41,7 @@
               .alert{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
         = yield
-    = render 'footer'
+    .footer
+      .container-fluid
+        .text-center
+          = render 'footer'

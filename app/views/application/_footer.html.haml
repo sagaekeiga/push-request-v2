@@ -1,25 +1,23 @@
 - if controller_name == 'welcome'
-  %footer.footer
-    .container
-      .col-xs-12
-        = link_to 'twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
-        |
-        = link_to 'facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
-        |
-        = link_to 'rss一覧', :rss_feed_index
-        |
-        = link_to 'プロジェクトにコードレビューの導入を検討する', 'https://pushrequest.jp/'
-        %hr
-        = render 'social_button'
-- else
-  %footer.footer
-    .container
+  %footer
+    .col-xs-12
+      = link_to 'Twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
+      |
+      = link_to 'Facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+      |
+      = link_to 'rss一覧', :rss_feed_index
+      |
+      = link_to '企業様', 'https://pushrequest.jp/'
       %hr
-      .col-xs-12
+      = render 'social_button'
+- else
+  %footer.in
+    .col-xs-12
+      %hr
         = link_to 'contact', 'https://sagae528.sarahah.com/', target: '_blank'
         |
         = link_to 'rss', 'https://feedly.com/i/subscription/feed%2Fhttps%3A%2F%2Fpush-request-v2-staging.herokuapp.com%2Ffeed%3Fformat%3Drss'
         |
         = link_to 'rss一覧', :rss_feed_index
         |
-        = link_to 'プロジェクトにコードレビューの導入を検討する', 'https://pushrequest.jp/'
+        = link_to '企業様', 'https://pushrequest.jp/'
