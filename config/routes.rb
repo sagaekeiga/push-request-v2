@@ -13,19 +13,8 @@ class AdminDomainConstraint
 end
 
 Rails.application.routes.draw do
-  namespace :admin do
-    resources :reviewees
-    resources :reviewers
-    resources :changed_files
-    resources :pulls
-    resources :repos
-    resources :reviews
-    resources :review_comments
-    resources :skills
-    resources :skillings
-
-    root to: "reviewees#index"
-  end
+  devise_for :admin_users, ActiveAdmin::Devise.config
+  ActiveAdmin.routes(self)
 
   scope module: :api do
     scope module: :v1 do

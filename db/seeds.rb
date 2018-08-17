@@ -6,3 +6,4 @@ languages.each do |language|
     category: :language
   )
 end
+AdminUser.create!(email: 'sagae5.28rujeae@gmail.com', password: 's19930528', password_confirmation: 's19930528')

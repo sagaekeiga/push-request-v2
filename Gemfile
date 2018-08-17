@@ -117,8 +117,8 @@ gem 'marked-rails'
 gem 'friendly_id', '~> 5.1.0'
 gem 'coderay'
 gem 'redcarpet'
-gem 'administrate'
 gem 'html_truncator', '~> 0.2'
+gem 'activeadmin', github: 'gregbell/active_admin'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'
