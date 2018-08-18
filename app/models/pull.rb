@@ -32,7 +32,7 @@
 #
 
 class Pull < ApplicationRecord
-  include GenToken, FriendlyId
+  include GenToken, FriendlyId, HTTParty
   acts_as_paranoid
   # -------------------------------------------------------------------------------
   # Relations
