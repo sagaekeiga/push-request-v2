@@ -18,7 +18,40 @@
             登録済みの方
             %br
             = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
-.container
+
+//
+// Live
+//
+.container-fluid.live-wrapper
+  .container
+    %h1.text-center Live
+    %br
+    .text-center.text-muted.sub-line
+      .description
+        479言語の pullrequest が投稿されます。
+        %br
+        ユーザーを特定できる情報が漏れることはありません。
+        %br
+    %table.table.table-hover.pulls-on-dashboard-wrapper
+      %thead
+        %tr
+          %th= t 'activerecord.models.pull'
+          %th= t 'activerecord.models.skill'
+          %th= t 'activerecord.attributes.repo.private'
+          %th
+      %tbody
+        - @pulls.each do |pull|
+          %tr
+            %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
+            %td.text-center
+              %span.label.label-warning= pull.repo.skillings.first.skill.name
+            %td.text-center= pull.repo_private
+            %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull)
+
+//
+// Demo
+//
+.container.demo
   .reviewee-dashboard-wrapper
     .demo-wrapper
       %h1.text-center Demo
@@ -48,6 +81,9 @@
           レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
         %hr
         = image_tag 'demo.png', class: 'img-responsive'
+//
+// Example
+//
 .container-fluid.example-wrapper
   .container
     %h1.text-center Best Practice
@@ -85,11 +121,14 @@
         .quote
           = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
           （Qiitaより引用）
+//
+// Teaser
+//
 .container-fluid.teaser-wrapper
   .container
     %h1.text-center To corporate technical staff
     %br
-    .text-center.text-muted.sub-demo-line
+    .text-center.text-muted.sub-line
       コミッターがプロジェクトのコードレビューをします。
       %br
       技術負債の削減・脆弱性の発見と解決案提示を行い、堅牢で綺麗なコードに仕上げることができます。
@@ -99,6 +138,9 @@
       = link_to '詳しく読む', 'https://pushrequest.jp/'
       %br
       %br
+//
+// Get Started
+//
 .container-fluid.get-started
   .container
     .text-center.start-wrapper
