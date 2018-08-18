@@ -131,7 +131,7 @@
     .demo-wrapper {
       background-color: $color-white;
       h1 {
-        margin-top: $base-margin * 3;
+        margin-top: $base-margin * 4;
         font-size: $base-font-size * 4;
         font-weight: $base-font-weight * 4;
       }
@@ -155,6 +155,7 @@
     @media (max-width: $screen-xs-max) {
       .demo-wrapper {
         h1 {
+          margin-top: $base-margin * 3;
           font-size: $base-font-size * 4;
           font-weight: $base-font-weight * 4;
         }
@@ -232,8 +233,6 @@
       .container {
         h1 {
           margin-top: $base-margin * 3;
-          font-size: $base-font-size * 4;
-          font-weight: $base-font-weight * 4;
           color: $color-white;
         }
         .sub-line {
@@ -256,20 +255,12 @@
           .example {
             margin-top: $base-margin * 6;
             font-size: $base-font-size;
-            color: $color-white;
-            .docker {
-              margin-top: $base-margin;
-            }
           }
           .recommend {
             margin-top: $base-margin * 6;
             font-size: $base-font-size;
-            color: $color-white;
             .sub-line {
               font-size: $base-font-size;
-            }
-            .quote {
-              margin-top: $base-margin;
             }
           }
         }
@@ -289,7 +280,7 @@
         font-size: $base-font-size * 4;
         font-weight: $base-font-weight * 4;
       }
-      .sub-demo-line {
+      .sub-line {
         font-size: $base-font-size * 1.5;
         margin-bottom: $base-margin * 4;
       }
@@ -298,10 +289,8 @@
       .container {
         h1 {
           margin-top: $base-margin * 3;
-          font-size: $base-font-size * 4;
-          font-weight: $base-font-weight * 4;
         }
-        .sub-demo-line {
+        .sub-line {
           font-size: $base-font-size * 1.1;
           margin-bottom: $base-margin * 3;
         }
@@ -318,33 +307,28 @@
     padding: 0;
     margin-bottom: - $base-margin;
     color: $color-white;
+    background-color: $color-github-black;
     .container {
       h1 {
         margin-top: $base-margin * 4;
         font-size: $base-font-size * 4;
         font-weight: $base-font-weight * 4;
       }
-      .sub-demo-line {
-        font-size: $base-font-size * 1.5;
-        margin-bottom: $base-margin * 4;
-        color: $color-white;
-      }
-    }
-    background-color: $color-github-black;
-    .start-wrapper {
-      h1 {
-        font-size: $base-font-size * 4;
-        font-weight: $base-font-weight * 4;
-      }
-      .start-line {
-        font-size: $base-font-size * 1.2;
-        margin-bottom: $base-margin * 4;
-      }
-      .col-xs-12 {
-        padding: 0;
-        margin-bottom: $base-margin * 5;
-        .col-xs-6 {
-          font-size: $base-font-size * 1.1;
+      .start-wrapper {
+        h1 {
+          font-size: $base-font-size * 4;
+          font-weight: $base-font-weight * 4;
+        }
+        .start-line {
+          font-size: $base-font-size * 1.2;
+          margin-bottom: $base-margin * 4;
+        }
+        .col-xs-12 {
+          padding: 0;
+          margin-bottom: $base-margin * 5;
+          .col-xs-6 {
+            font-size: $base-font-size * 1.1;
+          }
         }
       }
     }
@@ -353,20 +337,10 @@
         .start-wrapper {
           h1 {
             margin-top: $base-margin * 3;
-            font-size: $base-font-size * 4;
-            font-weight: $base-font-weight * 4;
-            color: $color-white;
           }
           .start-line {
-            font-size: $base-font-size * 1.1;
+            font-size: $base-font-size;
             margin-bottom: $base-margin * 2;
-          }
-          .col-xs-12 {
-            padding: 0;
-            margin-bottom: $base-margin * 5;
-            .col-xs-6 {
-              font-size: $base-font-size * 1.1;
-            }
           }
         }
       }
@@ -374,16 +348,11 @@
   }
 }
 
-.share .twitter, .share .facebook, .share .pocket, .share .hatena, .share .my-twitter, .share .my-facebook, .share .my-rss, .share .my-teaser {
+.share .twitter, .share .facebook, .share .pocket, .share .hatena {
   display: inline-block;
   vertical-align: top;
 }
 .share .facebook {
   width: 150px;
   overflow: hidden;
-}
-.share .border {
-  display: inline-block;
-  vertical-align: top;
-  width: 100px;
 }
