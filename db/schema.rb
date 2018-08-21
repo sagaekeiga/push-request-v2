@@ -107,11 +107,9 @@ ActiveRecord::Schema.define(version: 20180817163930) do
     t.text "body"
     t.string "path"
     t.integer "position"
-    t.bigint "github_id"
     t.bigint "in_reply_to_id"
+    t.bigint "remote_id"
     t.integer "status"
-    t.datetime "github_created_at"
-    t.datetime "github_updated_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -215,6 +213,7 @@ ActiveRecord::Schema.define(version: 20180817163930) do
   create_table "reviews", force: :cascade do |t|
     t.bigint "pull_id"
     t.bigint "reviewer_id"
+    t.bigint "remote_id"
     t.text "body"
     t.string "state"
     t.integer "event"

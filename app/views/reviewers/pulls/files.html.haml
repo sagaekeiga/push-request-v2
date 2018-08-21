@@ -1,6 +1,8 @@
 .col-xs-12
   .page-header{ 'pull-id': @pull.id }
-    %h3= @pull.title
+    %h3
+      = @pull.title
+      .pull-right.label.label-default= @pull.repo.private == false ? 'public' : 'private'
   = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
   .pulls-files-wrapper
     .col-xs-12.col-sm-10

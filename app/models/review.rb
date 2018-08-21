@@ -11,6 +11,7 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  pull_id       :bigint(8)
+#  remote_id     :bigint(8)
 #  reviewer_id   :bigint(8)
 #
 # Indexes
@@ -100,12 +101,7 @@ class Review < ApplicationRecord
       res = Github::Request.github_exec_review!(request_params, pull)
 
       if res.code == 200
-        review_comments.where.not(reviewer: nil).pending.each do |review_comment|
-          review_comment.status = :commented
-          review_comment.github_created_at = review_comment.updated_at
-          review_comment.github_updated_at = review_comment.updated_at
-          review_comment.save!
-        end
+        review_comments.where.not(reviewer: nil).pending.each(&:commented!)
         comment!
         pull.reviewed!
       else

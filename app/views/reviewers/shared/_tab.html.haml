@@ -1,16 +1,3 @@
-- unless pull.agreed?
-  .pull-show-tab-wrapper
-    %ul.nav.nav-justified
-      %li.nav-item
-        = link_to reviewers_pull_path(pull), class: 'nav-link' do
-          %i.glyphicon.glyphicon-comment
-          = t 'reviewers.pulls.show.conversation'
-      %li.nav-item
-        = link_to reviewers_pull_files_path(pull), class: 'nav-link' do
-          %i.glyphicon.glyphicon-file
-          = t 'reviewers.pulls.show.changed_files'
-          %span.badge.badge-default= changed_files&.count
-
 - if pull.agreed?
   .pull-show-tab-wrapper
     %ul.nav.nav-justified
@@ -20,6 +7,18 @@
           = t 'reviewers.pulls.show.conversation'
       %li.nav-item
         = link_to file_reviewers_pull_reviews_path(pull), class: 'nav-link' do
+          %i.glyphicon.glyphicon-file
+          = t 'reviewers.pulls.show.changed_files'
+          %span.badge.badge-default= changed_files&.count
+- else
+  .pull-show-tab-wrapper
+    %ul.nav.nav-justified
+      %li.nav-item
+        = link_to reviewers_pull_path(pull), class: 'nav-link' do
+          %i.glyphicon.glyphicon-comment
+          = t 'reviewers.pulls.show.conversation'
+      %li.nav-item
+        = link_to reviewers_pull_files_path(pull), class: 'nav-link' do
           %i.glyphicon.glyphicon-file
           = t 'reviewers.pulls.show.changed_files'
           %span.badge.badge-default= changed_files&.count

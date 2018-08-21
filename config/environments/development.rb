@@ -29,7 +29,7 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-
+  
   Flog.configure do |config|
     # If this value is true, not format on cached query
     config.ignore_cached_query = false

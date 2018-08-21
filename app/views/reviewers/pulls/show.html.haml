@@ -1,6 +1,8 @@
 .col-xs-12
   .page-header{ 'pull-id': @pull.id }
-    %h3= @pull.title
+    %h3
+      = @pull.title
+      .pull-right.label.label-default= @pull.repo.private == false ? 'public' : 'private'
   = render 'reviewers/shared/tab', pull: @pull,  changed_files: @changed_files
   .pulls-conversation-wrapper
     .col-xs-12.col-sm-8
@@ -14,69 +16,83 @@
               .card-body
                 %p#marked-body.card-text
       .pulls-review-comment-wrapper
-        - @double_review_comments.each do |review_comments|
-          - if review_comments.present?
-            .card
-              .card-header= review_comments.first.path
-              .card-body
-                .table-wrapper
-                  %table
-                    %thead
-                      %tr
-                        %th{ scope: 'col' }
-                    - review_comments.first.target_lines.each_with_index do |line, index|
-                      %tbody
+        - @pull.reviews.each do |review|
+          -# 総括コメント
+          .card
+            .card-body
+              .card-text
+                .col-xs-1
+                  - if review.reviewer.present?
+                    = image_tag review.reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive rounded'
+                  - else
+                    = image_tag 'https://i.imgur.com/8wkEd8n.jpg', class: 'review-comment-img avatar img-responsive rounded'
+                .col-xs-11.comment-body
+                  .nickname
+                    - if review.reviewer.present?
+                      = review.reviewer.github_account.nickname
+                    - else
+                      ghost
+                  %small.text-muted= date_format(review.updated_at)
+                  .col-xs-12= markdown(review.body)
+          - review.review_comments.each do |review_comment|
+            .col-xs-1.timeline
+            .col-xs-11.timeline
+              .card
+                .card-header= review_comment.path
+                .card-body
+                  .table-wrapper
+                    %table
+                      %thead
                         %tr
-                          %td.hidden= index
-                          - if line.start_with?('+')
-                            %td.markdown-highlight.bg-success.file-code= review_comments.first.changed_file.decorate.coderay(line)
-                          - elsif line.start_with?('-')
-                            %td.markdown-highlight.bg-danger.file-code= review_comments.first.changed_file.decorate.coderay(line)
-                          - elsif line.start_with?('@@')
-                            %td.markdown-highlight.bg-primary.file-code= simple_format(line)
-                          - else
-                            %td.markdown-highlight.file-code= review_comments.first.changed_file.decorate.coderay(line)
-                .card-text
-                  - review_comments.each.with_index(1) do |review_comment, index|
-                    - if review_comment
-                      .col-xs-1
-                        - if review_comment.reviewer.present?
-                          = image_tag review_comment.reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive rounded'
-                        - else
-                          = image_tag 'https://i.imgur.com/8wkEd8n.jpg', class: 'review-comment-img avatar img-responsive rounded'
-                      .col-xs-11.comment-body
-                        .nickname
-                          - if review_comment.reviewer.present?
-                            = review_comment.reviewer.github_account.nickname
-                          - else
-                            ghost
-                        %small.text-muted= date_format(review_comment.github_updated_at)
-                        .col-xs-12= markdown(review_comment.body)
-                      - next unless index == review_comments.size
-                      - if @pull.agreed?
-                        .col-xs-12.reply-wrapper
-                          .reply-hidden-target-element
-                            .col-xs-1
-                              = image_tag current_reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive'
-                            .col-xs-11
-                              %input.form-control.input-reply{ placeholder: 'Reply' }
-                          .reply-show-target-element.hidden
-                            .col-xs-12
-                              %textarea.form-control.md-textarea{ placeholder: 'Leave Comment', rows: '5' }
-                              .text-right
-                                %button{ type: 'button', class: 'btn btn-default reply-cancel-btn' } Cancel
-                                %button{ type: 'button', class: 'btn btn-success reply-submit-btn' } Comment
-                                %input{ type: 'hidden', value: review_comment.path, class: 'path' }
-                                %input{ type: 'hidden', value: review_comment.position, class: 'position' }
-                                %input{ type: 'hidden', value: current_reviewer.id, class: 'reviewer_id' }
-                                %input{ type: 'hidden', value: review_comment.changed_file.id, class: 'changed_file_id' }
-                                %input{ type: 'hidden', value: review_comment.changed_file.commit_id, class: 'commit_id' }
-                                %input{ type: 'hidden', value: review_comment.github_id, class: 'github_id' }
+                          %th{ scope: 'col' }
+                      - review_comment.target_lines.each_with_index do |line, index|
+                        %tbody
+                          %tr
+                            %td.hidden= index
+                            - if line.start_with?('+')
+                              %td.markdown-highlight.bg-success.file-code= review_comment.changed_file.decorate.coderay(line)
+                            - elsif line.start_with?('-')
+                              %td.markdown-highlight.bg-danger.file-code= review_comment.changed_file.decorate.coderay(line)
+                            - elsif line.start_with?('@@')
+                              %td.markdown-highlight.bg-primary.file-code= simple_format(line)
+                            - else
+                              %td.markdown-highlight.file-code= review_comment.changed_file.decorate.coderay(line)
+                  .card-text
+                    -# レビューコメント
+                    - review_comment.target_comments.each.with_index(1) do |target_comment, index|
+                      = render 'review_comments', review_comment: target_comment, index: index
+                      -# - next unless index == review_comments.size
+                      -# 返信コメント（レビューコメント） -- Reply
+                      - target_comment.replies.each.with_index(1) do |reply, index|
+                        = render 'review_comments', review_comment: reply, index: index
+                      -# 返信フォーム
+                      .col-xs-12.reply-wrapper
+                        .reply-hidden-target-element
+                          .col-xs-1
+                            = image_tag current_reviewer.github_account.avatar_url, class: 'review-comment-img avatar img-responsive'
+                          .col-xs-11
+                            %input.form-control.input-reply{ placeholder: 'Reply' }
+                        .reply-show-target-element.hidden
+                          .col-xs-12
+                            %textarea.form-control.md-textarea{ placeholder: 'Leave Comment', rows: '5' }
+                            .text-right
+                              %button{ type: 'button', class: 'btn btn-default reply-cancel-btn' } Cancel
+                              %button{ type: 'button', class: 'btn btn-success reply-submit-btn' } Comment
+                              %input{ type: 'hidden', value: review_comment.path, class: 'path' }
+                              %input{ type: 'hidden', value: review_comment.position, class: 'position' }
+                              %input{ type: 'hidden', value: current_reviewer.id, class: 'reviewer_id' }
+                              %input{ type: 'hidden', value: review_comment.changed_file.id, class: 'changed_file_id' }
+                              %input{ type: 'hidden', value: review_comment.changed_file.commit_id, class: 'commit_id' }
+                              %input{ type: 'hidden', value: review_comment.remote_id, class: 'remote_id' }
     .col-xs-12.col-sm-4
       .text-center
         .label.label-default= @pull.status_i18n
       %hr
       - unless @pull.reviewed? || @pull.completed?
         = link_to @pull.decorate.link_title_by_status, reviewers_pull_path(@pull, status: @pull.status), method: :put, class: "btn btn-block #{@pull.decorate.btn_class_by_status}"
+    .comment-wrapper
+      .col-sm-8.col-xs-12
+        .col-xs-12
+      .col-sm-4.col-xs-12
 = javascript_pack_tag 'marked'
 = javascript_pack_tag 'reply'
