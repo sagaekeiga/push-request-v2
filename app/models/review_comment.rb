@@ -81,45 +81,42 @@ class ReviewComment < ApplicationRecord
       sender = Reviewers::GithubAccount.find_by(owner_id: params[:sender][:id])&.reviewer
       changed_file = pull.changed_files.find_by(
         commit_id: params[:comment][:commit_id],
-        filename: params[:comment][:path]
+        filename:  params[:comment][:path]
       )
 
       return review_comment.destroy if review_comment.can_destroy?(sender, params) # Destroy
       if params[:changes]                         # Edit
         review_comment.update_attributes!(
-          remote_id: params[:comment][:id],
-          body: params[:comment][:body],
-          path: params[:comment][:path],
-          position: params[:comment][:position],
+          remote_id:    params[:comment][:id],
+          body:         params[:comment][:body],
+          path:         params[:comment][:path],
+          position:     params[:comment][:position],
           changed_file: changed_file,
-          status: :commented
+          status:       :commented
         )
         return
       end
       if params[:comment][:in_reply_to_id]        # Reply
-        # review_comment = changed_file.review_comments.find_or_initialize_by(
-        #   in_reply_to_id: params[:comment][:in_reply_to_id]
-        # )
         review_comment.update_attributes!(
-          remote_id: params[:comment][:id],
-          body: params[:comment][:body],
-          path: params[:comment][:path],
-          position: params[:comment][:position],
-          status: :commented,
-          changed_file: changed_file,
+          remote_id:      params[:comment][:id],
+          body:           params[:comment][:body],
+          path:           params[:comment][:path],
+          position:       params[:comment][:position],
+          status:         :commented,
+          changed_file:   changed_file,
           in_reply_to_id: params[:comment][:in_reply_to_id]
         )
         return
       end
       # Create
       review_comment = changed_file.review_comments.find_or_initialize_by(
-        body: params[:comment][:body],
-        path: params[:comment][:path],
+        body:     params[:comment][:body],
+        path:     params[:comment][:path],
         position: params[:comment][:position],
       )
       review_comment.update_attributes!(
-        remote_id: params[:comment][:id],
-        status: :commented,
+        remote_id:      params[:comment][:id],
+        status:         :commented,
         in_reply_to_id: params[:comment][:in_reply_to_id]
       )
       ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
@@ -172,9 +169,9 @@ class ReviewComment < ApplicationRecord
   def replies
     ReviewComment.where(
       changed_file: changed_file,
-      review: nil,
-      path: path,
-      position: position
+      review:       nil,
+      path:         path,
+      position:     position
     ).order(:created_at)
   end
 
