@@ -56,7 +56,7 @@
                                           = hidden_field_tag 'reviews[position][]', changed_file.review_comment_position(index), class: 'position'
     %hr
     = f.label :body, for: 'review_body'
-    = f.text_area :body, id: 'review_body', class: 'form-control', rows: '3', required: true
+    = f.text_area :body, id: 'review_body', class: 'form-control', rows: '3'
     %small.form-text.text-muted= t '.body_helper'
     .text-center
       = f.submit t('helpers.links.review'), id: 'submit_review_button', class: 'btn btn-primary'

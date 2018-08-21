@@ -20,6 +20,8 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     @review = Review.new
+    @changed_files = @pull.last_committed_changed_files.decorate
+    flash[:danger] = 'レビューに失敗しました'
     render :new
   end
 
