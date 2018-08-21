@@ -1,3 +1,8 @@
+.page-header {
+  .label {
+    border-radius: 3px;
+  }
+}
 .review-comment-img {
   border-radius: $base-border-radius;
 }
@@ -215,12 +220,23 @@
       }
     }
     .pulls-review-comment-wrapper {
+      .col-xs-1.timeline {
+        padding-right: 0px;
+      }
+      .col-xs-11.timeline {
+        padding-right: 0px;
+        padding-left: 30px;
+        border-left: 3px solid #e6ebf1;
+        .card {
+          margin-bottom: $base-margin;
+        }
+      }
       .card {
         margin-top: $base-margin;
-        margin-bottom: $base-margin;
         border: $base-border;
         box-shadow: none;
         max-width: 100%;
+        margin-bottom: - $base-margin / 3;
         .card-header {
           background-color: $bg-color-github-panel;
           font-family: $font-code;
@@ -307,10 +323,21 @@
             }
           }
         }
-      }
+      } // .card
     }
   }
   .col-sm-4 {
     padding-right: 0;
+  }
+  .comment-wrapper {
+    .col-sm-8 {
+      .col-xs-12 {
+        border-top: 3px solid #e6ebf1;
+        padding-right: 60px;
+      }
+    }
+    .col-sm-4 {
+
+    }
   }
 }

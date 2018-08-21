@@ -39,7 +39,6 @@
         %th= t 'activerecord.attributes.pull.title'
         %th= t 'activerecord.models.skill'
         %th= t 'activerecord.attributes.repo.private'
-        %th= t '.remaining_time'
         %th
     %tbody
       - @reviewed_pulls.each do |reviewed_pull|
@@ -48,7 +47,6 @@
           %td.text-center
             %span.label.label-warning= reviewed_pull.repo.skillings.first.skill.name
           %td.text-center= reviewed_pull.repo_private
-          %td.text-center= reviewed_pull.remaining_time
           %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(reviewed_pull)
 - else
   完了したプルリクエストはありません。

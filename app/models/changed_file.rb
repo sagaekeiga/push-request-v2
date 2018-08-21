@@ -39,7 +39,7 @@ class ChangedFile < ApplicationRecord
 
   # @TODO リファクタできる気がする
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
-  def self.create_or_restore!(pull)
+  def self.fetch!(pull)
     ActiveRecord::Base.transaction do
       response_changed_files_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files", pull.repo.installation_id
       response_changed_files_in_json_format.each do |response_changed_file|
@@ -61,7 +61,6 @@ class ChangedFile < ApplicationRecord
         end
         changed_file.restore if changed_file&.deleted?
       end
-      ReviewComment.create_or_restore!(pull)
     end
   rescue => e
     Rails.logger.error e
@@ -107,7 +106,7 @@ class ChangedFile < ApplicationRecord
     !reviewed?(index) && review_comments.find_by(position: index)&.reviewer.nil?
   end
 
-  def reviewer?(index)
-    review_comments.find_by(position: index)&.reviewer.present?
+  def reviewer?(index, reviewer)
+    review_comments.find_by(position: index, reviewer: reviewer).present?
   end
 end

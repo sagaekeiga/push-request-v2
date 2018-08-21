@@ -11,6 +11,7 @@
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
 #  pull_id       :bigint(8)
+#  remote_id     :bigint(8)
 #  reviewer_id   :bigint(8)
 #
 # Indexes

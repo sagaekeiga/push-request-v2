@@ -2,21 +2,19 @@
 #
 # Table name: review_comments
 #
-#  id                :bigint(8)        not null, primary key
-#  body              :text
-#  deleted_at        :datetime
-#  github_created_at :datetime
-#  github_updated_at :datetime
-#  path              :string
-#  position          :integer
-#  status            :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  changed_file_id   :bigint(8)
-#  github_id         :bigint(8)
-#  in_reply_to_id    :bigint(8)
-#  review_id         :bigint(8)
-#  reviewer_id       :bigint(8)
+#  id              :bigint(8)        not null, primary key
+#  body            :text
+#  deleted_at      :datetime
+#  path            :string
+#  position        :integer
+#  status          :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  changed_file_id :bigint(8)
+#  in_reply_to_id  :bigint(8)
+#  remote_id       :bigint(8)
+#  review_id       :bigint(8)
+#  reviewer_id     :bigint(8)
 #
 # Indexes
 #
@@ -62,9 +60,9 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :body, presence: true
-  validates :path, presence: true
-  validates :position, presence: true, numericality: { only_integer: true }
+  validates :remote_id, uniqueness: true, allow_nil: true
+  validates :body,      presence: true
+  validates :path,      presence: true
 
   def self.calc_working_hours
     return 0 if self.first.nil?
@@ -74,64 +72,54 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  def self.create_or_restore!(pull)
+  # リモート上での削除・返信を取得・保存
+  def self.fetch_by_delete_and_reply!(params)
     ActiveRecord::Base.transaction do
-      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments", pull.repo.installation_id
-      response_review_comments_in_json_format.each do |response_review_comment|
-        reviewer = Reviewers::GithubAccount.find_by(owner_id: response_review_comment['user']['id'])&.reviewer
-        changed_file = pull.changed_files.find_by(
-          commit_id: response_review_comment['commit_id'],
-          filename: response_review_comment['path']
-        )
-        review_comment = changed_file&.review_comments&.with_deleted&.find_or_initialize_by(github_id: response_review_comment['id'], reviewer: reviewer)
-        review_comment.restore if review_comment&.deleted?
-        review_comment&.update_attributes!(
-          github_id: response_review_comment['id'],
-          body: response_review_comment['body'],
-          path: response_review_comment['path'],
-          position: response_review_comment['position'],
-          reviewer: reviewer,
-          status: :commented,
-          in_reply_to_id: response_review_comment['in_reply_to_id'],
-          github_created_at: response_review_comment['created_at'],
-          github_updated_at: response_review_comment['updated_at']
-        )
-      end
-    end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_review_comment')
-  end
-
-  def self.recieve_immediate_review_comment!(params)
-    ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.with_deleted.find_or_initialize_by(github_id: params[:comment][:id])
+      review_comment = ReviewComment.with_deleted.find_or_initialize_by(remote_id: params[:comment][:id])
       pull = Pull.find_by(remote_id: params[:pull_request][:id])
       reviewer = Reviewers::GithubAccount.find_by(owner_id: params[:comment][:user][:id])&.reviewer
       sender = Reviewers::GithubAccount.find_by(owner_id: params[:sender][:id])&.reviewer
       changed_file = pull.changed_files.find_by(
         commit_id: params[:comment][:commit_id],
-        filename: params[:comment][:path]
+        filename:  params[:comment][:path]
       )
-      # github appからのコメントはsenderが一致しない
-      if review_comment.persisted? && review_comment.body == params[:comment][:body] && sender.present?
-        review_comment.destroy
-      else
+
+      return review_comment.destroy if review_comment.can_destroy?(sender, params) # Destroy
+      if params[:changes]                         # Edit
         review_comment.update_attributes!(
-          github_id: params[:comment][:id],
-          body: params[:comment][:body],
-          path: params[:comment][:path],
-          position: params[:comment][:position],
+          remote_id:    params[:comment][:id],
+          body:         params[:comment][:body],
+          path:         params[:comment][:path],
+          position:     params[:comment][:position],
           changed_file: changed_file,
-          status: :commented,
-          in_reply_to_id: params[:comment][:in_reply_to_id],
-          github_created_at: params[:comment][:created_at],
-          github_updated_at: params[:comment][:updated_at]
+          status:       :commented
         )
-        review_comment.update_attributes!(reviewer: reviewer) if reviewer.present?
-        ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
+        return
       end
+      if params[:comment][:in_reply_to_id]        # Reply
+        review_comment.update_attributes!(
+          remote_id:      params[:comment][:id],
+          body:           params[:comment][:body],
+          path:           params[:comment][:path],
+          position:       params[:comment][:position],
+          status:         :commented,
+          changed_file:   changed_file,
+          in_reply_to_id: params[:comment][:in_reply_to_id]
+        )
+        return
+      end
+      # Create
+      review_comment = changed_file.review_comments.find_or_initialize_by(
+        body:     params[:comment][:body],
+        path:     params[:comment][:path],
+        position: params[:comment][:position],
+      )
+      review_comment.update_attributes!(
+        remote_id:      params[:comment][:id],
+        status:         :commented,
+        in_reply_to_id: params[:comment][:in_reply_to_id]
+      )
+      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
     end
     true
   rescue => e
@@ -161,14 +149,37 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
+    Rails.logger.info comment
     response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
     if response.code == '201'
       response = JSON.load(response.body)
-      update!(github_id: response['id'])
-      p 'OK'
+      update!(remote_id: response['id'])
+      Rails.logger.info 'OK'
     else
       fail response.body
     end
   end
 
+  # 対象のレビューコメントを取得する
+  def target_comments
+    ReviewComment.where(review: review, path: path, position: position)
+  end
+
+  # 返信コメントを返す
+  def replies
+    ReviewComment.where(
+      changed_file: changed_file,
+      review:       nil,
+      path:         path,
+      position:     position
+    ).order(:created_at)
+  end
+
+  # deleteなwebhook
+  def can_destroy?(sender, params)
+    # 1. 保存されているかどうか
+    # 2. 削除対象であればbodyは同じ
+    # 3. 送信者とレビュワーは一致しない
+    persisted? && body == params[:comment][:body] && sender.present?
+  end
 end

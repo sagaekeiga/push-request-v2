@@ -41,6 +41,7 @@ class Pull < ApplicationRecord
   belongs_to :reviewer, optional: true
   belongs_to :repo
   has_many :changed_files, dependent: :destroy
+  has_many :reviews, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -97,16 +98,16 @@ class Pull < ApplicationRecord
         if pull.nil?
           pull = repo.pulls.create!(
             remote_id: response_pull['id'],
-            number: response_pull['number'],
-            state: response_pull['state'],
-            reviewee: repo.reviewee,
-            title: response_pull['title'],
-            body: response_pull['body']
+            number:    response_pull['number'],
+            state:     response_pull['state'],
+            reviewee:  repo.reviewee,
+            title:     response_pull['title'],
+            body:      response_pull['body']
           )
           skill = Skill.find_by(name: response_pull['head']['repo']['language'])
           skilling = skill.skillings.find_or_create_by!(
             resource_type: 'Repo',
-            resource_id: repo.id
+            resource_id:   repo.id
           )
         end
         if pull&.deleted?
@@ -114,7 +115,7 @@ class Pull < ApplicationRecord
           skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
           skillings.each(&:restore) if skillings.present?
         end
-        ChangedFile.create_or_restore!(pull)
+        ChangedFile.fetch!(pull)
       end
     end
   rescue => e
@@ -131,23 +132,23 @@ class Pull < ApplicationRecord
         pull.update!(
           state: params[:state],
           title: params[:title],
-          body: params[:body]
+          body:  params[:body]
         )
         pull.update_status_by!(params[:state])
       else
         repo = Repo.find_by(remote_id: params[:head][:repo][:id])
         pull = create!(
           remote_id: params['id'],
-          number: params[:number],
-          state: params[:state],
-          title: params[:title],
-          body: params[:body],
-          repo: repo
+          number:    params[:number],
+          state:     params[:state],
+          title:     params[:title],
+          body:      params[:body],
+          repo:      repo
         )
         skill = Skill.find_by(name: params[:head][:repo][:language])
         skilling = skill.skillings.find_or_create_by!(
           resource_type: 'Repo',
-          resource_id: repo.id
+          resource_id:   repo.id
         )
       end
       ChangedFile.check_and_update!(pull, params[:head][:sha])
@@ -165,11 +166,11 @@ class Pull < ApplicationRecord
       response_pulls_in_json_format.each do |response_pull|
         attributes = {
           remote_id: response_pull['id'],
-          number: response_pull['number'],
-          state: response_pull['state'],
-          reviewee: repo.reviewee,
-          title: response_pull['title'],
-          body: response_pull['body']
+          number:    response_pull['number'],
+          state:     response_pull['state'],
+          reviewee:  repo.reviewee,
+          title:     response_pull['title'],
+          body:      response_pull['body']
         }
         pull = with_deleted.find_by(remote_id: response_pull['id'])
         pull = create!(attributes) if pull.nil?
@@ -179,7 +180,7 @@ class Pull < ApplicationRecord
           # request_reviewed/agreed/reviewed の場合にconnectedにならぬように。
           pull.connected! if completed?
         end
-        ChangedFile.create_or_restore!(pull)
+        ChangedFile.fetch!(pull)
       end
     end
   rescue => e

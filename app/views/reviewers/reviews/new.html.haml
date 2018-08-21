@@ -30,22 +30,22 @@
                                 %pre= line
                             - else
                               %td.markdown-highlight.hljs-addition.file-code= changed_file.coderay(line)
-                          - review_comment = changed_file.review_comments.find_by(position: index)
-                          - if changed_file.present_review_comment?(index)
+                          - review_comment = changed_file.review_comments.find_by(position: index, reviewer: current_reviewer, status: :pending)
+                          // レビュワー自身のコメントでPendingなものだけ表示
+                          - if review_comment && changed_file.present_review_comment?(index) && review_comment.pending?
                             %tr
                               %td
                                 .review-comments-wrapper
                                   .card
-                                    - if review_comment.pending?
-                                      .card-header
-                                        %span.label.label-warning Pending
+                                    .card-header
+                                      %span.label.label-warning Pending
                                     .card-body
                                       -# @TODO アイコン追加
                                       -# - if changed_file.reviewer?(index)
                                       -#   = image_tag current_reviewer.github_account.avatar_url, class: 'float-left', style: 'width: 50px;'
                                       .card-text{ 'review-comment-id': changed_file.review_comment_id(index) }
                                         = markdown(changed_file.review_comment_body(index))
-                                      - if changed_file.reviewer?(index) && review_comment.pending?
+                                      - if changed_file.reviewer?(index, current_reviewer) && review_comment.pending?
                                         .flex-row.text-right
                                           %button{ type: 'button', class: 'btn btn-danger card-link destroy-trigger', data: { confirm: '本当によろしいですか？' } }
                                             %span.glyphicon.glyphicon-trash

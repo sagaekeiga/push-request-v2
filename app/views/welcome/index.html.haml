@@ -37,7 +37,6 @@
         %tr
           %th= t 'activerecord.models.pull'
           %th= t 'activerecord.models.skill'
-          %th= t 'activerecord.attributes.repo.private'
           %th
       %tbody
         - @pulls.each do |pull|
@@ -45,8 +44,7 @@
             %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
             %td.text-center
               %span.label.label-warning= pull.repo.skillings.first.skill.name
-            %td.text-center= pull.repo_private
-            %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull)
+            %td.text-center= link_to t('helpers.links.confirm'), pull
 
 //
 // Demo
