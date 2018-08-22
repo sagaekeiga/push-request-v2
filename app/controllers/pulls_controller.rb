@@ -10,6 +10,11 @@ class PullsController < ApplicationController
   def files
   end
 
+  def index
+    @q = Repo.with_public_pulls.order(created_at: :desc).ransack(params[:q])
+    @pulls = @q.result(distinct: true)
+  end
+
   private
 
   def set_pull

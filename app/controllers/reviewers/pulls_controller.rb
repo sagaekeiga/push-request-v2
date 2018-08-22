@@ -46,6 +46,6 @@ class Reviewers::PullsController < Reviewers::BaseController
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい
   def check_reviewer
-    redirect_to reviewers_dashboard_url if (@pull.already_pairing? && !@pull.reviewer?(current_reviewer)) || @pull.connected?
+    redirect_to reviewers_dashboard_url if @pull.already_pairing?
   end
 end
