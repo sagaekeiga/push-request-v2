@@ -33,7 +33,7 @@ Rails.application.routes.draw do
         constraints: { action: /github/ }
     end
 
-    resources :pulls, only: %i(show), param: :token do
+    resources :pulls, only: %i(show index), param: :token do
       get :files
     end
 

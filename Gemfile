@@ -119,6 +119,7 @@ gem 'coderay'
 gem 'redcarpet'
 gem 'html_truncator', '~> 0.2'
 gem 'activeadmin', github: 'gregbell/active_admin'
+gem 'ransack'
 group :development, :test do
   gem 'rails-flog', require: "flog"
   gem 'bullet'
