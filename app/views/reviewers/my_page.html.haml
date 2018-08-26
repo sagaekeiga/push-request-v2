@@ -9,8 +9,8 @@
           %th= t '.reviewed_pulls_count'
       %tbody
         %tr
-          %td= current_reviewer.pulls.agreed.count
-          %td= current_reviewer.pulls.where(status: %i(reviewed completed)).count
+          %td= @working_pulls.count
+          %td= @reviewed_pulls.count
 
     .page-header
       %h3= t '.working_pulls_count'
