@@ -120,7 +120,6 @@ gem 'redcarpet'
 gem 'html_truncator', '~> 0.2'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'ransack'
-gem 'rubypress'
 group :development, :test do
   gem  'bullet'
   gem 'rails-flog', require: "flog"

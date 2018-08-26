@@ -7,34 +7,3 @@
 
       .contact
         %p.text-center= link_to '審査員へ問い合わせ', 'https://sagae528.sarahah.com/'
-        -# - if @reviewee.ok_git && @reviewee.ok_repo && @reviewee.ok_req
-        -#   %h1.text-center= "Great!   Mr. #{current_reviewee.github_account.nickname}"
-        -#   %p.text-center 準備が整いました。しばらくするとあなたのPullrequestにコメントがつくでしょう.
-        -# - else
-        -#   %h1.text-center= "Hello!   Mr. #{current_reviewee.github_account.nickname}"
-        -#   %p.text-center
-        -#     コードレビューを受ける前に以下のチェックをしてください。
-        -#     全ての準備を整えればあなたはコードレビューを受けることができます。
-        -# .col-xs-6.col-xs-offset-3
-        -#   %table.table
-        -#     %tbody
-        -#       %tr
-        -#         %th
-        -#           %i.fas.fa-check-circle{ class: @reviewee.ok_git }
-        -#         %td あなたのGitHubアカウントを取り込む
-        -#         %td= link_to '設定する', :reviewees_settings_integrations
-        -#       %tr
-        -#         %th
-        -#           %i.fas.fa-check-circle{ class: @reviewee.ok_repo }
-        -#         %td PushRequestのGitHub Appをインストールする
-        -#         %td= link_to '設定する', ENV['GITHUB_APP_URL']
-        -#       %tr
-        -#         %th
-        -#           %i.fas.fa-check-circle{ class: @reviewee.ok_repo }
-        -#         %td Repository, Pullrequestを同期する
-        -#         %td= link_to '設定する', ENV['GITHUB_APP_URL']
-        -#       %tr
-        -#         %th
-        -#           %i.fas.fa-check-circle{ class: @reviewee.ok_req }
-        -#         %td 同期したPullRequestの公開
-        -#         %td= link_to '設定する', :reviewees_pulls

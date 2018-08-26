@@ -37,7 +37,6 @@ class Reviewee < ApplicationRecord
   has_many :pulls
 
   def connect_to_github(auth)
-    Rails.logger.info auth
     reviewee_github_account = build_github_account(
       access_token: auth['credentials']['token'],
       login: auth['extra']['raw_info']['login'],
