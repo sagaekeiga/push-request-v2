@@ -77,21 +77,21 @@ function addForm(elem) {
         class: 'changed_file_id'
     });
     // input追加
-    $('<div class="card new-review-comments"><div class="card-body"></div></div>').insertAfter($(elem).closest('.code-tr'));
-    $(elem).closest('.code-tr').nextAll('.card').find('.card-body').prepend(textarea);
-    $('<div class="flex-row text-right"></div>').insertAfter($(elem).closest('.code-tr').nextAll('.card').find('textarea'));
-    $(elem).closest('.code-tr').nextAll('.card').find('.flex-row').prepend('<button class="btn btn-primary review-trigger" type="button">Start a review</button>');
-    $(elem).closest('.code-tr').nextAll('.card').find('.flex-row').prepend('<button class="btn btn-default cancel-trigger" type="button">Cancel</button>');
-    positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
-    pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
-    changedFileIdHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.card').find('.review-trigger'));
+    $('<div class="panel panel-default new-review-comments"><div class="panel-body"></div></div>').insertAfter($(elem).closest('.code-tr'));
+    $(elem).closest('.code-tr').nextAll('.panel').find('.panel-body').prepend(textarea);
+    $('<div class="flex-row text-right"></div>').insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('textarea'));
+    $(elem).closest('.code-tr').nextAll('.panel').find('.flex-row').prepend('<button class="btn btn-primary review-trigger" type="button">Start a review</button>');
+    $(elem).closest('.code-tr').nextAll('.panel').find('.flex-row').prepend('<button class="btn btn-default cancel-trigger" type="button">Cancel</button>');
+    positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('.review-trigger'));
+    pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('.review-trigger'));
+    changedFileIdHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('.review-trigger'));
     $(elem).addClass('add-form');
   }
 };
 
 function removeForm(elem) {
-  elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
-  elem.closest('.card').remove();
+  elem.closest('.panel').prevAll('tr').find('.add-form').removeClass('add-form');
+  elem.closest('.panel').remove();
 };
 
 function createReviewComment(elem) {
@@ -110,15 +110,15 @@ function createReviewComment(elem) {
     element: elem,
     success: function(data) {
       if (data.status === 'success') {
-        var card = elem.closest('.card');
-        card.empty();
-        card.prepend(`<div class="card-header"><span class="label label-warning">Pending</div>
-          <div class="card-body"><p class="card-text" review-comment-id=${data.review_comment_id} /></div>`);
-        var cardText = card.find('.card-text')
-        cardText.wrapInner(marked(data.body));
-        $('<div class="flex-row text-right"></div>').insertAfter(cardText);
-        cardText.nextAll('.flex-row').prepend('<button class="btn btn-primary edit-trigger" type="button"><span class="glyphicon glyphicon-pencil"></span></button>');
-        cardText.nextAll('.flex-row').prepend('<button class="btn btn-danger destroy-trigger" type="button" data-confirm="本当にキャンセルしてよろしいですか？"><span class="glyphicon glyphicon-trash"></span></button>');
+        var panel = elem.closest('.panel');
+        panel.empty();
+        panel.prepend(`<div class="panel-heading"><span class="label label-warning">Pending</div>
+          <div class="panel-body"><p class="panel-text" review-comment-id=${data.review_comment_id} /></div>`);
+        var panelText = panel.find('.panel-text')
+        panelText.wrapInner(marked(data.body));
+        $('<div class="flex-row text-right"></div>').insertAfter(panelText);
+        panelText.nextAll('.flex-row').prepend('<button class="btn btn-primary edit-trigger" type="button"><span class="glyphicon glyphicon-pencil"></span></button>');
+        panelText.nextAll('.flex-row').prepend('<button class="btn btn-danger destroy-trigger" type="button" data-confirm="本当にキャンセルしてよろしいですか？"><span class="glyphicon glyphicon-trash"></span></button>');
       }
       elem.prop('disabled', false);
     }
@@ -131,13 +131,13 @@ function destroyReviewComment(elem) {
     elem.prop('disabled', true);
     $.ajax({
       type: 'DELETE',
-      url: `/reviewers/review_comments/${elem.closest('.card-body').find('.card-text').attr('review-comment-id')}`,
+      url: `/reviewers/review_comments/${elem.closest('.panel-body').find('.panel-text').attr('review-comment-id')}`,
       dataType: 'JSON',
       element: elem,
       success: function(data) {
         if (data.status === 'success') {
-          elem.closest('.card').prevAll('tr').find('.add-form').removeClass('add-form');
-          elem.closest('.card').remove();
+          elem.closest('.panel').prevAll('tr').find('.add-form').removeClass('add-form');
+          elem.closest('.panel').remove();
           elem.prop('disabled', false);
         }
       }
@@ -147,18 +147,18 @@ function destroyReviewComment(elem) {
 
 function editReviewCommentForm(elem) {
   elem.prop('disabled', true);
-  var reviewCommentId = elem.closest('.flex-row').prevAll('.card-text').attr('review-comment-id')
+  var reviewCommentId = elem.closest('.flex-row').prevAll('.panel-text').attr('review-comment-id')
   var textarea = $('<textarea>').attr({
     name: 'reviews[body][]',
     class: 'form-control md-textarea',
     'review-comment-id': reviewCommentId
   });
-  $('<span class="label label-primary">編集中</span>').insertAfter(elem.closest('.card').find('.card-header').find('span'));
+  $('<span class="label label-primary">編集中</span>').insertAfter(elem.closest('.panel').find('.panel-heading').find('span'));
   elem.prevAll('.destroy-trigger').remove();
   elem.closest('.flex-row').prepend('<button class="btn btn-default cancel-update-trigger" type="button">Cancel</button>');
   elem.removeClass('edit-trigger').addClass('update-trigger').text('Update');
   elem.closest('.flex-row').prevAll('.markdown-review-comment').remove();
-  elem.closest('.flex-row').prevAll('.card-text').remove();
+  elem.closest('.flex-row').prevAll('.panel-text').remove();
   elem.prop('disabled', false);
   $.ajax({
     type: 'GET',
@@ -166,7 +166,7 @@ function editReviewCommentForm(elem) {
     dataType: 'JSON',
     element: elem,
     success: function(data) {
-      elem.closest('.card-body').prepend(textarea.text(data.body));
+      elem.closest('.panel-body').prepend(textarea.text(data.body));
     }
   });
 };
@@ -182,10 +182,10 @@ function cancelUpdateReviewComment(elem) {
       elem.text('');
       $(elem).wrapInner('<span class="glyphicon glyphicon-trash"></span>');
       elem.nextAll('.update-trigger').removeClass('update-trigger').addClass('edit-trigger');
-      elem.closest('.card-body').prepend(`<p class="card-text" review-comment-id=${elem.closest('.flex-row').prevAll('textarea').attr('review-comment-id')}></p>`);
-      elem.closest('.card-body').find('.card-text').wrapInner(marked(data.body));
+      elem.closest('.panel-body').prepend(`<p class="panel-text" review-comment-id=${elem.closest('.flex-row').prevAll('textarea').attr('review-comment-id')}></p>`);
+      elem.closest('.panel-body').find('.panel-text').wrapInner(marked(data.body));
       elem.closest('.flex-row').prevAll('textarea').remove();
-      elem.closest('.card').find('span.label-primary').remove();
+      elem.closest('.panel').find('span.label-primary').remove();
     }
   });
 };
@@ -194,9 +194,9 @@ function updateReviewComment(elem) {
   elem.prop('disabled', true);
   $.ajax({
     type: 'PUT',
-    url: `/reviewers/review_comments/${elem.closest('.card-body').find('textarea').attr('review-comment-id')}`,
+    url: `/reviewers/review_comments/${elem.closest('.panel-body').find('textarea').attr('review-comment-id')}`,
     dataType: 'JSON',
-    data: { body: elem.closest('.card-body').find('textarea').val() },
+    data: { body: elem.closest('.panel-body').find('textarea').val() },
     element: elem,
     success: function(data) {
       if (data.status === 'success') {
@@ -204,10 +204,10 @@ function updateReviewComment(elem) {
         elem.prevAll('.cancel-update-trigger').removeClass('cancel-update-trigger btn-default').addClass('destroy-trigger btn-danger').text('');
         $(elem).prevAll('button').wrapInner('<span class="glyphicon glyphicon-trash"></span>');
         elem.removeClass('update-trigger').addClass('edit-trigger');
-        elem.closest('.card-body').prepend(`<p class="card-text" review-comment-id=${elem.closest('.flex-row').prevAll('textarea').attr('review-comment-id')}></p>`);
-        elem.closest('.card-body').find('p.card-text').wrapInner(marked(data.body));
-        elem.closest('.card-body').find('textarea').remove();
-        elem.closest('.card').find('span.label-primary').remove();
+        elem.closest('.panel-body').prepend(`<p class="panel-text" review-comment-id=${elem.closest('.flex-row').prevAll('textarea').attr('review-comment-id')}></p>`);
+        elem.closest('.panel-body').find('p.panel-text').wrapInner(marked(data.body));
+        elem.closest('.panel-body').find('textarea').remove();
+        elem.closest('.panel').find('span.label-primary').remove();
         elem.prop('disabled', false);
       }
     }

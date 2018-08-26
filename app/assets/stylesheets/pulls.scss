@@ -17,21 +17,24 @@
 .pulls-files-wrapper {
   .col-sm-10 {
     padding-left: 0;
-    .card.changed-file-wrapper {
+    .panel.changed-file-wrapper {
       margin-top: $base-margin;
       margin-bottom: $base-margin;
       border: $base-border;
       box-shadow: none;
       max-width: 100%;
-      .card-header {
+      .panel-heading {
         background-color: $color-grey;
         font-family: $font-code;
         font-size: $base-font-size;
         padding: $base-padding * 2;
         padding: $base-padding * 3;
         max-width: 100%;
+        .panel-title {
+          font-size: $base-font-size;
+        }
       }
-      .card-body {
+      .panel-body {
         padding: 0;
         max-width: 100%;
         .table-wrapper {
@@ -71,18 +74,18 @@
             }
           }
         }
-        .card-text {
+        .panel-text {
           font-size: $base-font-size + 2px;
           padding: 0 $base-padding * 5;
         }
       }
     }
-    .card.review-comments {
+    .panel.review-comments {
       border-radius: $base-border-radius;
       margin: 0;
       border: $base-border;
       box-shadow: none;
-      .card-body {
+      .panel-body {
         padding: $base-padding * 5;
         table {
           border-collapse: collapse;
@@ -100,23 +103,53 @@
     }
   }
   .col-sm-2 {
+    margin-top: $base-margin;
     padding-right: 0;
+    padding-left: 5px;
+    .side-wrapper {
+      ul {
+        li.list-group-item {
+          padding: 0 0;
+          border: none;
+          strong {
+            color: #586069;
+            font-size: $base-font-size;
+          }
+          .pull-status {
+            margin-top: $base-margin;
+            .label {
+              width: 100%;
+              display: block;
+              padding: 6px 12px;
+              font-size: 12px;
+              border: 1px solid $color-github-label-border-white;
+              border-radius: $base-border-radius;
+              font-weight: 400;
+              &.label-default  {
+                color: $color-white;
+                background-color: #f86c6b !important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
 
 .pulls-conversation-wrapper {
-  .col-sm-8 {
+  .col-sm-10 {
     padding-left: 0;
     .pull-body-wrapper {
       font-family: $font-code;
       word-wrap: break-word;
-      .card {
+      .panel {
         margin-top: $base-margin;
         margin-bottom: $base-margin;
         border: $base-border;
         box-shadow: none;
-        .card-header {
+        .panel-heading {
           background-color: $color-grey;
           font-family: $font-code;
           font-size: $base-font-size;
@@ -124,7 +157,7 @@
           width: 100%;
           padding: $base-padding * 3;
         }
-        .card-body {
+        .panel-body {
           padding: $base-padding * 5;
           h1, h2, h3, h4, h5, h6 {
             margin-top: 24px;
@@ -204,7 +237,7 @@
               }
             }
           }
-          .card-text {
+          .panel-text {
             font-size: $base-font-size + 2px;
             pre {
               border-radius: none;
@@ -220,32 +253,34 @@
       }
     }
     .pulls-review-comment-wrapper {
-      .col-xs-1.timeline {
+      .col-xs-2.timeline {
         padding-right: 0px;
       }
-      .col-xs-11.timeline {
+      .col-xs-10.timeline {
         padding-right: 0px;
         padding-left: 30px;
         border-left: 3px solid #e6ebf1;
-        .card {
+        .panel {
           margin-bottom: $base-margin;
         }
       }
-      .card {
+      .panel {
         margin-top: $base-margin;
         border: $base-border;
         box-shadow: none;
         max-width: 100%;
         margin-bottom: - $base-margin / 3;
-        .card-header {
+        .panel-heading {
           background-color: $bg-color-github-panel;
           font-family: $font-code;
-          font-size: $base-font-size;
           padding: $base-padding * 2;
           padding: $base-padding * 3;
           max-width: 100%;
+          .panel-title {
+            font-size: $base-font-size;
+          }
         }
-        .card-body {
+        .panel-body {
           padding: 0;
           max-width: 100%;
           .table-wrapper {
@@ -282,7 +317,7 @@
               }
             }
           }
-          .card-text {
+          .panel-text {
             font-size: $base-font-size + 2px;
             padding-top: $base-padding * 4;
             .col-xs-11 {
@@ -320,24 +355,151 @@
               .col-xs-11 {
                 padding-bottom: 0px;
               }
+              textarea {
+                margin-bottom: $base-margin / 3;
+              }
             }
           }
         }
-      } // .card
-    }
-  }
-  .col-sm-4 {
-    padding-right: 0;
-  }
-  .comment-wrapper {
-    .col-sm-8 {
-      .col-xs-12 {
-        border-top: 3px solid #e6ebf1;
-        padding-right: 60px;
+      } // .panel
+      .issue-comment-wrapper {
+        .col-xs-12 {
+          .col-xs-1 {
+          }
+          .col-xs-11 {
+            padding-left: 0;
+            padding-right: 0;
+            .panel.panel-default {
+              margin-top: 0px;
+              border-color: #c0d3eb;
+              .panel-heading {
+                background-color: #f1f8ff;
+                padding: $base-padding * 2;
+                padding: $base-padding * 3;
+                max-width: 100%;
+                .panel-title {
+                  .nickname {
+                    font-weight: bold;
+                    display: inline-block;
+                    font-size: $base-font-size * 1.2;
+                  }
+                }
+              }
+              .panel-body {
+                padding: $base-padding * 3;
+                pre {
+                  border: none;
+                  border-radius: 0;
+                }
+              }
+              margin-bottom: 1.5px;
+            }
+          }
+        }
+        .col-xs-12 {
+          padding-left: 0px;
+          padding-right: 0px;
+          .col-sm-2 {
+            border-right: none;
+            height: $base-height / 2;
+          }
+          .col-sm-10 {
+            border-left: 3px solid #e6ebf1;
+            height: $base-height / 2;
+          }
+        }
       }
     }
-    .col-sm-4 {
-
+  }
+  .col-sm-2 {
+    padding-right: 0;
+    padding-left: 5px;
+    .side-wrapper {
+      ul {
+        li.list-group-item {
+          padding: 0 0;
+          border: none;
+          strong {
+            color: #586069;
+            font-size: $base-font-size;
+          }
+          .pull-status {
+            margin-top: $base-margin;
+            .label {
+              width: 100%;
+              display: block;
+              padding: 6px 12px;
+              font-size: 12px;
+              border: 1px solid $color-github-label-border-white;
+              border-radius: $base-border-radius;
+              font-weight: 400;
+              &.label-default  {
+                color: $color-white;
+                background-color: #f86c6b !important;
+              }
+            }
+          }
+        }
+      }
     }
+  }
+  .comment-wrapper {
+    .col-sm-10 {
+      .col-xs-12 {
+        border-top: 3px solid #e6ebf1;
+        padding-right: 0px;
+        padding-left: 0px;
+        .panel {
+          margin-top: $base-margin;
+          border-radius: $base-border-radius;
+          background-color: $color-github-light-grey;
+          border: solid 1px #d1d5da;
+          box-shadow: none;
+          .panel-body {
+            padding: $base-margin / 2 $base-margin / 2 0 $base-margin / 2;
+            .form-group {
+              margin-bottom: $base-margin / 2;
+            }
+          }
+        }
+      }
+    }
+    .col-sm-2 {
+    }
+  }
+  .col-sm-2.side {
+    margin-top: $base-margin;
+  }
+}
+
+// レビューボタン
+.review-btn-wrapper {
+  position:fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 999;
+  .button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: $review-btn;
+    color: $color-white;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: $base-font-size * 2;
+    vertical-align: middle;
+    overflow: hidden;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+    transition: .4s;
+  }
+  .button:active {
+    -ms-transform: translateY(2px);
+    -webkit-transform: translateY(2px);
+    transform: translateY(2px);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+    border-bottom: none;
   }
 }

@@ -33,8 +33,9 @@ Rails.application.routes.draw do
         constraints: { action: /github/ }
     end
 
-    resources :pulls, only: %i(show index), param: :token do
-      get :files
+    resources :pulls, only: %i(index), param: :token
+    resource :judges, only: %i(update) do
+      get :index
     end
 
     #
@@ -66,6 +67,7 @@ Rails.application.routes.draw do
     namespace :reviewers do
       get :dashboard, :my_page
       get 'settings/integrations'
+      get :pending
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
@@ -74,6 +76,7 @@ Rails.application.routes.draw do
         resources :reviews, only: %i(create) do
           get :file, to: 'reviews#new', on: :collection
         end
+        resources :comments, only: %i(create update destroy)
       end
       resources :review_comments, only: %i(create update destroy show)
     end

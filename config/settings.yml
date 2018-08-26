@@ -10,7 +10,10 @@ github:
   request:
     access_token_uri: https://api.github.com/installations/
     header:
-      accept: application/vnd.github.machine-man-preview+json
+      accept:
+        review: application/vnd.github.machine-man-preview+json
+        issue_comment: application/vnd.github.machine-man-preview
+        access_token: application/vnd.github.machine-man-preview+json
 review_comments:
   max_working_hours: 30
 reviews:
@@ -28,3 +31,7 @@ site:
     ogp:
       type: 'website'
       image_path: 'top'
+res:
+  code:
+    success: 200
+    created: 201

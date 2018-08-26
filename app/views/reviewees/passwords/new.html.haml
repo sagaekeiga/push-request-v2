@@ -1,10 +1,14 @@
-%h2 Forgot your password?
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
-  = devise_error_messages!
-  .field
-    = f.label :email
-    %br/
-    = f.email_field :email, autofocus: true, autocomplete: "email"
-  .actions
-    = f.submit "Send me reset password instructions"
-= render "reviewees/shared/links"
+.reviewee-session-new-wrapper
+  .col-xs-8.col-xs-offset-2
+    %h3.text-center
+      %b Forgot your password?
+    %hr
+    .panel.panel-default
+      .panel-body
+        = form_for(resource, as: resource_name, url: password_path(resource_name, html: { class: 'form-horizontal' }), html: { method: :post }) do |f|
+          = devise_error_messages!
+          .form-group
+            = f.label :email
+            = f.email_field :email, autofocus: true, class: 'form-control'
+          .form-group.text-center
+            = f.submit 'メール送信', class: 'btn btn-primary'

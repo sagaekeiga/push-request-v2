@@ -4,30 +4,31 @@
     .changed-file-title {
       font-size: $base-font-size + 1px;
     }
-    .card.changed-file-list-wrapper {
+    .panel.changed-file-list-wrapper {
       margin-top: $base-margin;
       border: $base-border;
       box-shadow: none;
       overflow-x: auto;
-      .card-header {
+      .panel-heading {
         background-color: $color-grey;
         font-family: $font-code;
         font-size: $base-font-size;
         width: 100%;
         padding: $base-padding * 3;
       }
-      .card-body {
+      .panel-body {
         padding: 0;
-        .card-text {
+        .panel-text {
           font-size: $base-font-size + 2px;
         }
       }
     }
-    .card.new-review-comments {
+    .panel.panel-default.new-review-comments {
       border-radius: $base-border-radius;
       margin-top: 0;
       border: $base-border;
       box-shadow: none;
+      margin-bottom: 0;
       .label {
         padding: 2px 5px;
         font-size: 12px;
@@ -44,13 +45,17 @@
           background-color: $color-github-green !important;
         }
       }
-      .card-body {
+      .panel-heading {
+        font-size: $base-font-size;
+      }
+      .panel-body {
         padding: $base-padding $base-padding * 3;
         textarea {
           margin-top: $base-margin;
           height: 150px;
+          margin-bottom: $base-margin / 3;
         }
-        .card-text {
+        .panel-text {
           pre {
             border-radius: none;
             border: none;
@@ -60,6 +65,9 @@
             font-size: $base-font-size;
             background-color: $bg-color-pre-code;
           }
+        }
+        button {
+          margin-left: $base-margin / 2;
         }
       }
     }
@@ -97,7 +105,7 @@
             }
           }
           .review-comments-wrapper {
-            .card {
+            .panel {
               border-radius: $base-border-radius;
               margin-top: 0;
               border: $base-border;
@@ -118,7 +126,7 @@
                   background-color: $color-github-green !important;
                 }
               }
-              .card-body {
+              .panel-body {
                 padding: $base-padding $base-padding * 3;
                 textarea {
                   height: 150px;
@@ -147,11 +155,12 @@
           }
           .review-comments-wrapper {
             padding: 0;
-            .card {
+            .panel {
               border-radius: $base-border-radius;
               margin-top: 0;
               border: $base-border;
               box-shadow: none;
+              margin-bottom: 0;
               .label {
                 padding: 2px 5px;
                 font-size: 12px;
@@ -168,9 +177,9 @@
                   background-color: $color-github-green !important;
                 }
               }
-              .card-body {
+              .panel-body {
                 padding: $base-padding $base-padding * 3;
-                .card-text {
+                .panel-text {
                   pre {
                     border-radius: none;
                     border: none;
@@ -189,6 +198,11 @@
           }
         }
       }
+    }
+  }
+  .review-footer-wrapper {
+    .review-btn {
+      margin-top: $base-margin;
     }
   }
 }

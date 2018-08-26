@@ -1,0 +1,20 @@
+.col-xs-12
+  .container
+    %br
+    %br
+    %br
+    %table.table
+      %thead
+        %tr
+          %th{scope: "col"} ID
+          %th{scope: "col"} NAME
+          %th{scope: "col"} PROFILE
+          %th{scope: "col"}
+      %tbody
+        - @reviewers.each do |reviewer|
+          - if reviewer.github_account
+            %tr
+              %th.text-center{ scope: 'row' }= reviewer.id
+              %td.text-center= link_to reviewer.github_account.nickname
+              %td.text-center= link_to reviewer.github_account.html_url, reviewer.github_account.html_url, target: 'blank'
+              %td.text-center= link_to '許可', judges_path(reviewer_id: reviewer.id), method: :put, class: 'btn btn-primary'

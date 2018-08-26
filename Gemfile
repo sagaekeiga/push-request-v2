@@ -121,6 +121,7 @@ gem 'html_truncator', '~> 0.2'
 gem 'activeadmin', github: 'gregbell/active_admin'
 gem 'ransack'
 group :development, :test do
+  gem  'bullet'
   gem 'rails-flog', require: "flog"
   gem 'bullet'
   gem 'database_cleaner'

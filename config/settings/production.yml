@@ -1,3 +1,4 @@
+top: https://<%= ENV['WEB_DOMAIN'] %>/
 reviewers:
   pulls:
     show: https://<%= ENV['WEB_DOMAIN'] %>/reviewers/pulls/

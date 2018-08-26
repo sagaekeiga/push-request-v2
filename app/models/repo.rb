@@ -25,6 +25,7 @@
 
 class Repo < ApplicationRecord
   acts_as_paranoid
+  paginates_per 10
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
@@ -54,7 +55,7 @@ class Repo < ApplicationRecord
   #
   # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
-  def self.fetch_repo!(repositories_params)
+  def self.fetch!(repositories_params)
     repos =
       if repositories_params['repositories_added'].present?
         repositories_params['repositories_added']
@@ -87,12 +88,12 @@ class Repo < ApplicationRecord
   # レビュワーのスキルに合致するPRを取得する
   def self.pulls_suitable_for reviewer
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.request_reviewed.where(repo_id: repos&.pluck(:id))
+    Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 
   # publicなpullを返す
   def self.with_public_pulls
     repos = where(private: false)
-    Pull.where.not(status: :agreed).where(repo_id: repos&.pluck(:id))
+    Pull.includes(:repo).where.not(status: :agreed).where(repo_id: repos&.pluck(:id))
   end
 end

@@ -26,4 +26,8 @@ module ApplicationHelper
   def date_format(datetime)
     time_ago_in_words(datetime) + '前' if datetime
   end
+
+  def same_action_name?(action_name)
+    'active' if action_name == controller.action_name
+  end
 end

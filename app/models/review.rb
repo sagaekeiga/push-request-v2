@@ -31,7 +31,7 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewer
+  belongs_to :reviewer, optional: true
   belongs_to :pull
   has_many :review_comments
 
@@ -44,12 +44,14 @@ class Review < ApplicationRecord
   # - comment         : コメント
   # - request_changes : 修正を要求
   # - approve         : 承認
+  # - issue_comment   : issue, pullへのコメント
   #
   enum event: {
-    pending:  1000,
-    comment: 2000,
+    pending:         1000,
+    comment:         2000,
     request_changes: 3000,
-    approve: 4000
+    approve:         4000,
+    issue_comment:   5000
   }
 
   # -------------------------------------------------------------------------------
@@ -82,6 +84,32 @@ class Review < ApplicationRecord
   end
 
   #
+  # コメントを取得する
+  #
+  def self.fetch_issue_comments!(params)
+    ActiveRecord::Base.transaction do
+      return false if params[:sender][:type] == 'Bot'
+      repo = Repo.find_by_name(params[:repository][:name])
+      return false unless repo
+      # ① 該当するPRを取得
+      pull = repo.pulls.find_by(number: params[:issue][:number])
+      # ② ①がなければfalseを返す
+      return false unless pull
+      # ③ ①があればBodyを取得し作成
+      @review = pull.reviews.create!(
+        body: params[:comment][:body],
+        event: :issue_comment
+      )
+    end
+    ReviewerMailer.issue_comment(@review).deliver_later
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  #
   # リモートのPRにレビューする
   #
   def github_exec_review!
@@ -100,13 +128,27 @@ class Review < ApplicationRecord
       request_params = request_body.to_json
       res = Github::Request.github_exec_review!(request_params, pull)
 
-      if res.code == 200
-        review_comments.where.not(reviewer: nil).pending.each(&:commented!)
-        comment!
-        pull.reviewed!
-      else
-        fail res.body
-      end
+      fail res.body unless res.code == Settings.res.code.success
+      review_comments.where.not(reviewer: nil).pending.each(&:commented!)
+      comment!
+      pull.reviewed!
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  #
+  # リモートのISSUEまたはPRにレビューする
+  #
+  def github_exec_issue_comment!
+    ActiveRecord::Base.transaction do
+      body = { 'body': self.body }
+      res = Github::Request.github_exec_issue_comment!(body.to_json, pull)
+      fail res.body unless res.code == Settings.res.code.created
+      save!
     end
     true
   rescue => e

@@ -1,8 +1,8 @@
 .col-xs-8.col-xs-offset-2
   %h3= t('helpers.links.sign_in')
   %hr
-  .card
-    .card-body
+  .panel.panel-default
+    .panel-body
       = form_for(resource, as: resource_name, url: session_path(resource_name, html: { class: 'form-horizontal' })) do |f|
         .form-group
           = f.label :email
