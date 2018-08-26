@@ -6,9 +6,12 @@ module Github
 
       # レビュー送信
       def github_exec_review!(params, pull)
-        sub_url = "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
-        installation_id = pull.repo.installation_id
-        _request params, sub_url, installation_id
+        _request params, sub_url(:review, pull), pull.repo.installation_id, :review
+      end
+
+      # コメント送信
+      def github_exec_issue_comment!(params, pull)
+        _request params, sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment
       end
 
       private
@@ -19,20 +22,19 @@ module Github
       # @param [String] sub_url github api urlの後続のURL ex. /repos/:owner/:repo/pulls/comments/:comment_id
       # @param [Hash] params 送信パラメータ { path: xxxx, position: yyyy, body: zzzz }
       #
-      def _request(params, sub_url, installation_id)
+      def _request(params, sub_url, installation_id, event)
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "token #{get_access_token(installation_id)}",
-          'Accept': Settings.github.request.header.accept
+          'Accept': set_accept(event)
         }
 
         res = post Settings.github.api_domain + sub_url, headers: headers, body: params
 
-        unless res.code == '200'
-          logger.error "[Github][#{sub_url}] responseCode => #{res['responseCode']}"
-          logger.error "[Github][#{sub_url}] responseMessage => #{res['responseMessage']}"
-          logger.error "[Github][#{sub_url}] phoneNumber => #{res['phoneNumber']}"
-          logger.error "[Github][#{sub_url}] smsMessage => #{res['smsMessage']}"
+        unless res.code == success_code(event)
+          logger.error "[Github][#{event}] responseCode => #{res.code}"
+          logger.error "[Github][#{event}] responseMessage => #{res.message}"
+          logger.error "[Github][#{event}] subUrl => #{sub_url}"
         end
         res
       end
@@ -42,7 +44,7 @@ module Github
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "Bearer #{get_jwt}",
-          'Accept': Settings.github.request.header.accept
+          'Accept': set_accept(:get_access_token)
         }
 
         res = post request_url, headers: headers
@@ -68,6 +70,35 @@ module Github
 
         jwt = JWT.encode payload, private_key, 'RS256'
         jwt
+      end
+
+      # イベントに対応するacceptを返す
+      def set_accept(event)
+        case event
+        when :review, :get_access_token
+          return Settings.github.request.header.accept.review
+        when :issue_comment
+          return Settings.github.request.header.accept.issue_comment
+        end
+      end
+
+      # 成功時のレスポンスコード
+      def success_code(event)
+        case event
+        when :review
+          return Settings.res.code.success
+        when :issue_comment
+          return Settings.res.code.created
+        end
+      end
+
+      def sub_url(event, pull)
+        case event
+        when :review
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
+        when :issue_comment
+          return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
+        end
       end
 
       #

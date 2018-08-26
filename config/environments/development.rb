@@ -29,7 +29,7 @@ Rails.application.configure do
 
     config.cache_store = :null_store
   end
-  
+
   Flog.configure do |config|
     # If this value is true, not format on cached query
     config.ignore_cached_query = false
@@ -39,6 +39,15 @@ Rails.application.configure do
     config.params_key_count_threshold = 2
     # If this value is true, nested Hash parameter is formatted coercively in any situation
     config.force_on_nested_params = false
+  end
+
+  # bullet
+  config.after_initialize do
+    Bullet.enable = true
+    Bullet.alert = true
+    Bullet.bullet_logger = true
+    Bullet.console = true
+    Bullet.rails_logger = true
   end
 
   # Don't care if the mailer can't send.

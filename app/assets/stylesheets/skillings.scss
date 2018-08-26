@@ -1,8 +1,12 @@
-.skillings-edit-wrapper {
+.skill-edit-wrapper {
   .card {
-    margin-top: $base-margin;
+    border: 1px solid $color-github-label-border-white;
+    box-shadow: none;
   }
   .checkbox-inline {
     margin-left: 0px;
+  }
+  .register-btn {
+    margin-top: $base-margin * 2;
   }
 }

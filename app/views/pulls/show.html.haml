@@ -4,7 +4,7 @@
       %h3
         = @pull.title
         .pull-right.label.label-default= @pull.repo.private == false ? 'public' : 'private'
-    = render 'reviewers/shared/tab', pull: @pull,  changed_files: @changed_files
+    = render 'shared/pulls/tab', pull: @pull,  changed_files: @changed_files
     .pulls-conversation-wrapper
       .col-xs-12.col-sm-8
         .pulls-body-wrapper
@@ -46,7 +46,7 @@
                         %thead
                           %tr
                             %th{ scope: 'col' }
-                        - review_comment.target_lines.each_with_index do |line, index|
+                        - review_comment.includes(:changed_file).target_lines.each_with_index do |line, index|
                           %tbody
                             %tr
                               %td.hidden= index

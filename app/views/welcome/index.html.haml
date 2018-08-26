@@ -41,7 +41,7 @@
       %tbody
         - @pulls.each do |pull|
           %tr
-            %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
+            %td= link_to pull.title&.truncate(40), pull
             %td.text-center
               %span.label.label-warning= pull.repo.skillings.first.skill.name
             %td.text-center= link_to t('helpers.links.confirm'), pull

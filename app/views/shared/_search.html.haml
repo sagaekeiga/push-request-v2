@@ -1,8 +1,18 @@
 .search-form-wrapper
   .form
     = search_form_for @q do |f|
+      -# .input-group
+      -#   = f.search_field :title_or_body_cont, class: 'form-control', placeholder: 'キーワード'
+      -#   %span.input-group-btn
+      -#     %button.btn-primary.btn-sm{ type: 'submit' }
+      -#       %i.glyphicon.glyphicon-search
+      -# .input-group
+      -#   = f.search_field :title_or_body_cont, class: 'form-control', placeholder: 'キーワード'
+      -#     %span#basic-addon2.input-group-addon
+      -#       %button.btn-primary.btn-sm{ type: 'submit' }
+      -#         %i.glyphicon.glyphicon-search
       .input-group
         = f.search_field :title_or_body_cont, class: 'form-control', placeholder: 'キーワード'
         %span.input-group-btn
-          %button.btn-primary.btn-sm{ type: 'submit' }
+          %button.btn.btn-primary{ type: 'submit' }
             %i.glyphicon.glyphicon-search

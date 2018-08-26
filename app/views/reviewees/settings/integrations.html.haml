@@ -1,21 +1,25 @@
-.setting-integrations-wrapper
-  .col-xs-12
-  = render 'reviewees/shared/settings/side_nav'
-  .col-sm-8
-    %h4
-      %i.fab.fa-github
-      = t('views.integrations.github')
-    %hr
-    .card
-      .card-body
-        %p.card-text
-          %small.text-muted
-            GitHubアカウント連携の設定をします。
-            %br
-            アカウント情報を取得するために読み取り権限を許可します。
-        - if current_reviewee.github_account&.owner_id
-          設定済み
-        - else
-          = link_to '/auth/github', class: 'btn btn-primary' do
-            %i.github.icon
-            = t('reviewees.settings.integrations.connect')
+.col-xs-12
+  .container
+    .page-header
+      %h3
+        %b Settings
+    .setting-integrations-wrapper
+      = render 'reviewees/shared/settings/side_nav'
+      .col-sm-8
+        %h4
+          %i.fab.fa-github
+          = t('views.integrations.github')
+        %hr
+        .panel.panel-default
+          .panel-body
+            %p.panel-text
+              %small.text-muted
+                GitHubアカウント連携の設定をします。
+                %br
+                アカウント情報を取得するために読み取り権限を許可します。
+            - if current_reviewee.github_account&.owner_id
+              設定済み
+            - else
+              = link_to '/auth/github', class: 'btn btn-primary' do
+                %i.github.icon
+                = t('reviewees.settings.integrations.connect')

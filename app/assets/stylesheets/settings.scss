@@ -1,11 +1,19 @@
 .setting-integrations-wrapper {
-  .card {
-    box-shadow: 0 0 8px gray;
-    h4 {
-      margin-top: $base-margin / 2;
-      font-weight: bold;
+  .col-sm-8 {
+    padding-left: 0px;
+    padding-right: 0px;
+    .card {
+      border: 1px solid $color-github-label-border-white;
+      box-shadow: none;
+      h4 {
+        margin-top: $base-margin / 2;
+        font-weight: bold;
+      }
+      .card-body {
+      }
     }
-    .card-body {
-    }
+  }
+  .col-sm-4 {
+    padding-left: 0px;
   }
 }

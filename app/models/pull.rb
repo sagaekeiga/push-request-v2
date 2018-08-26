@@ -34,6 +34,7 @@
 class Pull < ApplicationRecord
   include GenToken, FriendlyId
   acts_as_paranoid
+  paginates_per 20
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
@@ -192,10 +193,6 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # InstanceMethods
   # -------------------------------------------------------------------------------
-  def already_pairing?
-    agreed? || reviewed? || completed?
-  end
-
   def reviewer? current_reviewer
     reviewer == current_reviewer
   end

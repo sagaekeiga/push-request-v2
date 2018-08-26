@@ -21,7 +21,7 @@
           = render 'reviewee_side_bar'
           .col-sm-11
             - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
+              .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
     - elsif reviewer_signed_in?
@@ -30,7 +30,7 @@
           = render 'reviewer_side_bar'
           .col-sm-11
             - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
+              .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
     - else
@@ -38,7 +38,7 @@
         - unless controller_name == 'welcome'
           .container-fluid.body-container
             - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
+              .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
         = yield
     .footer

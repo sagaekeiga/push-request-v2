@@ -4,8 +4,9 @@ class Reviewers::PullsController < Reviewers::BaseController
   before_action :check_reviewer, only: %i(show update)
 
   def show
+    @review = Review.new
     @pull = Pull.includes(changed_files: :review_comments).order('review_comments.created_at asc').friendly.find(params[:token])
-    @double_review_comments = @pull.changed_files.map{ |changed_file| changed_file.review_comments }
+    @double_review_comments = @pull.changed_files.map{ |changed_file| changed_file.review_comments.includes(:reviewer) }
     respond_to do |format|
       format.html
       format.json do
@@ -46,6 +47,6 @@ class Reviewers::PullsController < Reviewers::BaseController
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい
   def check_reviewer
-    redirect_to reviewers_dashboard_url if @pull.already_pairing?
+    redirect_to reviewers_dashboard_url if @pull.agreed? && !@pull.reviewer?(current_reviewer)
   end
 end

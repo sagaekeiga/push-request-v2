@@ -26,6 +26,9 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request_review_comment' # レビューリクエスト時
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:comment][:user][:id])
       status = ReviewComment.fetch_by_delete_and_reply!(params)
+    when 'issue_comment'
+      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])
+      status = Review.fetch_issue_comments!(params)
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)
