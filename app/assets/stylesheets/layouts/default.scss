@@ -20,6 +20,14 @@ body {
     color: $color-white;
     font-weight: bold;
   }
+  border-color: $color-github-black;
+  .navbar-nav {
+    li {
+      a {
+        color: $color-white;
+      }
+    }
+  }
 }
 
 // @TODO bootstrap4で定義されていない？
