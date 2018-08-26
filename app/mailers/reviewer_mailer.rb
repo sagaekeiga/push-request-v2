@@ -13,4 +13,9 @@ class ReviewerMailer < ApplicationMailer
     @pull = review.pull
     mail(subject: t('.title'), to: @reviewer.email)
   end
+
+  def ok(reviewer)
+    @reviewer = reviewer
+    mail(subject: '審査を通過しました。', to: @reviewer.email)
+  end
 end

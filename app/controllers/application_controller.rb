@@ -1,6 +1,7 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
+  before_action :check_reviewer
 
   # 200 Success
   def response_success(class_name, action_name)
@@ -57,6 +58,10 @@ class ApplicationController < ActionController::Base
   end
 
   force_ssl if: :use_ssl?
+
+  def check_reviewer
+    redirect_to :reviewers_pending if reviewer_signed_in? && current_reviewer.github_account && current_reviewer.skillings && current_reviewer.pending?
+  end
 
   #
   # 本番環境かどうかを返す

@@ -15,19 +15,19 @@ body {
   }
 }
 
-// .navbar-default {
-//   .navbar-brand {
-//     // color: $color-main;
-//     font-weight: bold;
-//   }
-// }
+.navbar-default {
+  .navbar-brand {
+    color: $color-white;
+    font-weight: bold;
+  }
+}
 
 // @TODO bootstrap4で定義されていない？
-// .nav-text {
-//   margin-top: .5rem;
-//   margin-bottom: .5rem;
-// }
-
+.nav-text {
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  color: $color-white;
+}
 
 // --------------------------------------------------------------------------------
 // Table

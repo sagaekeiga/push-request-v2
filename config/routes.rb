@@ -34,6 +34,9 @@ Rails.application.routes.draw do
     end
 
     resources :pulls, only: %i(index), param: :token
+    resource :judges, only: %i(update) do
+      get :index
+    end
 
     #
     # Reviewee
@@ -64,6 +67,7 @@ Rails.application.routes.draw do
     namespace :reviewers do
       get :dashboard, :my_page
       get 'settings/integrations'
+      get :pending
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
