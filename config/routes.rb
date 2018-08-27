@@ -13,9 +13,6 @@ class AdminDomainConstraint
 end
 
 Rails.application.routes.draw do
-  devise_for :admin_users, ActiveAdmin::Devise.config
-  ActiveAdmin.routes(self)
-
   scope module: :api do
     scope module: :v1 do
       namespace :github_apps do
@@ -94,6 +91,21 @@ Rails.application.routes.draw do
 
     if !Rails.env.production? && defined?(Sidekiq::Web)
       mount Sidekiq::Web => '/sidekiq'
+    end
+  end
+  constraints(AdminDomainConstraint) do
+    root to: 'admins#dashboard'
+    #
+    # Admin
+    #
+    devise_for :admins, path: 'admins', controllers: {
+      registrations: 'admins/registrations',
+      confirmations: 'admins/confirmations',
+      sessions: 'admins/sessions'
+    }
+    namespace :admins do
+      resources :reviews, only: %i(index show update)
+      resources :reviewers, only: %i(show)
     end
   end
   get '*path', to: 'application#render_404'

@@ -70,7 +70,8 @@ class Review < ApplicationRecord
   def self.ready_to_review!(pull, param_body)
     review = new(
       pull: pull,
-      body: param_body
+      body: param_body,
+      event: :pending
     )
     review.save!
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)

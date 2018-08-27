@@ -3,10 +3,10 @@
     .reviewee-dashboard-wrapper
       .greet
         - if @reviewee.ok_git && @reviewee.ok_repo && @reviewee.ok_req
-          %h1.text-center= "Great!   Mr. #{current_reviewee.github_account.nickname}"
+          %h1.text-center= "Great!   #{current_reviewee.github_account.nickname}"
           %p.text-center 準備が整いました。しばらくするとあなたのPullrequestにコメントがつくでしょう.
         - else
-          %h1.text-center= "Hello!   Mr. #{current_reviewee.github_account.nickname}"
+          %h1.text-center= "Hello!   #{current_reviewee.github_account.nickname}"
           %p.text-center
             コードレビューを受ける前に以下のチェックをしてください。
             全ての準備を整えればあなたはコードレビューを受けることができます。
@@ -16,7 +16,7 @@
               %tr
                 %th
                   %i.fas.fa-check-circle{ class: @reviewee.ok_git }
-                %td あなたのGitHubアカウントを取り込む
+                %td GitHubアカウントを取り込む
                 %td= link_to '設定する', :reviewees_settings_integrations
               %tr
                 %th
