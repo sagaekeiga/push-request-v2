@@ -56,7 +56,7 @@ function submitReply(elem) {
         replyWrapper.find('.reply-hidden-target-element').removeClass('hidden');
         replyWrapper.find('.reply-show-target-element').addClass('hidden')
         replyWrapper.find('.reply-show-target-element').find('textarea').val('');
-        replyWrapper.find('.reply-show-target-element').find('.github_id').val(data.github_id);
+        replyWrapper.find('.reply-show-target-element').find('.remote_id').val(data.remote_id);
       }
       elem.prop('disabled', false);
     }
