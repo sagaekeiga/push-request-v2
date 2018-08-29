@@ -35,6 +35,25 @@
     - else
       作業中のプルリクエストはありません。
     .page-header
+      %h3 審査中
+    - if @pending_reviews.present?
+      %table.table.table-hover.pulls-on-dashboard-wrapper
+        %thead
+          %tr
+            %th= t 'activerecord.attributes.pull.title'
+            %th= t 'activerecord.models.skill'
+            %th= t 'activerecord.attributes.repo.private'
+        %tbody
+          - @pending_reviews.each do |pending_review|
+            %tr
+              %td= pending_review.pull.title
+              %td.text-center
+                %span.label.label-warning= pending_review.pull.repo.skillings.first.skill.name
+              %td.text-center= pending_review.pull.repo_private
+      .text-center= paginate @reviewed_pulls
+    - else
+      審査中のレビューはありません。
+    .page-header
       %h3 完了
     - if @reviewed_pulls.present?
       %table.table.table-hover.pulls-on-dashboard-wrapper

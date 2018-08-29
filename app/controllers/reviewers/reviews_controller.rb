@@ -1,6 +1,7 @@
 class Reviewers::ReviewsController < Reviewers::BaseController
   before_action :set_pull, only: %i(new create)
   before_action :check_pull, only: %i(new create)
+  before_action :check_pending_review, only: %i(new create)
 
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
@@ -13,7 +14,6 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     # データの作成とGHAへのリクエストを分離することで例外処理に対応する
     ActiveRecord::Base.transaction do
       @review = current_reviewer.reviews.ready_to_review!(@pull, params[:review][:body])
-      # @review.github_exec_review!
     end
     redirect_to [:reviewers, @pull], success: t('.success')
   rescue => e
@@ -33,5 +33,9 @@ class Reviewers::ReviewsController < Reviewers::BaseController
 
   def check_pull
     redirect_to reviewers_dashboard_url unless @pull.agreed?
+  end
+
+  def check_pending_review
+    @pending_review = @pull.reviews.pending.first if @pull.reviews
   end
 end

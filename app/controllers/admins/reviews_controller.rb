@@ -1,5 +1,5 @@
 class Admins::ReviewsController < Admins::BaseController
-  before_action :set_review, only: %i(show update)
+  before_action :set_review, only: %i(show update destroy)
 
   def index
     @pending_reviews = Review.pending
@@ -13,7 +13,17 @@ class Admins::ReviewsController < Admins::BaseController
   def update
     # データの作成とGHAへのリクエストを分離することで例外処理に対応する
     ActiveRecord::Base.transaction do
-      @review.github_exec_review!
+      case params[:review][:event]
+      when 'approve'
+        @review.update!(reason: params[:review][:reason])
+        @review.github_exec_review!
+        ReviewerMailer.approve_review(@review).deliver_later
+      when 'non_approve'
+        @review.update!(reason: params[:review][:reason])
+        @review.refused!
+        @review.pull.request_reviewed!
+        ReviewerMailer.refused_review(@review).deliver_later
+      end
     end
     redirect_to [:admins, @review], success: t('.success')
   rescue => e

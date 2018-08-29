@@ -201,6 +201,7 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.bigint "reviewer_id"
     t.bigint "remote_id"
     t.text "body"
+    t.text "reason"
     t.string "state"
     t.integer "event"
     t.integer "working_hours"

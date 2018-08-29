@@ -5,6 +5,7 @@ class CreateReviews < ActiveRecord::Migration[5.1]
       t.belongs_to :reviewer, foreign_key: true
       t.bigint :remote_id
       t.text :body
+      t.text :reason
       t.string :state
       t.integer :event
       t.integer :working_hours

@@ -43,4 +43,17 @@
         .panel.panel-default
           .panel-body= @review.body
         .text-center
-          = link_to '承認', [:admins, @review], method: :put
+          = form_for [:admins, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
+            .form-group
+              %label.radio-inline
+                = f.radio_button :event, 'approve'
+                承認
+              %label.radio-inline
+                = f.radio_button :event, 'non_approve'
+                非承認
+            .form-group
+              = f.label :reason
+              = f.text_area :reason, class: 'form-control', rows: '3'
+            .form-group
+              .text-center
+                = f.submit '決定', id: 'submit_review_button', class: 'btn btn-primary review-btn'

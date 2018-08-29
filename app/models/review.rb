@@ -6,6 +6,7 @@
 #  body          :text
 #  deleted_at    :datetime
 #  event         :integer
+#  reason        :text
 #  state         :string
 #  working_hours :integer
 #  created_at    :datetime         not null
@@ -33,14 +34,14 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :reviewer, optional: true
   belongs_to :pull
-  has_many :review_comments
+  has_many :review_comments, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Enumerables
   # -------------------------------------------------------------------------------
   # イベント
   #
-  # - pending         : 保留中
+  # - pending         : 審査中
   # - comment         : コメント
   # - request_changes : 修正を要求
   # - approve         : 承認
@@ -51,7 +52,8 @@ class Review < ApplicationRecord
     comment:         2000,
     request_changes: 3000,
     approve:         4000,
-    issue_comment:   5000
+    issue_comment:   5000,
+    refused:         6000
   }
 
   # -------------------------------------------------------------------------------

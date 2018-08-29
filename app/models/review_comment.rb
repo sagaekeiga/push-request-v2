@@ -119,7 +119,7 @@ class ReviewComment < ApplicationRecord
         status:         :commented,
         in_reply_to_id: params[:comment][:in_reply_to_id]
       )
-      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
+      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer && params[:sender][:type] != 'Bot'
     end
     true
   rescue => e

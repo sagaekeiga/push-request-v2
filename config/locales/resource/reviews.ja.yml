@@ -1,7 +1,7 @@
 ja:
   activerecord:
     models:
-      review: プルリクエスト
+      review: レビュー
     attributes:
       review:
         id: ID
@@ -9,3 +9,4 @@ ja:
         event: イベント
         state: ステート
         working_hours: 作業時間（分）
+        reason: 理由
