@@ -1,0 +1,10 @@
+= @reviewer.github_account.name + 'さん、こんにちは。'
+
+= @review.pull.title
+= 'のレビューが審査を通過しました。'
+\
+\
+= simple_format(@review.reason)
+\
+\
+= Settings.reviewers.pulls.show + @review.pull.token

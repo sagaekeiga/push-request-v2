@@ -18,4 +18,16 @@ class ReviewerMailer < ApplicationMailer
     @reviewer = reviewer
     mail(subject: '審査を通過しました。', to: @reviewer.email)
   end
+
+  def approve_review(review)
+    @review = review
+    @reviewer = review.reviewer
+    mail(subject: 'レビューが審査を通過しました。', to: @reviewer.email)
+  end
+
+  def refused_review(review)
+    @review = review
+    @reviewer = review.reviewer
+    mail(subject: 'レビューが審査を通過できませんでした。', to: @reviewer.email)
+  end
 end

@@ -15,18 +15,14 @@
             %tr
               %th= t 'activerecord.models.pull'
               %th= t 'activerecord.models.repo'
-              %th= t 'pulls.views.private_title'
+              %th= t 'activerecord.models.repo.private'
               %th= t 'activerecord.attributes.pull.status'
           %tbody
             - @pulls.each do |pull|
               %tr
                 %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
                 %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
-                %td.text-center
-                  - if pull.repo.private?
-                    %span.label.label-warning= t 'pulls.views.private'
-                  - else
-                    %span.label.label-primary= t 'pulls.views.public'
+                %td.text-center= pull.repo.private?
                 %td.text-center
                   - if pull.connected? || pull.canceled?
                     = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put

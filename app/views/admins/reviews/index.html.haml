@@ -9,15 +9,12 @@
         %tr
           %th= t 'activerecord.attributes.review.id'
           %th= t 'activerecord.attributes.review.body'
-          %th= t 'activerecord.attributes.review.event'
-          %th= t 'activerecord.attributes.review.state'
           %th= t 'activerecord.attributes.review.working_hours'
           %th
       %tbody
-        - @reviews.each do |review|
+        - @pending_reviews.each do |pending_review|
           %tr
-            %td= review.id
-            %td= review.body&.truncate(55)
-            %td= review.event_i18n
-            %td= review.state
-            %td= review.working_hours
+            %td= pending_review.id
+            %td= pending_review.body&.truncate(55)
+            %td= pending_review.working_hours
+            %td= link_to '詳細', [:admins, pending_review]

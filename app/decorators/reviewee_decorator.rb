@@ -5,10 +5,10 @@ class RevieweeDecorator < ApplicationDecorator
   end
 
   def ok_repo
-    repos ? 'ok' : ''
+    repos.present? && pulls.present? ? 'ok' : ''
   end
 
   def ok_req
-    pulls && pulls.where.not(status: :connected) ? 'ok' : ''
+    pulls.present? && pulls.where(status: %i(request_reviewed agreed reviewed)).present? ? 'ok' : ''
   end
 end

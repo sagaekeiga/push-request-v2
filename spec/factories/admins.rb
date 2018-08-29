@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: admin_users
+# Table name: admins
 #
 #  id                     :bigint(8)        not null, primary key
 #  current_sign_in_at     :datetime
@@ -18,13 +18,14 @@
 #
 # Indexes
 #
-#  index_admin_users_on_email                 (email) UNIQUE
-#  index_admin_users_on_reset_password_token  (reset_password_token) UNIQUE
+#  index_admins_on_email                 (email) UNIQUE
+#  index_admins_on_reset_password_token  (reset_password_token) UNIQUE
 #
 
-class AdminUser < ApplicationRecord
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, 
-         :recoverable, :rememberable, :trackable, :validatable
+FactoryBot.define do
+  factory :admin do
+    sequence(:email) { |n| "admin#{n}@example.com" }
+    password              'hogehoge'
+    password_confirmation 'hogehoge'
+  end
 end

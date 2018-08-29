@@ -9,6 +9,7 @@ class ReviewersController < Reviewers::BaseController
   def my_page
     @working_pulls = current_reviewer.pulls.includes(:repo).agreed.decorate.select{ |pull| (((Time.at(pull.updated_at) + 2.hours) - Time.now) / 60) > 0 }
     @reviewed_pulls = Pull.includes(:repo).where(id: current_reviewer.reviews.comment.pluck(:pull_id)).page(params[:pages])
+    @pending_reviews = current_reviewer.reviews.includes(:pull).pending
   end
 
   def pending

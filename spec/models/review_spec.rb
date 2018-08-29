@@ -6,6 +6,7 @@
 #  body          :text
 #  deleted_at    :datetime
 #  event         :integer
+#  reason        :text
 #  state         :string
 #  working_hours :integer
 #  created_at    :datetime         not null
