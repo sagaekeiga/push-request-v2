@@ -98,7 +98,7 @@ Rails.application.routes.draw do
     }
     namespace :admins do
       resources :reviews, only: %i(index show update)
-      resources :reviewers, only: %i(show)
+      resources :reviewers, only: %i(show update)
     end
   end
   get '*path', to: 'application#render_404'

@@ -7,9 +7,12 @@ class JudgesController < ApplicationController
   end
 
   def update
-    reviewer = Reviewer.pending.find(params[:reviewer_id])
-    reviewer.active!
-    ReviewerMailer.ok(reviewer).deliver_later
+    case params[:status]
+    when 'pending'
+      reviewer = Reviewer.pending.find(params[:id])
+      reviewer.active!
+      ReviewerMailer.ok(reviewer).deliver_later
+    end
     redirect_to :judges
   end
 end
