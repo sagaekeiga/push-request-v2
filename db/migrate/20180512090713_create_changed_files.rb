@@ -13,6 +13,7 @@ class CreateChangedFiles < ActiveRecord::Migration[5.1]
       t.string :contents_url
       t.text :patch
       t.string :commit_id
+      t.string :token
       t.datetime :deleted_at, index: true
       t.timestamps
     end

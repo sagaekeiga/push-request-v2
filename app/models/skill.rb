@@ -41,4 +41,12 @@ class Skill < ApplicationRecord
   def self.top_match_by(alphabet)
     language.where("name like '#{alphabet}%'").or(language.where("name like '#{alphabet.upcase}%'"))
   end
+
+  def self.fetch!(skill_name, repo)
+    skill = find_by(name: skill_name)
+    skilling = skill.skillings.find_or_create_by!(
+      resource_type: 'Repo',
+      resource_id:   repo.id
+    )
+  end
 end

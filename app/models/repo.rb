@@ -74,7 +74,7 @@ class Repo < ApplicationRecord
             private: repository['private'],                            # プライベート
             installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
           )
-          Pull.create_or_restore!(repo)
+          Pull.fetch!(repo)
         end
         true
       rescue => e
