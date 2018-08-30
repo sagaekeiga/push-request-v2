@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.string "contents_url"
     t.text "patch"
     t.string "commit_id"
+    t.string "token"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

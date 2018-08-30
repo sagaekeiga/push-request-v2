@@ -2,5 +2,3 @@ top: https://<%= ENV['WEB_DOMAIN'] %>/
 reviewers:
   pulls:
     show: https://<%= ENV['WEB_DOMAIN'] %>/reviewers/pulls/
-rss:
-  skill_url: https://<%= ENV['WEB_DOMAIN'] %>/feed?format=rss&skill_name=

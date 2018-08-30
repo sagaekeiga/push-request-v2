@@ -78,13 +78,6 @@ Rails.application.routes.draw do
       resources :review_comments, only: %i(create update destroy show)
     end
 
-    #
-    # RSS
-    #
-    resources :feed, only: %i(index) do
-      get :rss, on: :collection
-    end
-
     if !Rails.env.production? && defined?(LetterOpenerWeb)
       mount LetterOpenerWeb::Engine, at: '/letter_opener'
     end
@@ -105,7 +98,7 @@ Rails.application.routes.draw do
     }
     namespace :admins do
       resources :reviews, only: %i(index show update)
-      resources :reviewers, only: %i(show)
+      resources :reviewers, only: %i(show update)
     end
   end
   get '*path', to: 'application#render_404'
