@@ -4,19 +4,24 @@ module Github
 
     class << self
 
-      # レビュー送信
+      # POST レビュー送信
       def github_exec_review!(params, pull)
         _request sub_url(:review, pull), pull.repo.installation_id, :review, params
       end
 
-      # コメント送信
+      # POST コメント送信
       def github_exec_issue_comment!(params, pull)
         _request sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment, params
       end
 
-      # コメント送信
+      # GET ファイル差分取得
       def github_exec_fetch_changed_files!(pull)
         _request sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
+      end
+
+      # GET プルリクエスト取得
+      def github_exec_fetch_pulls!(repo)
+        _request sub_url(:pull, repo), repo.installation_id, :pull
       end
 
       private
@@ -90,6 +95,8 @@ module Github
           return Settings.api.github.request.header.accept.issue_comment
         when :changed_file
           return Settings.api.github.request.header.accept.changed_file
+        when :pull
+          return Settings.api.github.request.header.accept.pull
         end
       end
 
@@ -102,6 +109,8 @@ module Github
           return Settings.api.success.created.status
         when :changed_file
           return Settings.api.success.created.status
+        when :pull
+          return Settings.api.success.created.status
         end
       end
 
@@ -113,6 +122,9 @@ module Github
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
         when :changed_file
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
+        when :pull
+          repo = pull
+          return "repos/#{repo.full_name}/pulls"
         end
       end
 

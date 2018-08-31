@@ -94,7 +94,7 @@ class Pull < ApplicationRecord
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
       # JSON
-      res_pulls = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls", repo.installation_id
+      res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
       res_pulls.each do |res_pull|
         pull = repo.pulls.with_deleted.find_by(remote_id: res_pull['id'], reviewee: repo.reviewee)
         if pull.nil?
@@ -160,17 +160,17 @@ class Pull < ApplicationRecord
 
   def self.update_diff_or_create!(repo)
     ActiveRecord::Base.transaction do
-      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls", repo.installation_id
-      response_pulls_in_json_format.each do |response_pull|
+      res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
+      res_pulls.each do |res_pull|
         attributes = {
-          remote_id: response_pull['id'],
-          number:    response_pull['number'],
-          state:     response_pull['state'],
+          remote_id: res_pull['id'],
+          number:    res_pull['number'],
+          state:     res_pull['state'],
           reviewee:  repo.reviewee,
-          title:     response_pull['title'],
-          body:      response_pull['body']
+          title:     res_pull['title'],
+          body:      res_pull['body']
         }
-        pull = with_deleted.find_by(remote_id: response_pull['id'])
+        pull = with_deleted.find_by(remote_id: res_pull['id'])
         pull = create!(attributes) if pull.nil?
         if pull.can_update?
           pull.update!(attributes)
