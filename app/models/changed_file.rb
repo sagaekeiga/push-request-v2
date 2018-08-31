@@ -42,7 +42,7 @@ class ChangedFile < ApplicationRecord
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
   def self.fetch!(pull, token)
     ActiveRecord::Base.transaction do
-      res_changed_files = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files", pull.repo.installation_id
+      res_changed_files = Github::Request.github_exec_fetch_changed_files!(pull)
       res_changed_files.each do |res_changed_file|
         changed_file = pull.changed_files.with_deleted.find_by(sha: res_changed_file['sha'])
         if changed_file.nil?
@@ -72,7 +72,7 @@ class ChangedFile < ApplicationRecord
 
   def self.check_and_update!(pull, token)
     ActiveRecord::Base.transaction do
-      res_changed_files = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/files", pull.repo.installation_id
+      res_changed_files = Github::Request.github_exec_fetch_changed_files!(pull)
       res_changed_files.each do |res_changed_file|
         changed_file = pull.changed_files.find_or_create_by!(
           sha:          res_changed_file['sha'],

@@ -131,7 +131,7 @@ class Review < ApplicationRecord
       request_params = request_body.to_json
       res = Github::Request.github_exec_review!(request_params, pull)
 
-      fail res.body unless res.code == Settings.res.code.success
+      fail res.body unless res.code == Settings.api.success.status.code
       review_comments.where.not(reviewer: nil).pending.each(&:commented!)
       comment!
       pull.reviewed!
@@ -150,7 +150,7 @@ class Review < ApplicationRecord
     ActiveRecord::Base.transaction do
       body = { 'body': self.body }
       res = Github::Request.github_exec_issue_comment!(body.to_json, pull)
-      fail res.body unless res.code == Settings.res.code.created
+      fail res.body unless res.code == Settings.api.success.created.status
       save!
     end
     true

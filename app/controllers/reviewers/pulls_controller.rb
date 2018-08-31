@@ -8,7 +8,7 @@ class Reviewers::PullsController < Reviewers::BaseController
     @pull = Pull.includes(changed_files: :review_comments).order('review_comments.created_at asc').friendly.find(params[:token])
     @pending_review = @pull.reviews.pending.first
     @double_review_comments = @pull.changed_files.map{ |changed_file| changed_file.review_comments.includes(:reviewer) }
-    @reviews = Review.where(event: %i(comment issue_comment))
+    @reviews = @pull.reviews.where(event: %i(comment issue_comment))
     respond_to do |format|
       format.html
       format.json do

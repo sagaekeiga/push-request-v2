@@ -27,6 +27,7 @@ module PushRequestV2
     config.autoload_paths << Rails.root.join('app/services')
     config.autoload_paths << Rails.root.join('app/decorators')
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.dsn = ENV['SENTRY_RAVEN_URL']
 
     config.generators do |g|
       g.factory_bot true

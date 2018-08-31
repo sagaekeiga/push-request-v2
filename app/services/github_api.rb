@@ -20,10 +20,10 @@ module GithubAPI
     end
 
     def get_access_token(installation_id)
-      parsed_uri = URI.parse Settings.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
+      parsed_uri = URI.parse Settings.api.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
       target_request = Net::HTTP::Post.new(parsed_uri)
       target_request['Authorization'] = "Bearer #{get_jwt}"
-      target_request['Accept'] = Settings.github.request.header.accept
+      target_request['Accept'] = Settings.api.github.request.header.accept
 
       req_options = {
         use_ssl: parsed_uri.scheme == 'https'
@@ -69,7 +69,7 @@ module GithubAPI
     def generate_request_according_to(parsed_uri, authorization_element, method)
       request = method == 'get' ? Net::HTTP::Get.new(parsed_uri) : Net::HTTP::Post.new(parsed_uri)
       request['Authorization'] = authorization_element
-      request['Accept'] = Settings.github.request.header.accept
+      request['Accept'] = Settings.api.github.request.header.accept
       request
     end
   end

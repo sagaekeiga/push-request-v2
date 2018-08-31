@@ -7,11 +7,17 @@
         %tr
           %th= t '.working_pulls_count'
           %th= t '.reviewed_pulls_count'
+          %th 報酬
       %tbody
         %tr
           %td= @working_pulls.count
           %td= @reviewed_pulls.count
-
+          %td
+            - if current_reviewer.reviews.comment.sum(:working_hours) > 0
+              = number_to_currency(current_reviewer.reviews.comment.sum(:working_hours) * 1000, 1)
+            - else
+              0円
+    // 作業中
     .page-header
       %h3= t '.working_pulls_count'
     - if @working_pulls.present?
@@ -34,6 +40,7 @@
               %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull)
     - else
       作業中のプルリクエストはありません。
+    // 審査中
     .page-header
       %h3 審査中
     - if @pending_reviews.present?
@@ -53,6 +60,7 @@
       .text-center= paginate @reviewed_pulls
     - else
       審査中のレビューはありません。
+    // 完了
     .page-header
       %h3 完了
     - if @reviewed_pulls.present?
