@@ -23,10 +23,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
     review_comment.status = :commented if params[:status]
 
     if review_comment.save
-      Rails.application.config.another_logger.info 'review_comment.save!OK!'
-      # @TODO review_commentにもcommit_idカラム追加
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
-      # Rails.application.config.another_logger.info 'send_github!OK!'
       render json: {
         status: 'success',
         review_comment_id: review_comment.id,

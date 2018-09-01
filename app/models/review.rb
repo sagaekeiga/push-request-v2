@@ -74,8 +74,7 @@ class Review < ApplicationRecord
         number:    params[:pull_request][:number]
       )
       review = pull.reviews.find_by(body: params[:review][:body])
-      # レビューの内容を変えた場合は、idから取得する
-      Rails.application.config.another_logger.info review.nil?
+      # レビューの内容を変えた場合は、commit_idから取得
       review = pull.reviews.find_by(commit_id: params[:review][:commit_id]) if review.nil?
       review.update!(
         remote_id: params[:review][:id],
