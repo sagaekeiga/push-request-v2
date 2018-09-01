@@ -24,6 +24,13 @@ function cancelReply(elem) {
 
 function submitReply(elem) {
   elem.prop('disabled', true);
+  console.log(elem.nextAll('.path').val());
+  console.log(elem.nextAll('.position').val());
+  console.log(elem.nextAll('.changed_file_id').val());
+  console.log(elem.closest('.text-right').prevAll('textarea').val());
+  console.log(elem.nextAll('.reviewer_id').val());
+  console.log(elem.nextAll('.commit_id').val());
+  console.log(elem.nextAll('.remote_id').val());
   $.ajax({
     type: 'POST',
     url: `/reviewers/review_comments`,

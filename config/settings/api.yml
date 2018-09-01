@@ -34,3 +34,4 @@ api:
           access_token: application/vnd.github.machine-man-preview+json
           changed_file: application/vnd.github.symmetra-preview+json
           pull: application/vnd.github.symmetra-preview+json
+          review_comment: application/vnd.github.squirrel-girl-preview

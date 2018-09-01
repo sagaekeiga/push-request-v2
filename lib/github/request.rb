@@ -6,22 +6,27 @@ module Github
 
       # POST レビュー送信
       def github_exec_review!(params, pull)
-        _request sub_url(:review, pull), pull.repo.installation_id, :review, params
+        _post sub_url(:review, pull), pull.repo.installation_id, :review, params
       end
 
       # POST コメント送信
       def github_exec_issue_comment!(params, pull)
-        _request sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment, params
+        _post sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment, params
+      end
+
+      # POST リプライ送信
+      def github_exec_review_comment!(params, pull)
+        _post sub_url(:review_comment, pull), pull.repo.installation_id, :review_comment, params
       end
 
       # GET ファイル差分取得
       def github_exec_fetch_changed_files!(pull)
-        _request sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
+        _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
       end
 
       # GET プルリクエスト取得
       def github_exec_fetch_pulls!(repo)
-        _request sub_url(:pull, repo), repo.installation_id, :pull
+        _get sub_url(:pull, repo), repo.installation_id, :pull
       end
 
       private
@@ -30,20 +35,33 @@ module Github
       # リクエストの送信処理
       #
       # @param [String] sub_url github api urlの後続のURL ex. /repos/:owner/:repo/pulls/comments/:comment_id
-      # @param [Hash] args 送信パラメータ { path: xxxx, position: yyyy, body: zzzz }
+      # @param [Hash] params 送信パラメータ { path: xxxx, position: yyyy, body: zzzz }
       #
-      def _request(sub_url, installation_id, event, *args)
+      def _post(sub_url, installation_id, event, params)
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "token #{get_access_token(installation_id)}",
           'Accept': set_accept(event)
         }
 
-        if %i(review issue_comment).include?(event)
-          res = post Settings.api.github.api_domain + sub_url, headers: headers, body: args
-        else
-          res = get Settings.api.github.api_domain + sub_url, headers: headers
+        res = post Settings.api.github.api_domain + sub_url, headers: headers, body: params
+
+        unless res.code == success_code(event)
+          logger.error "[Github][#{event}] responseCode => #{res.code}"
+          logger.error "[Github][#{event}] responseMessage => #{res.message}"
+          logger.error "[Github][#{event}] subUrl => #{sub_url}"
         end
+        res
+      end
+
+      def _get(sub_url, installation_id, event)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{get_access_token(installation_id)}",
+          'Accept': set_accept(event)
+        }
+
+        res = get Settings.api.github.api_domain + sub_url, headers: headers
 
         unless res.code == success_code(event)
           logger.error "[Github][#{event}] responseCode => #{res.code}"
@@ -97,6 +115,8 @@ module Github
           return Settings.api.github.request.header.accept.changed_file
         when :pull
           return Settings.api.github.request.header.accept.pull
+        when :review_comment
+          return Settings.api.github.request.header.accept.review_comment
         end
       end
 
@@ -110,6 +130,8 @@ module Github
         when :changed_file
           return Settings.api.success.created.status
         when :pull
+          return Settings.api.success.created.status
+        when :review_comment
           return Settings.api.success.created.status
         end
       end
@@ -125,6 +147,8 @@ module Github
         when :pull
           repo = pull
           return "repos/#{repo.full_name}/pulls"
+        when :review_comment
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
         end
       end
 

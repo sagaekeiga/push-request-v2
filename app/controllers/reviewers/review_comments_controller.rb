@@ -26,6 +26,14 @@ class Reviewers::ReviewCommentsController < ApplicationController
     if review_comment.save
       # @TODO review_commentにもcommit_idカラム追加
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
+      Rails.application.config.another_logger.info 'review_comments#create'
+      Rails.application.config.another_logger.info review_comment.id
+      Rails.application.config.another_logger.info params[:body]
+      Rails.application.config.another_logger.info reviewer.github_account.avatar_url
+      Rails.application.config.another_logger.info reviewer.github_account.nickname
+      Rails.application.config.another_logger.info time_ago_in_words(review_comment.updated_at) + '前'
+      Rails.application.config.another_logger.info review_comment.remote_id
+      Rails.application.config.another_logger.info 'review_comments#create'
       render json: {
         status: 'success',
         review_comment_id: review_comment.id,

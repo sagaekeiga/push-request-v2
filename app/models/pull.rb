@@ -89,7 +89,6 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
-  # @TODO リファクタできる気がする
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
@@ -156,37 +155,6 @@ class Pull < ApplicationRecord
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     false
-  end
-
-  def self.update_diff_or_create!(repo)
-    ActiveRecord::Base.transaction do
-      res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
-      res_pulls.each do |res_pull|
-        attributes = {
-          remote_id: res_pull['id'],
-          number:    res_pull['number'],
-          state:     res_pull['state'],
-          reviewee:  repo.reviewee,
-          title:     res_pull['title'],
-          body:      res_pull['body']
-        }
-        pull = with_deleted.find_by(remote_id: res_pull['id'])
-        pull = create!(attributes) if pull.nil?
-        if pull.can_update?
-          pull.update!(attributes)
-          pull.restore if pull&.deleted?
-          # request_reviewed/agreed/reviewed の場合にconnectedにならぬように。
-          pull.connected! if completed?
-        end
-        return if pull.nil?
-        token = pull.changed_files.initialize_token
-        ChangedFile.fetch!(pull, token)
-      end
-    end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_pull')
   end
 
   # -------------------------------------------------------------------------------

@@ -83,7 +83,6 @@ class ReviewComment < ApplicationRecord
         commit_id: params[:comment][:commit_id],
         filename:  params[:comment][:path]
       )
-
       return review_comment.destroy if review_comment.can_destroy?(sender, params) # Destroy
       if params[:changes]                         # Edit
         review_comment.update_attributes!(
@@ -96,6 +95,8 @@ class ReviewComment < ApplicationRecord
         )
         return
       end
+      Rails.application.config.another_logger.info 'params[:comment][:in_reply_to_id]'
+      Rails.application.config.another_logger.info params[:comment][:in_reply_to_id]
       if params[:comment][:in_reply_to_id]        # Reply
         review_comment.update_attributes!(
           remote_id:      params[:comment][:id],
@@ -108,18 +109,20 @@ class ReviewComment < ApplicationRecord
         )
         return
       end
+      # unless params[:sender][:type] == 'Bot'
       # Create
       review_comment = changed_file.review_comments.find_or_initialize_by(
         body:     params[:comment][:body],
         path:     params[:comment][:path],
         position: params[:comment][:position],
       )
+      # end
       review_comment.update_attributes!(
         remote_id:      params[:comment][:id],
         status:         :commented,
         in_reply_to_id: params[:comment][:in_reply_to_id]
       )
-      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer && params[:sender][:type] != 'Bot'
+      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer
     end
     true
   rescue => e
@@ -149,8 +152,7 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    Rails.logger.info comment
-    response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
+    response = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
     if response.code == '201'
       response = JSON.load(response.body)
       update!(remote_id: response['id'])
