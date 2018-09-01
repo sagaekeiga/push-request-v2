@@ -14,7 +14,7 @@
           %td= @reviewed_pulls.count
           %td
             - if current_reviewer.reviews.comment.sum(:working_hours) > 0
-              = number_to_currency(current_reviewer.reviews.comment.sum(:working_hours) * 1000, 1)
+              = number_to_currency(current_reviewer.reviews.comment.sum(:working_hours) * 100)
             - else
               0円
     // 作業中
