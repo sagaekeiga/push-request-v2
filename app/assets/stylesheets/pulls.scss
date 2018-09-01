@@ -269,7 +269,7 @@
         border: $base-border;
         box-shadow: none;
         max-width: 100%;
-        margin-bottom: - $base-margin / 3;
+        margin-bottom: - $base-margin + 15px;
         .panel-heading {
           background-color: $bg-color-github-panel;
           font-family: $font-code;
@@ -348,15 +348,15 @@
             }
             .col-xs-12.reply-wrapper {
               background-color: $bg-color-github-panel;
-              padding-left: 0px;
-              padding-right: 0px;
-              padding-top: $base-padding;
-              padding-bottom: $base-padding;
+              padding: $base-padding;
+              .col-xs-12 {
+                padding: $base-padding;
+              }
               .col-xs-11 {
                 padding-bottom: 0px;
               }
               textarea {
-                margin-bottom: $base-margin / 3;
+                margin-bottom: $base-padding * 2;
               }
             }
           }

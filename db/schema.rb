@@ -203,9 +203,9 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.bigint "remote_id"
     t.text "body"
     t.text "reason"
-    t.string "state"
     t.integer "event"
     t.integer "working_hours"
+    t.string "commit_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

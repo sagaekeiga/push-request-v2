@@ -1,4 +1,5 @@
 $(document).on('click', '.input-reply', function () {
+  console.log('switchTextarea($(this));')
   switchTextarea($(this));
 })
 

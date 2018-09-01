@@ -72,6 +72,73 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
+  # レビュー後にレビューコメントのremote_idを更新する
+  def self.fetch_remote_id!(params)
+    ActiveRecord::Base.transaction do
+      Rails.application.config.another_logger.info 'fetch_remote_id'
+      return true if params[:comment][:in_reply_to_id].present?
+      Rails.application.config.another_logger.info 'fetch_remote_id2'
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.comment.find_by(remote_id: nil)
+      return true if review.nil?
+      Rails.application.config.another_logger.info 'fetch_remote_id3'
+      review_comment = review.review_comments.find_by(
+        remote_id: nil,
+        path:      params[:comment][:path],
+        position:  params[:comment][:position],
+        body:      params[:comment][:body]
+      )
+      return true if review_comment.nil?
+      Rails.application.config.another_logger.info 'fetch_remote_id4'
+      review_comment.update!(remote_id: params[:comment][:id])
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  def self.fetch_reply!(params)
+    ActiveRecord::Base.transaction do
+      pull = Pull.find_by(remote_id: params[:pull_request][:id])
+      changed_file = pull.changed_files.find_by(
+        commit_id: params[:comment][:commit_id],
+        filename:  params[:comment][:path]
+      )
+      Rails.application.config.another_logger.info 'fetch_reply'
+      return true if params[:comment][:in_reply_to_id].nil?
+      Rails.application.config.another_logger.info 'fetch_reply2'
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.comment.find_by(commit_id: params[:comment][:commit_id])
+      Rails.application.config.another_logger.info 'fetch_reply3'
+      return true if review.nil?
+      Rails.application.config.another_logger.info 'fetch_reply4'
+      review_comment = review.review_comments.find_or_initialize_by(
+        remote_id:      nil,
+        path:           params[:comment][:path],
+        position:       params[:comment][:position],
+        body:           params[:comment][:body],
+        changed_file:   changed_file
+      )
+      review_comment.update_attributes!(
+        remote_id: params[:comment][:id],
+        in_reply_to_id: params[:comment][:in_reply_to_id]
+      )
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
   # リモート上での削除・返信を取得・保存
   def self.fetch_by_delete_and_reply!(params)
     ActiveRecord::Base.transaction do
@@ -95,20 +162,20 @@ class ReviewComment < ApplicationRecord
         )
         return
       end
-      Rails.application.config.another_logger.info 'params[:comment][:in_reply_to_id]'
-      Rails.application.config.another_logger.info params[:comment][:in_reply_to_id]
-      if params[:comment][:in_reply_to_id]        # Reply
-        review_comment.update_attributes!(
-          remote_id:      params[:comment][:id],
-          body:           params[:comment][:body],
-          path:           params[:comment][:path],
-          position:       params[:comment][:position],
-          status:         :commented,
-          changed_file:   changed_file,
-          in_reply_to_id: params[:comment][:in_reply_to_id]
-        )
-        return
-      end
+      # if params[:comment][:in_reply_to_id] # Reply
+      #   pull.reviews.comment.first.review_comments.find_by(
+      #     body:           params[:comment][:body],
+      #     path:           params[:comment][:path],
+      #     position:       params[:comment][:position],
+      #     changed_file:   changed_file,
+      #     status:         :commented,
+      #   )
+      #   review_comment.update!(
+      #     remote_id:      params[:comment][:id],
+      #     in_reply_to_id: params[:comment][:in_reply_to_id]
+      #   )
+      #   return
+      # end
       # unless params[:sender][:type] == 'Bot'
       # Create
       review_comment = changed_file.review_comments.find_or_initialize_by(
@@ -152,29 +219,30 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    response = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
-    if response.code == '201'
-      response = JSON.load(response.body)
-      update!(remote_id: response['id'])
+
+    res = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
+
+    if res.code == Settings.api.success.created.status
+      res = JSON.load(res.body)
+      update!(remote_id: res['id'])
       Rails.logger.info 'OK'
     else
-      fail response.body
+      fail res.body
     end
   end
 
   # 対象のレビューコメントを取得する
   def target_comments
-    ReviewComment.where(review: review, path: path, position: position)
+    ReviewComment.where(review: review, path: path, position: position, in_reply_to_id: nil)
   end
 
   # 返信コメントを返す
   def replies
     ReviewComment.where(
-      changed_file: changed_file,
-      review:       nil,
-      path:         path,
-      position:     position
-    ).order(:created_at)
+      changed_file:   changed_file,
+      path:           path,
+      position:       position
+    ).where.not(in_reply_to_id: nil)
   end
 
   # deleteなwebhook

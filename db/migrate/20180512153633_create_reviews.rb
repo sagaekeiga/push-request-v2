@@ -6,9 +6,9 @@ class CreateReviews < ActiveRecord::Migration[5.1]
       t.bigint :remote_id
       t.text :body
       t.text :reason
-      t.string :state
       t.integer :event
       t.integer :working_hours
+      t.string :commit_id
       t.datetime :deleted_at, index: true
       t.timestamps
     end
