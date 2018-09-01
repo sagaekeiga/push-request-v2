@@ -18,14 +18,14 @@
           .pulls-review-comment-wrapper
             - @reviews.includes(:reviewer).each do |review|
               - if review.comment?
-                -# 総括コメント
+                -# 全体へのレビューコメント
                 .review-wrapper
                   = render 'review', review: review
               - if review.issue_comment?
                 -# コメント
                 .issue-comment-wrapper
                   = render 'issue_comment', review: review
-              - review.review_comments.includes(:reviewer, :changed_file).each do |review_comment|
+              - review.review_comments.where(in_reply_to_id: nil).includes(:reviewer, :changed_file).each do |review_comment|
                 .col-xs-2.timeline
                 .col-xs-10.timeline
                   .panel
@@ -53,7 +53,7 @@
                         -# レビューコメント
                         - review_comment.target_comments.includes(:reviewer).each.with_index(1) do |target_comment, index|
                           = render 'review_comments', review_comment: target_comment, index: index
-                          -# - next unless index == review_comments.size
+                          - next unless index == review_comment.target_comments.size
                           -# 返信コメント（レビューコメント） -- Reply
                           - target_comment.replies.includes(:reviewer).each.with_index(1) do |reply, index|
                             = render 'review_comments', review_comment: reply, index: index

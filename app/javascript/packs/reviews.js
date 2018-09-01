@@ -80,7 +80,7 @@ function addForm(elem) {
     $('<div class="panel panel-default new-review-comments"><div class="panel-body"></div></div>').insertAfter($(elem).closest('.code-tr'));
     $(elem).closest('.code-tr').nextAll('.panel').find('.panel-body').prepend(textarea);
     $('<div class="flex-row text-right"></div>').insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('textarea'));
-    $(elem).closest('.code-tr').nextAll('.panel').find('.flex-row').prepend('<button class="btn btn-primary review-trigger" type="button">Start a review</button>');
+    $(elem).closest('.code-tr').nextAll('.panel').find('.flex-row').prepend('<button class="btn btn-primary review-trigger" type="button">Add Review Comment</button>');
     $(elem).closest('.code-tr').nextAll('.panel').find('.flex-row').prepend('<button class="btn btn-default cancel-trigger" type="button">Cancel</button>');
     positionHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('.review-trigger'));
     pathHiddenField.insertAfter($(elem).closest('.code-tr').nextAll('.panel').find('.review-trigger'));

@@ -72,54 +72,84 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  # リモート上での削除・返信を取得・保存
-  def self.fetch_by_delete_and_reply!(params)
+  # レビュー後にレビューコメントのremote_idを更新する
+  def self.fetch_remote_id!(params)
     ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.with_deleted.find_or_initialize_by(remote_id: params[:comment][:id])
+      return true if params[:comment][:in_reply_to_id].present?
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.comment.find_by(remote_id: nil)
+      return true if review.nil?
+      review_comment = review.review_comments.find_by(
+        remote_id: nil,
+        path:      params[:comment][:path],
+        position:  params[:comment][:position],
+        body:      params[:comment][:body]
+      )
+      return true if review_comment.nil?
+      review_comment.update!(remote_id: params[:comment][:id])
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  # リプライレスポンスの取得
+  def self.fetch_reply!(params)
+    ActiveRecord::Base.transaction do
       pull = Pull.find_by(remote_id: params[:pull_request][:id])
-      reviewer = Reviewers::GithubAccount.find_by(owner_id: params[:comment][:user][:id])&.reviewer
-      sender = Reviewers::GithubAccount.find_by(owner_id: params[:sender][:id])&.reviewer
       changed_file = pull.changed_files.find_by(
         commit_id: params[:comment][:commit_id],
         filename:  params[:comment][:path]
       )
-
-      return review_comment.destroy if review_comment.can_destroy?(sender, params) # Destroy
-      if params[:changes]                         # Edit
-        review_comment.update_attributes!(
-          remote_id:    params[:comment][:id],
-          body:         params[:comment][:body],
-          path:         params[:comment][:path],
-          position:     params[:comment][:position],
-          changed_file: changed_file,
-          status:       :commented
-        )
-        return
-      end
-      if params[:comment][:in_reply_to_id]        # Reply
-        review_comment.update_attributes!(
-          remote_id:      params[:comment][:id],
-          body:           params[:comment][:body],
-          path:           params[:comment][:path],
-          position:       params[:comment][:position],
-          status:         :commented,
-          changed_file:   changed_file,
-          in_reply_to_id: params[:comment][:in_reply_to_id]
-        )
-        return
-      end
-      # Create
-      review_comment = changed_file.review_comments.find_or_initialize_by(
-        body:     params[:comment][:body],
-        path:     params[:comment][:path],
-        position: params[:comment][:position],
+      return true if params[:comment][:in_reply_to_id].nil?
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.comment.find_by(commit_id: params[:comment][:commit_id])
+      return true if review.nil?
+      review_comment = review.review_comments.find_or_initialize_by(
+        remote_id:      nil,
+        path:           params[:comment][:path],
+        position:       params[:comment][:position],
+        body:           params[:comment][:body],
+        changed_file:   changed_file
       )
       review_comment.update_attributes!(
-        remote_id:      params[:comment][:id],
-        status:         :commented,
+        remote_id: params[:comment][:id],
         in_reply_to_id: params[:comment][:in_reply_to_id]
       )
-      ReviewerMailer.comment(review_comment).deliver_later if review_comment.reviewer && params[:sender][:type] != 'Bot'
+      ReviewerMailer.comment(review_comment).deliver_later if params[:sender][:type] == 'Bot'
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  # Edit
+  def self.fetch_changes!(params)
+    ActiveRecord::Base.transaction do
+      return true unless params[:changes]
+      pull = Pull.find_by(remote_id: params[:pull_request][:id])
+      changed_file = pull.changed_files.find_by(
+        commit_id: params[:comment][:commit_id],
+        filename:  params[:comment][:path]
+      )
+      review_comment.update_attributes!(
+        remote_id:    params[:comment][:id],
+        body:         params[:comment][:body],
+        path:         params[:comment][:path],
+        position:     params[:comment][:position],
+        changed_file: changed_file,
+        status:       :commented
+      )
     end
     true
   rescue => e
@@ -149,37 +179,29 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    Rails.logger.info comment
-    response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
-    if response.code == '201'
-      response = JSON.load(response.body)
-      update!(remote_id: response['id'])
+
+    res = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
+
+    if res.code == Settings.api.success.created.status
+      res = JSON.load(res.body)
+      update!(remote_id: res['id'])
       Rails.logger.info 'OK'
     else
-      fail response.body
+      fail res.body
     end
   end
 
   # 対象のレビューコメントを取得する
   def target_comments
-    ReviewComment.where(review: review, path: path, position: position)
+    ReviewComment.where(review: review, path: path, position: position, in_reply_to_id: nil)
   end
 
   # 返信コメントを返す
   def replies
     ReviewComment.where(
-      changed_file: changed_file,
-      review:       nil,
-      path:         path,
-      position:     position
-    ).order(:created_at)
-  end
-
-  # deleteなwebhook
-  def can_destroy?(sender, params)
-    # 1. 保存されているかどうか
-    # 2. 削除対象であればbodyは同じ
-    # 3. 送信者とレビュワーは一致しない
-    persisted? && body == params[:comment][:body] && sender.present?
+      changed_file:   changed_file,
+      path:           path,
+      position:       position
+    ).where.not(in_reply_to_id: nil)
   end
 end

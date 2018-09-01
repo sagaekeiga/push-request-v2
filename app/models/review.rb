@@ -7,10 +7,10 @@
 #  deleted_at    :datetime
 #  event         :integer
 #  reason        :text
-#  state         :string
 #  working_hours :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  commit_id     :string
 #  pull_id       :bigint(8)
 #  remote_id     :bigint(8)
 #  reviewer_id   :bigint(8)
@@ -65,6 +65,29 @@ class Review < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :working_hours, presence: true, on: %i(update)
+
+  # レビューはidが可変なので、commit_idを識別子にする
+  def self.fetch_remote_id!(params)
+    ActiveRecord::Base.transaction do
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.find_by(body: params[:review][:body])
+      # レビューの内容を変えた場合は、commit_idから取得
+      review = pull.reviews.find_by(commit_id: params[:review][:commit_id]) if review.nil?
+      review.update!(
+        remote_id: params[:review][:id],
+        commit_id: params[:review][:commit_id]
+      )
+      repo = Repo.find_by_name(params[:repository][:name])
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
 
   #
   # リモートに送るレビューデータの作成・レビューコメントの更新をする
@@ -131,7 +154,7 @@ class Review < ApplicationRecord
       request_params = request_body.to_json
       res = Github::Request.github_exec_review!(request_params, pull)
 
-      fail res.body unless res.code == Settings.res.code.success
+      fail res.body unless res.code == Settings.api.success.status.code
       review_comments.where.not(reviewer: nil).pending.each(&:commented!)
       comment!
       pull.reviewed!
@@ -150,7 +173,7 @@ class Review < ApplicationRecord
     ActiveRecord::Base.transaction do
       body = { 'body': self.body }
       res = Github::Request.github_exec_issue_comment!(body.to_json, pull)
-      fail res.body unless res.code == Settings.res.code.created
+      fail res.body unless res.code == Settings.api.success.created.status
       save!
     end
     true

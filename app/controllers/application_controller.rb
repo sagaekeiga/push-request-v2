@@ -2,6 +2,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   add_flash_types :success, :info, :warning, :danger
   before_action :check_reviewer
+  before_action :set_raven_context
 
   # 200 Success
   def response_success(class_name, action_name)
@@ -68,5 +69,10 @@ class ApplicationController < ActionController::Base
   #
   def use_ssl?
     Rails.env.production?
+  end
+
+  def set_raven_context
+    Raven.user_context(id: session[:current_user_id]) # or anything else in session
+    Raven.extra_context(params: params.to_unsafe_h, url: request.url)
   end
 end

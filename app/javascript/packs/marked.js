@@ -1,4 +1,3 @@
-console.log('marked');
 $.ajax({
   type: 'GET',
   url: `/reviewers/pulls/${$('.page-header').attr('pull-id')}`,

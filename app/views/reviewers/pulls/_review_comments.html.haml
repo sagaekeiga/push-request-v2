@@ -9,5 +9,5 @@
       = review_comment.reviewer.github_account.nickname
     - else
       ghost
-  %small.text-muted= date_format(review_comment.updated_at)
+  %small.text-muted= date_format(review_comment.created_at)
   .col-xs-12= markdown(review_comment.body)

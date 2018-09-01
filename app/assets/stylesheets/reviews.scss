@@ -49,11 +49,10 @@
         font-size: $base-font-size;
       }
       .panel-body {
-        padding: $base-padding $base-padding * 3;
+        padding: $base-padding * 3;
         textarea {
-          margin-top: $base-margin;
           height: 150px;
-          margin-bottom: $base-margin / 3;
+          margin-bottom: $base-padding * 3;
         }
         .panel-text {
           pre {
@@ -68,6 +67,9 @@
         }
         button {
           margin-left: $base-margin / 2;
+        }
+        .btn {
+          font-family: $font-static;
         }
       }
     }
@@ -127,7 +129,7 @@
                 }
               }
               .panel-body {
-                padding: $base-padding $base-padding * 3;
+                padding: $base-padding;
                 textarea {
                   height: 150px;
                 }
@@ -178,7 +180,7 @@
                 }
               }
               .panel-body {
-                padding: $base-padding $base-padding * 3;
+                padding: $base-padding * 3;
                 .panel-text {
                   pre {
                     border-radius: none;
@@ -192,6 +194,10 @@
                 }
                 textarea {
                   height: 150px;
+                  margin-bottom: $base-padding * 3;
+                }
+                .btn {
+                  font-family: $font-static;
                 }
               }
             }

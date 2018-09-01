@@ -7,10 +7,10 @@
 #  deleted_at    :datetime
 #  event         :integer
 #  reason        :text
-#  state         :string
 #  working_hours :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  commit_id     :string
 #  pull_id       :bigint(8)
 #  remote_id     :bigint(8)
 #  reviewer_id   :bigint(8)

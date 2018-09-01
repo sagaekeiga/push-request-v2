@@ -5,7 +5,7 @@ ja:
     attributes:
       review:
         id: ID
-        body: 総括
+        body: 全体へのレビューコメント
         event: イベント
         state: ステート
         working_hours: 作業時間（分）

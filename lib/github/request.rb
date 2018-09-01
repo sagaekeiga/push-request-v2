@@ -4,14 +4,29 @@ module Github
 
     class << self
 
-      # レビュー送信
+      # POST レビュー送信
       def github_exec_review!(params, pull)
-        _request params, sub_url(:review, pull), pull.repo.installation_id, :review
+        _post sub_url(:review, pull), pull.repo.installation_id, :review, params
       end
 
-      # コメント送信
+      # POST コメント送信
       def github_exec_issue_comment!(params, pull)
-        _request params, sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment
+        _post sub_url(:issue_comment, pull), pull.repo.installation_id, :issue_comment, params
+      end
+
+      # POST リプライ送信
+      def github_exec_review_comment!(params, pull)
+        _post sub_url(:review_comment, pull), pull.repo.installation_id, :review_comment, params
+      end
+
+      # GET ファイル差分取得
+      def github_exec_fetch_changed_files!(pull)
+        _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
+      end
+
+      # GET プルリクエスト取得
+      def github_exec_fetch_pulls!(repo)
+        _get sub_url(:pull, repo), repo.installation_id, :pull
       end
 
       private
@@ -22,14 +37,31 @@ module Github
       # @param [String] sub_url github api urlの後続のURL ex. /repos/:owner/:repo/pulls/comments/:comment_id
       # @param [Hash] params 送信パラメータ { path: xxxx, position: yyyy, body: zzzz }
       #
-      def _request(params, sub_url, installation_id, event)
+      def _post(sub_url, installation_id, event, params)
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "token #{get_access_token(installation_id)}",
           'Accept': set_accept(event)
         }
 
-        res = post Settings.github.api_domain + sub_url, headers: headers, body: params
+        res = post Settings.api.github.api_domain + sub_url, headers: headers, body: params
+
+        unless res.code == success_code(event)
+          logger.error "[Github][#{event}] responseCode => #{res.code}"
+          logger.error "[Github][#{event}] responseMessage => #{res.message}"
+          logger.error "[Github][#{event}] subUrl => #{sub_url}"
+        end
+        res
+      end
+
+      def _get(sub_url, installation_id, event)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{get_access_token(installation_id)}",
+          'Accept': set_accept(event)
+        }
+
+        res = get Settings.api.github.api_domain + sub_url, headers: headers
 
         unless res.code == success_code(event)
           logger.error "[Github][#{event}] responseCode => #{res.code}"
@@ -40,7 +72,7 @@ module Github
       end
 
       def get_access_token(installation_id)
-        request_url = Settings.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
+        request_url = Settings.api.github.request.access_token_uri + installation_id.to_s + '/access_tokens'
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "Bearer #{get_jwt}",
@@ -76,9 +108,15 @@ module Github
       def set_accept(event)
         case event
         when :review, :get_access_token
-          return Settings.github.request.header.accept.review
+          return Settings.api.github.request.header.accept.review
         when :issue_comment
-          return Settings.github.request.header.accept.issue_comment
+          return Settings.api.github.request.header.accept.issue_comment
+        when :changed_file
+          return Settings.api.github.request.header.accept.changed_file
+        when :pull
+          return Settings.api.github.request.header.accept.pull
+        when :review_comment
+          return Settings.api.github.request.header.accept.review_comment
         end
       end
 
@@ -86,9 +124,15 @@ module Github
       def success_code(event)
         case event
         when :review
-          return Settings.res.code.success
+          return Settings.api.success.status.code
         when :issue_comment
-          return Settings.res.code.created
+          return Settings.api.success.created.status
+        when :changed_file
+          return Settings.api.success.created.status
+        when :pull
+          return Settings.api.success.created.status
+        when :review_comment
+          return Settings.api.success.created.status
         end
       end
 
@@ -98,6 +142,13 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
         when :issue_comment
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
+        when :changed_file
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
+        when :pull
+          repo = pull
+          return "repos/#{repo.full_name}/pulls"
+        when :review_comment
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
         end
       end
 

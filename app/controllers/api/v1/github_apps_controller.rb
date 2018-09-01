@@ -23,9 +23,12 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:github_app][:pull_request][:head][:user][:id])
       status = @github_account.reviewee.pulls.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
-    when 'pull_request_review_comment' # レビューリクエスト時
-      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:comment][:user][:id])
-      status = ReviewComment.fetch_by_delete_and_reply!(params)
+    when 'pull_request_review'
+      status = Review.fetch_remote_id!(params)
+    when 'pull_request_review_comment'
+      status = ReviewComment.fetch_remote_id!(params)
+      status = ReviewComment.fetch_reply!(params)
+      status = ReviewComment.fetch_changes!(params)
     when 'issue_comment'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])
       status = Review.fetch_issue_comments!(params)

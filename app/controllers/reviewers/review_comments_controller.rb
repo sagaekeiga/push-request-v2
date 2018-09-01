@@ -20,11 +20,9 @@ class Reviewers::ReviewCommentsController < ApplicationController
       reviewer: reviewer,
       in_reply_to_id: params[:reply].present? ? @changed_file.review_comments.last.remote_id : nil
     )
-
     review_comment.status = :commented if params[:status]
 
     if review_comment.save
-      # @TODO review_commentにもcommit_idカラム追加
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
         status: 'success',
@@ -33,7 +31,8 @@ class Reviewers::ReviewCommentsController < ApplicationController
         img: reviewer.github_account.avatar_url,
         name: reviewer.github_account.nickname,
         time: time_ago_in_words(review_comment.updated_at) + '前',
-        remote_id: review_comment.remote_id
+        remote_id: review_comment.remote_id,
+        review_id: review_comment.review_id
       }
     else
       render json: { status: 'failed' }

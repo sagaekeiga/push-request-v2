@@ -66,16 +66,6 @@
   padding-top: $navbar-height;
 }
 
-
-// 検索フォーム
-.search-form-wrapper {
-  .form {
-    margin-top: $base-margin * 2;
-    margin-bottom: $base-margin * 2;
-  }
-}
-
-
 .reviewee-side-wrapper, .reviewer-side-wrapper {
   .active {
     color: $side-icon-color;
