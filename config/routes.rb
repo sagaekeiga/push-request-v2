@@ -30,11 +30,6 @@ Rails.application.routes.draw do
         constraints: { action: /github/ }
     end
 
-    resources :pulls, only: %i(index), param: :token
-    resource :judges, only: %i(update) do
-      get :index
-    end
-
     #
     # Reviewee
     #

@@ -90,10 +90,4 @@ class Repo < ApplicationRecord
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
     Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
   end
-
-  # publicなpullを返す
-  def self.with_public_pulls
-    repos = where(private: false)
-    Pull.includes(:repo).where.not(status: :agreed).where(repo_id: repos&.pluck(:id))
-  end
 end

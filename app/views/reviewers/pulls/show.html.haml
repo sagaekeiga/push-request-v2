@@ -18,7 +18,7 @@
           .pulls-review-comment-wrapper
             - @reviews.includes(:reviewer).each do |review|
               - if review.comment?
-                -# 総括コメント
+                -# 全体へのレビューコメント
                 .review-wrapper
                   = render 'review', review: review
               - if review.issue_comment?
