@@ -19,7 +19,7 @@ ja:
       update: 更新する
       more: もっと見る
       review: Review
-      confirm: 確認する
+      confirm: Check
     label:
       log_out: ログアウト
       reviewer:
@@ -155,9 +155,9 @@ ja:
       failed_create_changed_file: changed fileの保存に失敗しました。
       failed_create_review_comment: review commentの保存に失敗しました。
     status:
-      request_reviewed: レビューしてもらう
-      pending: レビュー待ち
-      complete: 完了
+      request_reviewed: Request Review
+      pending: In Progress
+      complete: Complete
       confirm_canceled: キャンセルするとレビューされません。本当にキャンセルしてよろしいですか？
     github:
       connect:

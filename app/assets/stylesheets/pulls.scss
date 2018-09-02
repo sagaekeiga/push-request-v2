@@ -139,10 +139,11 @@
 
 
 .pulls-conversation-wrapper {
+  font-family: $font-dashboard;
+  font-weight: $base-font-weight;
   .col-sm-10 {
     padding-left: 0;
     .pull-body-wrapper {
-      font-family: $font-code;
       word-wrap: break-word;
       .panel {
         margin-top: $base-margin;
@@ -151,7 +152,6 @@
         box-shadow: none;
         .panel-heading {
           background-color: $color-grey;
-          font-family: $font-code;
           font-size: $base-font-size;
           padding: $base-padding * 2;
           width: 100%;

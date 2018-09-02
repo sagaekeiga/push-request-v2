@@ -4,7 +4,7 @@
       .greet
         - if @reviewee.ok_git && @reviewee.ok_repo && @reviewee.ok_req
           %h1.text-center= "Great!   #{current_reviewee.github_account.nickname}"
-          %p.text-center 準備が整いました。しばらくするとあなたのPullrequestにコメントがつくでしょう.
+          %p.text-center 準備が整いました。しばらくするとあなたのPullrequestにコメントがつきます
         - else
           %h1.text-center= "Hello!   #{current_reviewee.github_account.nickname}"
           %p.text-center

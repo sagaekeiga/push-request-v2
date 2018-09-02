@@ -27,10 +27,12 @@ class PullDecorator < ApplicationDecorator
   # プルのステータスに基づきボタンカラーを返す
   def btn_class_by_status
     case object.status
-    when 'request_reviewed', 'canceled'
-      'btn-primary'
+    when 'canceled', 'connected'
+      'btn-outline-primary'
     when 'agreed'
-      'btn-danger'
+      'btn-outline-danger'
+    when 'request_reviewed', 'reviewed'
+      'btn-success'
     end
   end
 

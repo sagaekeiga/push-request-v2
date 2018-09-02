@@ -88,7 +88,7 @@
       %p.text-center 審査が通るまで少々お待ちください
 .review-btn-wrapper
   - unless @pull.reviewed? || @pull.completed? || @pull.connected?
-    = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'リクエストを承認します。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
+    = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
       %i.far.fa-comment
 = javascript_pack_tag 'marked'
 = javascript_pack_tag 'reply'
