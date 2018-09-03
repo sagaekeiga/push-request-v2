@@ -7,4 +7,20 @@
 
 .reviewer-dashboard-wrapper {
   margin-top: $base-margin * 2;
+  font-family: $font-dashboard;
+  font-weight: $base-font-weight;
+  .page-header {
+    font-family: $font-dashboard;
+  }
+  .btn-outline-primary {
+    color: rgb(68, 139, 187);
+    background-color: transparent;
+    background-image: none;
+    border-color: rgb(68, 139, 187);
+  }
+  table {
+    td {
+      color: $color-td;
+    }
+  }
 }
