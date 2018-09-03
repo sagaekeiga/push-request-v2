@@ -65,6 +65,7 @@ class Review < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :working_hours, presence: true, on: %i(update)
+  validates :remote_id, uniqueness: true, allow_nil: true
 
   # レビューはidが可変なので、commit_idを識別子にする
   def self.fetch_remote_id!(params)
@@ -123,6 +124,7 @@ class Review < ApplicationRecord
       return false unless pull
       # ③ ①があればBodyを取得し作成
       @review = pull.reviews.create!(
+        remote_id: params[:comment][:id],
         body: params[:comment][:body],
         event: :issue_comment
       )
