@@ -3,7 +3,6 @@
 # Table name: reviewers_github_accounts
 #
 #  id                  :bigint(8)        not null, primary key
-#  access_token        :string
 #  avatar_url          :string
 #  company             :string
 #  deleted_at          :datetime
