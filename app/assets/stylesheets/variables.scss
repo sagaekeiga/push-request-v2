@@ -54,6 +54,13 @@ $base-margin: 16px;
 $base-padding: 4px;
 $base-border-radius: 3px;
 $base-font-size: 12px;
-$base-font-weight: 200;
+$base-font-weight: 300;
 $github-primary-color: #28a745;
 $base-height: 50px;
+
+.p-r-0 {
+  padding-right: 0;
+}
+.p-l-0 {
+  padding-left: 0;
+}

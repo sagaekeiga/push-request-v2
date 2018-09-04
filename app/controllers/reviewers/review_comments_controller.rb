@@ -23,6 +23,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
     review_comment.status = :commented if params[:status]
 
     if review_comment.save
+      Rails.logger.info review_comment.to_yaml
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
         status: 'success',

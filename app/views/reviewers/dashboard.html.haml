@@ -16,5 +16,5 @@
                 %span.label.label-warning= pull.repo.skillings.first.skill.name
               %td.text-center= pull.repo_private
               %td.text-center
-                .col-sm-4.pull-right= link_to t('helpers.links.confirm'), reviewers_pull_path(pull), class: 'btn btn-block btn-outline-primary'
+                .col-sm-4.pull-right.p-r-0= link_to t('helpers.links.confirm'), reviewers_pull_path(pull), class: 'btn btn-block btn-outline-primary'
       .text-center= paginate @pulls
