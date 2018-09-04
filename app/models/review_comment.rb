@@ -175,18 +175,10 @@ class ReviewComment < ApplicationRecord
   end
 
   def send_github!(commit_id)
-    Rails.application.config.another_logger.info 'review_comment.commit_id'
-    Rails.application.config.another_logger.info commit_id
     comment = {
       body: body,
       in_reply_to: in_reply_to_id
     }
-    Rails.application.config.another_logger.info 'comment'
-    Rails.application.config.another_logger.info comment
-    Rails.application.config.another_logger.info 'changed_file.pull.to_yaml'
-    Rails.application.config.another_logger.info changed_file.pull.to_yaml
-    Rails.application.config.another_logger.info 'comment.to_json'
-    Rails.application.config.another_logger.info comment.to_json
 
     res = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
 
