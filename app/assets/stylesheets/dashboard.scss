@@ -3,6 +3,17 @@
     padding: $base-padding * 2;
     border-radius: $base-border-radius;
   }
+  .btn-outline-primary {
+    color: rgb(68, 139, 187);
+    background-color: transparent;
+    background-image: none;
+    border-color: rgb(68, 139, 187);
+  }
+  .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
+    color: $color-white;
+    background-color: rgb(68, 139, 187);
+    border-color: rgb(68, 139, 187);
+  }
 }
 
 .reviewer-dashboard-wrapper {
@@ -16,6 +27,11 @@
     color: rgb(68, 139, 187);
     background-color: transparent;
     background-image: none;
+    border-color: rgb(68, 139, 187);
+  }
+  .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
+    color: $color-white;
+    background-color: rgb(68, 139, 187);
     border-color: rgb(68, 139, 187);
   }
   table {

@@ -41,6 +41,11 @@
     background-image: none;
     border-color: rgb(68, 139, 187);
   }
+  .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
+    color: $color-white;
+    background-color: rgb(68, 139, 187);
+    border-color: rgb(68, 139, 187);
+  }
   .btn-success {
     cursor: default;
     background-color: #4dbd74;
@@ -48,6 +53,11 @@
     outline: none;
     -webkit-box-shadow: none;
     box-shadow: none;
+  }
+  .btn-success:hover, .btn-success:focus, .btn-success:active, .btn-success.active, .open>.dropdown-toggle.btn-success {
+    color: $color-white;
+    background-color: $color-cancel;
+    border-color: $color-cancel;
   }
   table {
     td {
