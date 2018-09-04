@@ -37,7 +37,7 @@
                 %span.label.label-warning= pull.repo.skillings.first.skill.name
               %td.text-center= pull.repo_private
               %td.text-center= pull.remaining_time
-              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull)
+              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull), class: 'btn btn-outline-primary w-50'
     - else
       作業中のプルリクエストはありません。
     // 審査中
@@ -78,7 +78,7 @@
               %td.text-center
                 %span.label.label-warning= reviewed_pull.repo.skillings.first.skill.name
               %td.text-center= reviewed_pull.repo_private
-              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(reviewed_pull)
+              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(reviewed_pull), class: 'btn btn-outline-primary w-50'
       .text-center= paginate @reviewed_pulls
     - else
       完了したプルリクエストはありません。

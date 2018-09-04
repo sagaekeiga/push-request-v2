@@ -24,9 +24,9 @@
                 %td.text-center= pull.repo.private?
                 %td.text-center
                   - if pull.connected? || pull.canceled?
-                    = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn btn-block #{pull.btn_class_by_status}"
+                    = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn #{pull.btn_class_by_status} w-50"
                   - elsif pull.completed?
                     .btn.btn-block{ class: pull.btn_class_by_status }= I18n.t('views.status.complete')
                   - else
-                    = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn btn-block #{pull.btn_class_by_status}"
+                    = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn #{pull.btn_class_by_status} w-50"
         .text-center= paginate @pulls

@@ -35,6 +35,7 @@ $pullrequest-blue: #448bbb;
 $opacity-black: rgba(0, 0, 0, 1);
 $side-icon-color: #0366d6;
 $review-btn: #009688;
+$color-cancel: #f86c6b;
 // Spacing
 //
 // Control the default styling of most Bootstrap elements by modifying these
@@ -54,6 +55,16 @@ $base-margin: 16px;
 $base-padding: 4px;
 $base-border-radius: 3px;
 $base-font-size: 12px;
-$base-font-weight: 200;
+$base-font-weight: 300;
 $github-primary-color: #28a745;
 $base-height: 50px;
+
+.p-r-0 {
+  padding-right: 0;
+}
+.p-l-0 {
+  padding-left: 0;
+}
+.w-50 {
+  width: 50%;
+}

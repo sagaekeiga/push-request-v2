@@ -7,6 +7,7 @@
   border-radius: $base-border-radius;
 }
 .pull-show-tab-wrapper {
+  font-family: $font-static;
   ul {
     margin-bottom: $base-margin;
     li {
@@ -139,7 +140,7 @@
 
 
 .pulls-conversation-wrapper {
-  font-family: $font-dashboard;
+  font-family: $font-static;
   font-weight: $base-font-weight;
   .col-sm-10 {
     padding-left: 0;
@@ -264,6 +265,20 @@
           margin-bottom: $base-margin;
         }
       }
+      .review-wrapper {
+        .col-xs-12 {
+          padding-left: 0;
+          padding-right: 0;
+          padding-top: 0;
+          .panel {
+            margin-top: 0;
+            border: $base-border;
+            box-shadow: none;
+            max-width: 100%;
+            margin-bottom: - $base-margin + 15px;
+          } // .panel
+        }
+      }
       .panel {
         margin-top: $base-margin;
         border: $base-border;
@@ -363,6 +378,7 @@
         }
       } // .panel
       .issue-comment-wrapper {
+        font-family: $font-static;
         .col-xs-12 {
           .col-xs-1 {
           }

@@ -6,6 +6,7 @@ ja:
       pull:
         id: ID
         status: ステータス
+        title: タイトル
   enums:
     pull:
       status:
