@@ -86,7 +86,7 @@
       .sub-line {
         font-size: $base-font-size * 1.5;
         margin-bottom: $base-margin * 5;
-        color: $color-white;
+        color: $color-black;
       }
       table {
         background-color: $color-white;
@@ -103,14 +103,14 @@
           margin-top: $base-margin * 3;
           font-size: $base-font-size * 4;
           font-weight: $base-font-weight * 4;
-          color: $color-white;
+          color: $color-black;
         }
         .sub-line {
           font-size: $base-font-size;
           margin-bottom: $base-margin * 4;
           .best-practice-description {
             margin-bottom: $base-margin * 2;
-            color: $color-white;
+            color: $color-black;
             br {
               display: inline;
             }
@@ -129,6 +129,7 @@
   */
   .container-fluid.demo {
     background-color: $color-github-black;
+    color: $color-white;
     .demo-wrapper {
       h1 {
         margin-top: $base-margin * 4;
@@ -138,10 +139,12 @@
       .sub-line {
         font-size: $base-font-size * 1.5;
         margin-bottom: $base-margin * 4;
+        color: $color-white;
       }
       .step-1 {
         margin-top: $base-margin * 2;
         margin-bottom: $base-margin * 6;
+        color: $color-white;
         h3 {
           font-weight: $base-font-weight * 4;
           font-size: $base-font-size * 2;
