@@ -87,7 +87,6 @@ class Reviewer < ApplicationRecord
   # GitHub連携をする
   def connect_to_github(auth)
     reviewer_github_account = build_github_account(
-      access_token: auth['credentials']['token'],
       login: auth['extra']['raw_info']['login'],
       owner_id: auth['extra']['raw_info']['id'],
       avatar_url: auth['extra']['raw_info']['avatar_url'],

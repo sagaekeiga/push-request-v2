@@ -35,8 +35,8 @@ class ApplicationController < ActionController::Base
   end
 
   def transition_dashboard!
-    redirect_to reviewers_dashboard_url if reviewer_signed_in?
-    redirect_to reviewees_dashboard_url if reviewee_signed_in?
+    return redirect_to :reviewers_dashboard if reviewer_signed_in?
+    return redirect_to :reviewees_dashboard if reviewee_signed_in?
   end
 
   rescue_from Exception,                        with: :render_500

@@ -49,76 +49,37 @@
 //
 // Demo
 //
-.container.demo
-  .reviewee-dashboard-wrapper
-    .demo-wrapper
-      %h1.text-center Demo
-      .text-center.text-muted.sub-line
-        PushRequestでは簡単にレビューをもらうことができる仕組みを構築しています
-        %br
-        GitHub Appとの連携を終えたあとに2ステップであなたのコードの品質を上げることができます
-      .col-xs-12.step-1.text-center
-        %h3 STEP 1 プルリクエストの公開
-        %small.text-muted
-          GitHubから取得したあなたのプルリクエストをレビュワーに公開してみましょう
-          「公開する」ボタンを押してください
-        %hr
-        %table.table.table-hover
-          %thead
-            %tr
-              %th= t 'activerecord.models.pull'
-              %th= t 'activerecord.attributes.pull.status'
-          %tbody
-            %tr
-              %td.text-center 決済機能の実装
-              %td.text-center
-                %button{ type: 'button', class: 'btn btn-primary demo-request-btn' } 公開する
-      #demo_img.hidden.col-xs-12.step-1.text-center
-        %h3 STEP 2 レビュワーからのコメント
-        %small.text-muted
-          レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
-        %hr
-        = image_tag 'demo.png', class: 'img-responsive'
-//
-// Example
-//
-.container-fluid.example-wrapper
+.container-fluid.demo
   .container
-    %h1.text-center Best Practice
-    %br
-    .text-center.text-muted.sub-line
-      .best-practice-description
-        期待した結果を得るために
-        %br
-        効果的なリクエストをしてください。
-        %br
-        .br
-        レビュワーはあなたが書いたコードの背景を
-        %br
-        理解している訳ではありません。
-      .quote-first
-        = link_to 'より良いプルリクエストのための10のヒント(原文)', 'http://blog.ploeh.dk/2015/01/15/10-tips-for-better-pull-requests/'
-      .quote
-        = link_to 'より良いプルリクエストのための10のヒント(翻訳)', 'https://yakst.com/ja/posts/1625', class: 'quote'
-      .example
-        %h2
-          %b.text-center Example
-        簡潔なタイトルと最小限の変更にしましょう。
-        %br
-        例えば、Docker構築のレビューをもらう場合、
-        %br
-        関連ファイルだけをpullrequestにプッシュしてください。
-        = image_tag 'docker.mov', class: 'docker img-responsive center-block'
-      .recommend
-        %h2
-          %b.text-center Recommend
-        .sub-line
-          キャッチアップできていない分野だけのレビュー
+    .reviewee-dashboard-wrapper
+      .demo-wrapper
+        %h1.text-center Demo
+        .text-center.text-muted.sub-line
+          PushRequestでは簡単にレビューをもらうことができる仕組みを構築しています
           %br
-          時間がない人向けに部分的なコードレビューもオススメです
-        .quote
-          = link_to '2018年の最先端バックエンドエンジニアに必要なスキルについて考えてみました。', 'https://qiita.com/poly_soft/items/fb649573c19b7a5c0227'
-          （Qiitaより引用）
+          GitHub Appとの連携を終えたあとに2ステップであなたのコードの品質を上げることができます
+        .col-xs-12.step-1.text-center
+          %h3 STEP 1 プルリクエストの公開
+          %small.text-muted
+            GitHubから取得したあなたのプルリクエストをレビュワーに公開してみましょう
+            「公開する」ボタンを押してください
+          %hr
+          %table.table.table-hover
+            %thead
+              %tr
+                %th= t 'activerecord.models.pull'
+                %th= t 'activerecord.attributes.pull.status'
+            %tbody
+              %tr
+                %td.text-center 決済機能の実装
+                %td.text-center
+                  %button{ type: 'button', class: 'btn btn-primary demo-request-btn' } 公開する
+        #demo_img.hidden.col-xs-12.step-1.text-center
+          %h3 STEP 2 レビュワーからのコメント
+          %small.text-muted
+            レビュワーからのコメントがPushRequestを通してあなたのGitHub上のプルリクエストに届きます
+          %hr
+          = image_tag 'demo.png', class: 'img-responsive'
 //
 // Teaser
 //
