@@ -180,6 +180,8 @@ class ReviewComment < ApplicationRecord
       in_reply_to: in_reply_to_id
     }
 
+    Rails.logger.info comment.to_json
+
     res = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
 
     if res.code == Settings.api.success.created.status
