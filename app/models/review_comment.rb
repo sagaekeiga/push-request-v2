@@ -85,11 +85,10 @@ class ReviewComment < ApplicationRecord
 
     # 編集時の取得
     if params[:changes].present?
-      ReviewComment.fetch_changes!(params, pull, changed_file)
-      return
+      return ReviewComment.fetch_changes!(params, pull, changed_file)
     end
 
-    review_comment = ReviewComment.find_or_initilize_by(
+    review_comment = ReviewComment.find_or_initialize_by(
       remote_id:      nil,
       path:           params[:comment][:path],
       position:       params[:comment][:position],
@@ -98,11 +97,11 @@ class ReviewComment < ApplicationRecord
     )
 
     # レビュー時のレスポンス取得
-    # 返事の取得
+    # 返事の取得return
     if params[:comment][:in_reply_to_id].nil?
-      review_comment.fetch_remote_id!(params, pull)
+      return review_comment.fetch_remote_id!(params, pull)
     else
-      review_comment.fetch_reply!(params, pull)
+      return review_comment.fetch_reply!(params, pull)
     end
 
   end
