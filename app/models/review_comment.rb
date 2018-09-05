@@ -89,7 +89,7 @@ class ReviewComment < ApplicationRecord
       return
     end
 
-    review_comment = ReviewComment.find_by(
+    review_comment = ReviewComment.find_or_initilize_by(
       remote_id:      nil,
       path:           params[:comment][:path],
       position:       params[:comment][:position],
