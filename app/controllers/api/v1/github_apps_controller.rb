@@ -26,9 +26,7 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request_review'
       status = Review.fetch_remote_id!(params)
     when 'pull_request_review_comment'
-      status = ReviewComment.fetch_remote_id!(params)
-      status = ReviewComment.fetch_reply!(params)
-      status = ReviewComment.fetch_changes!(params)
+      status = ReviewComment.fetch!(params)
     when 'issue_comment'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])
       status = Review.fetch_issue_comments!(params)

@@ -72,24 +72,45 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
+  def self.fetch!(params)
+    pull = Pull.find_by(
+      remote_id: params[:pull_request][:id],
+      number:    params[:pull_request][:number]
+    )
+
+    changed_file = pull.changed_files.find_by(
+      commit_id: params[:comment][:commit_id],
+      filename:  params[:comment][:path]
+    )
+
+    # 編集時の取得
+    if params[:changes].present?
+      ReviewComment.fetch_changes!(params, pull, changed_file)
+      return
+    end
+
+    review_comment = ReviewComment.find_by(
+      remote_id:      nil,
+      path:           params[:comment][:path],
+      position:       params[:comment][:position],
+      body:           params[:comment][:body],
+      changed_file:   changed_file
+    )
+
+    # レビュー時のレスポンス取得
+    # 返事の取得
+    if params[:comment][:in_reply_to_id].nil?
+      review_comment.fetch_remote_id!(params, pull)
+    else
+      review_comment.fetch_reply!(params, pull)
+    end
+
+  end
+
   # レビュー後にレビューコメントのremote_idを更新する
-  def self.fetch_remote_id!(params)
+  def fetch_remote_id!(params, pull)
     ActiveRecord::Base.transaction do
-      return true if params[:comment][:in_reply_to_id].present?
-      pull = Pull.find_by(
-        remote_id: params[:pull_request][:id],
-        number:    params[:pull_request][:number]
-      )
-      review = pull.reviews.comment.find_by(remote_id: nil)
-      return true if review.nil?
-      review_comment = review.review_comments.find_by(
-        remote_id: nil,
-        path:      params[:comment][:path],
-        position:  params[:comment][:position],
-        body:      params[:comment][:body]
-      )
-      return true if review_comment.nil?
-      review_comment.update!(remote_id: params[:comment][:id])
+      update!(remote_id: params[:comment][:id])
     end
     true
   rescue => e
@@ -99,29 +120,10 @@ class ReviewComment < ApplicationRecord
   end
 
   # リプライレスポンスの取得
-  def self.fetch_reply!(params)
+  def fetch_reply!(params, pull)
     ActiveRecord::Base.transaction do
-      pull = Pull.find_by(remote_id: params[:pull_request][:id])
-      changed_file = pull.changed_files.find_by(
-        commit_id: params[:comment][:commit_id],
-        filename:  params[:comment][:path]
-      )
-      return true if params[:comment][:in_reply_to_id].nil?
-      pull = Pull.find_by(
-        remote_id: params[:pull_request][:id],
-        number:    params[:pull_request][:number]
-      )
-      review = pull.reviews.comment.find_by(commit_id: params[:comment][:commit_id])
-      return true if review.nil?
-      review_comment = review.review_comments.find_or_initialize_by(
-        remote_id:      nil,
-        path:           params[:comment][:path],
-        position:       params[:comment][:position],
-        body:           params[:comment][:body],
-        changed_file:   changed_file
-      )
-      review_comment.update_attributes!(
-        remote_id: params[:comment][:id],
+      update_attributes!(
+        remote_id:      params[:comment][:id],
         in_reply_to_id: params[:comment][:in_reply_to_id]
       )
       ReviewerMailer.comment(review_comment).deliver_later if params[:sender][:type] == 'Bot'
@@ -134,14 +136,9 @@ class ReviewComment < ApplicationRecord
   end
 
   # Edit
-  def self.fetch_changes!(params)
+  def self.fetch_changes!(params, pull, changed_file)
     ActiveRecord::Base.transaction do
-      return true unless params[:changes]
-      pull = Pull.find_by(remote_id: params[:pull_request][:id])
-      changed_file = pull.changed_files.find_by(
-        commit_id: params[:comment][:commit_id],
-        filename:  params[:comment][:path]
-      )
+      review_comment = ReviewComment.find_by(remote_id: params[:comment][:id])
       review_comment.update_attributes!(
         remote_id:    params[:comment][:id],
         body:         params[:comment][:body],
