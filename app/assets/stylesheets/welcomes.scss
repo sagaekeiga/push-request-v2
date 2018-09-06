@@ -28,6 +28,9 @@
       color: $color-white;
       font-size: $base-font-size * 6;
       font-weight: $base-font-weight * 4;
+      .target {
+        margin-bottom: $base-margin / 4;
+      }
     }
     .container {
       position: absolute;
@@ -84,13 +87,24 @@
         font-weight: $base-font-weight * 4;
       }
       .sub-line {
-        font-size: $base-font-size * 1.5;
+        font-size: $base-sl-font-size;
         margin-bottom: $base-margin * 5;
         color: $color-black;
       }
       table {
         background-color: $color-white;
         color: $color-black;
+        .btn-outline-primary {
+          color: rgb(68, 139, 187);
+          background-color: transparent;
+          background-image: none;
+          border-color: rgb(68, 139, 187);
+        }
+        .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
+          color: $color-white;
+          background-color: rgb(68, 139, 187);
+          border-color: rgb(68, 139, 187);
+        }
       }
     }
   }
@@ -137,22 +151,19 @@
         font-weight: $base-font-weight * 4;
       }
       .sub-line {
-        font-size: $base-font-size * 1.5;
-        margin-bottom: $base-margin * 4;
+        font-size: $base-sl-font-size;
+        margin-top: $base-margin * 2;
+        margin-bottom: $base-margin;
         color: $color-white;
       }
-      .step-1 {
-        margin-top: $base-margin * 2;
-        margin-bottom: $base-margin * 6;
-        color: $color-white;
-        h3 {
-          font-weight: $base-font-weight * 4;
-          font-size: $base-font-size * 2;
-          color: $pullrequest-blue;
-        }
-        table {
-          margin-top: $base-margin * 6;
-        }
+      .panel.panel-default {
+        margin-top: $base-margin;
+        background-color: $color-github-black;
+        border-color: $color-github-black;
+      }
+      hr {
+        color: $color-github-black;
+        margin-bottom: $base-margin * 3;
       }
     }
     @media (max-width: $screen-xs-max) {
@@ -165,21 +176,6 @@
         .sub-line {
           font-size: $base-font-size * 1.1;
           margin-bottom: $base-margin;
-        }
-        .step-1 {
-          margin-top: $base-margin;
-          margin-bottom: $base-margin;
-          h3 {
-            font-weight: $base-font-weight * 4;
-            font-size: $base-font-size * 1.5;
-            color: $pullrequest-blue;
-          }
-          table {
-            margin-top: $base-margin;
-          }
-        }
-        #demo_img {
-          margin-bottom: $base-margin * 3;
         }
       }
     }
@@ -200,8 +196,8 @@
         font-weight: $base-font-weight * 4;
       }
       .sub-line {
-        font-size: $base-font-size * 1.5;
-        margin-bottom: $base-margin * 4;
+        font-size: $base-sl-font-size;
+        margin-bottom: $base-margin * 5;
       }
     }
     @media (max-width: $screen-xs-max) {
@@ -239,6 +235,7 @@
           font-weight: $base-font-weight * 4;
         }
         .start-line {
+          margin-top: $base-margin * 2;
           font-size: $base-font-size * 1.2;
           margin-bottom: $base-margin * 4;
         }
@@ -247,6 +244,9 @@
           margin-bottom: $base-margin * 5;
           .col-xs-6 {
             font-size: $base-font-size * 1.1;
+            .target {
+              margin-bottom: $base-margin / 4;
+            }
           }
         }
       }

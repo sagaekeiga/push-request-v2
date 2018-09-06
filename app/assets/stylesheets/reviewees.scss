@@ -59,6 +59,15 @@
     background-color: $color-cancel;
     border-color: $color-cancel;
   }
+  .btn-warning {
+    cursor: default;
+    color: $base-color-green;
+    background-color: $color-white;
+    border: 1px solid $base-color-green;
+    outline: none;
+    -webkit-box-shadow: none;
+    box-shadow: none;
+  }
   table {
     td {
       color: $color-td;

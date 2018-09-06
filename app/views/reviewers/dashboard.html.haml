@@ -4,10 +4,10 @@
       %table.table.table-hover.pulls-on-dashboard-wrapper
         %thead
           %tr
-            %th= t 'activerecord.models.pull'
-            %th= t 'activerecord.models.skill'
-            %th= t 'activerecord.attributes.repo.private'
-            %th
+            %th.col-sm-9= t 'activerecord.models.pull'
+            %th.col-sm-1= t 'activerecord.models.skill'
+            %th.col-sm-1= t 'activerecord.attributes.repo.private'
+            %th.col-sm-1
         %tbody
           - @pulls.each do |pull|
             %tr
