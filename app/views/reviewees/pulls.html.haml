@@ -12,10 +12,10 @@
         %table.table.table-hover
           %thead
             %tr
-              %th= t 'activerecord.models.pull'
-              %th= t 'activerecord.models.repo'
-              %th= t 'activerecord.models.repo.private'
-              %th= t 'activerecord.attributes.pull.status'
+              %th.col-sm-4= t 'activerecord.models.pull'
+              %th.col-sm-5= t 'activerecord.models.repo'
+              %th.col-sm-1= t 'activerecord.models.repo.private'
+              %th.col-sm-1= t 'activerecord.attributes.pull.status'
           %tbody
             - @pulls.decorate.each do |pull|
               %tr
@@ -24,9 +24,16 @@
                 %td.text-center= pull.repo.private?
                 %td.text-center
                   - if pull.connected? || pull.canceled?
-                    = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn #{pull.btn_class_by_status} w-50"
+                    = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn btn-block #{pull.btn_class_by_status}"
                   - elsif pull.completed?
-                    .btn.btn-block{ class: pull.btn_class_by_status }= I18n.t('views.status.complete')
+                    .btn.btn-block{ class: pull.btn_class_by_status }
+                      %i.fas.fa-check-circle
+                      &nbsp;
+                      = I18n.t('views.status.complete')
                   - else
-                    = link_to t('views.status.pending'), reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn #{pull.btn_class_by_status} w-50"
+                    = link_to reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn btn-block #{pull.btn_class_by_status}" do
+                      %i.fas.fa-spinner
+                      &nbsp;
+                      = t('views.status.pending')
         .text-center= paginate @pulls
+= javascript_pack_tag 'toggle-button'

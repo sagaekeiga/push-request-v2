@@ -5,9 +5,18 @@
     %table.table.table-bordered.text-center
       %thead
         %tr
-          %th= t '.working_pulls_count'
-          %th= t '.reviewed_pulls_count'
-          %th 報酬
+          %th
+            %i.fas.fa-spinner
+            &nbsp;
+            = t '.working_pulls_count'
+          %th
+            %i.far.fa-check-circle
+            &nbsp;
+            = t '.reviewed_pulls_count'
+          %th
+            %i.fas.fa-yen-sign
+            &nbsp;
+            報酬
       %tbody
         %tr
           %td= @working_pulls.count

@@ -191,7 +191,12 @@ class ReviewComment < ApplicationRecord
 
   # 対象のレビューコメントを取得する
   def target_comments
-    ReviewComment.where(review: review, path: path, position: position, in_reply_to_id: nil)
+    ReviewComment.where(
+      review: review,
+      path: path,
+      position: position,
+      in_reply_to_id: nil
+    )
   end
 
   # 返信コメントを返す

@@ -29,10 +29,10 @@ class PullDecorator < ApplicationDecorator
     case object.status
     when 'canceled', 'connected'
       'btn-outline-primary'
-    when 'agreed'
-      'btn-outline-danger'
-    when 'request_reviewed', 'reviewed'
+    when 'request_reviewed', 'reviewed', 'agreed'
       'btn-success'
+    when 'completed'
+      'btn-warning'
     end
   end
 

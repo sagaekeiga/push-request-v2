@@ -98,7 +98,7 @@ class Reviewer < ApplicationRecord
       nickname: auth['info']['nickname'],
       name: auth['info']['name'],
       company: auth['info']['company'],
-       location: auth['extra']['raw_info']['location'],
+      location: auth['extra']['raw_info']['location'],
       public_gists: auth['extra']['raw_info']['public_gists'],
       public_repos: auth['extra']['raw_info']['public_repos'],
       reviewee_created_at: auth['extra']['raw_info']['created_at'],
