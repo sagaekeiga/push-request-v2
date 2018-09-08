@@ -1,0 +1,13 @@
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+/Users/keiga/.rbenv/versions/2.4.2/bin/ruby -r ./siteconf20180908-78247-1b1gqqw.rb extconf.rb
+creating Makefile
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" clean
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR="
+make: Nothing to be done for `all'.
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/json-2.1.0/ext/json
+make "DESTDIR=" install

@@ -33,6 +33,7 @@ class Repo < ApplicationRecord
   has_many :pulls, dependent: :destroy
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
+  has_many :contents
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -74,6 +75,7 @@ class Repo < ApplicationRecord
             private: repository['private'],                            # プライベート
             installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
           )
+          Content.fetch!(repo)
           Pull.fetch!(repo)
         end
         true

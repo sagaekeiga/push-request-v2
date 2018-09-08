@@ -15,7 +15,7 @@
           %tbody
             - @repos.each do |repo|
               %tr
-                %td= link_to repo.full_name, repo.decorate.remote_url, target: 'blank'
+                %td= link_to repo.full_name, reviewees_repo_contents_path(repo)
 
         .text-center= paginate @repos
 

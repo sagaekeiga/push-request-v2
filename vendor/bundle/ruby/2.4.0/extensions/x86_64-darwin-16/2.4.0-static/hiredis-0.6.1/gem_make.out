@@ -1,0 +1,25 @@
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/hiredis-0.6.1/ext/hiredis_ext
+/Users/keiga/.rbenv/versions/2.4.2/bin/ruby -r ./siteconf20180908-78247-1byh9c6.rb extconf.rb
+checking for sys/socket.h... yes
+cc -std=c99 -pedantic -c -O3 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  net.c
+cc -std=c99 -pedantic -c -O3 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  hiredis.c
+cc -std=c99 -pedantic -c -O3 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  sds.c
+cc -std=c99 -pedantic -c -O3 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  async.c
+cc -std=c99 -pedantic -c -O3 -fPIC  -Wall -W -Wstrict-prototypes -Wwrite-strings -g -ggdb  read.c
+ar rcs libhiredis.a net.o hiredis.o sds.o async.o read.o
+checking for rb_thread_fd_select()... yes
+creating Makefile
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/hiredis-0.6.1/ext/hiredis_ext
+make "DESTDIR=" clean
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/hiredis-0.6.1/ext/hiredis_ext
+make "DESTDIR="
+compiling connection.c
+compiling hiredis_ext.c
+compiling reader.c
+linking shared-object hiredis/ext/hiredis_ext.bundle
+
+current directory: /Users/keiga/Desktop/push-request-v2/vendor/bundle/ruby/2.4.0/gems/hiredis-0.6.1/ext/hiredis_ext
+make "DESTDIR=" install
+/usr/bin/install -c -m 0755 hiredis_ext.bundle ./.gem.20180908-78247-i0h6ip/hiredis/ext

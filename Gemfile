@@ -122,7 +122,7 @@ gem 'ransack'
 gem 'google-analytics-rails'
 gem 'sentry-raven'
 group :development, :test do
-  gem  'bullet'
+  gem 'bullet'
   gem 'rails-flog', require: "flog"
   gem 'bullet'
   gem 'database_cleaner'

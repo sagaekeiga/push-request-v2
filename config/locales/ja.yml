@@ -165,6 +165,7 @@ ja:
     github_apps:
       install_repositories: GitHub Appをインストールし、レポジトリ・プルリクエストを取得しましょう。
     synchronizes: 同期
+    bytes: "%{byte} Bytes"
   reviewer_mailer:
     comment:
       title: コメントがつきました。

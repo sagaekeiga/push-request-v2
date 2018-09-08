@@ -634,7 +634,6 @@ GEM
       autoprefixer-rails (>= 5.2.1)
       sass (>= 3.3.4)
     brakeman (4.2.1)
-    breadcrumbs_on_rails (3.0.1)
     builder (3.2.3)
     bullet (5.7.5)
       activesupport (>= 3.0.0)

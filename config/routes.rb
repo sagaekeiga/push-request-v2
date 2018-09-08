@@ -44,6 +44,9 @@ Rails.application.routes.draw do
       get :dashboard, :pulls, :repos
       get 'settings/integrations'
       resources :pulls, only: %i(update)
+      resources :repo do
+        resources :contents, only: %i(index show)
+      end
     end
 
     #

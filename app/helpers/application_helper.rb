@@ -30,4 +30,39 @@ module ApplicationHelper
   def same_action_name?(action_name)
     'active' if action_name == controller.action_name
   end
+
+  # 言語をシンボルで返す
+  def symbolized_lang(path)
+    case File.extname(path)
+    when '.rb', '.rake'
+      :ruby
+    when '.cc', '.cp', '.cpp', '.cxx', '.c'
+      :c
+    when '.py'
+      :python
+    when '.js', '.coffee'
+      :javascript
+    when '.java'
+      :java
+    when '.html'
+      :html
+    when '.php'
+      :php
+    when '.sass', '.scss'
+      :sass
+    when '.css'
+      :css
+    when '.yml'
+      :yaml
+    when '.haml'
+      :html
+    else
+      :html
+    end
+  end
+
+  # シンタックスハイライトで返す
+  def coderay(line, path)
+    CodeRay.scan(line, symbolized_lang(path)).div.html_safe
+  end
 end

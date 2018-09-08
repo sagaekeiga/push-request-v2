@@ -19,6 +19,11 @@ module Github
         _post sub_url(:review_comment, pull), pull.repo.installation_id, :review_comment, params
       end
 
+      # GET レポジトリファイルの取得
+      def github_exec_fetch_repo_contents!(repo, path)
+        _get "repos/#{repo.full_name}/contents/#{path}", repo.installation_id, :content
+      end
+
       # GET ファイル差分取得
       def github_exec_fetch_changed_files!(pull)
         _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
@@ -61,6 +66,8 @@ module Github
           'Accept': set_accept(event)
         }
 
+        Rails.application.config.another_logger.info Settings.api.github.api_domain + sub_url
+        Rails.application.config.another_logger.info headers
         res = get Settings.api.github.api_domain + sub_url, headers: headers
 
         unless res.code == success_code(event)
@@ -117,6 +124,8 @@ module Github
           return Settings.api.github.request.header.accept.pull
         when :review_comment
           return Settings.api.github.request.header.accept.review_comment
+        when :content
+          return Settings.api.github.request.header.accept.pull
         end
       end
 
@@ -133,6 +142,8 @@ module Github
           return Settings.api.success.created.status
         when :review_comment
           return Settings.api.success.created.status
+        when :content
+          return Settings.api.success.status.code
         end
       end
 

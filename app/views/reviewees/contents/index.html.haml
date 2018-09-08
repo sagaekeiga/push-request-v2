@@ -1,0 +1,15 @@
+.col-xs-12
+  .container
+    .row
+      %table.table.table-hover
+        %thead
+          %tr
+            %th= t 'activerecord.models.pull'
+        %tbody
+          - @contents.each do |content|
+            %tr
+              %td
+                = link_to [:reviewees, content.repo, content] do
+                  %i.fas{ class: content.dir? ? 'fa-folder' : 'fa-file' }
+                  &nbsp;
+                  = content.name
