@@ -4,9 +4,9 @@
       %table.table.table-hover.pulls-on-dashboard-wrapper
         %thead
           %tr
-            %th.col-sm-9= t 'activerecord.models.pull'
-            %th.col-sm-1= t 'activerecord.models.skill'
-            %th.col-sm-1= t 'activerecord.attributes.repo.private'
+            %th.col-sm-6= t 'activerecord.models.pull'
+            %th.col-sm-3= t 'activerecord.models.skill'
+            %th.col-sm-2= t 'activerecord.attributes.repo.private'
             %th.col-sm-1
         %tbody
           - @pulls.each do |pull|
@@ -16,5 +16,8 @@
                 %span.label.label-warning= pull.repo.skillings.first.skill.name
               %td.text-center= pull.repo_private
               %td.text-center
-                = link_to t('helpers.links.confirm'), reviewers_pull_path(pull), class: 'btn btn-outline-primary w-50'
+                = link_to reviewers_pull_path(pull), class: 'btn btn-block btn-outline-primary' do
+                  %i.fas.fa-eye
+                  &nbsp;
+                  = t('helpers.links.confirm')
       .text-center= paginate @pulls

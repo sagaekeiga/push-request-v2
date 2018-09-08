@@ -5,9 +5,18 @@
     %table.table.table-bordered.text-center
       %thead
         %tr
-          %th= t '.working_pulls_count'
-          %th= t '.reviewed_pulls_count'
-          %th 報酬
+          %th
+            %i.fas.fa-spinner
+            &nbsp;
+            = t '.working_pulls_count'
+          %th
+            %i.far.fa-check-circle
+            &nbsp;
+            = t '.reviewed_pulls_count'
+          %th
+            %i.fas.fa-yen-sign
+            &nbsp;
+            報酬
       %tbody
         %tr
           %td= @working_pulls.count
@@ -19,66 +28,92 @@
               0円
     // 作業中
     .page-header
-      %h3= t '.working_pulls_count'
+      %h5
+        %b
+          %i.fas.fa-spinner
+          &nbsp;
+          = t '.working_pulls_count'
     - if @working_pulls.present?
-      %table.table.table-hover.pulls-on-dashboard-wrapper
-        %thead
-          %tr
-            %th.col-sm-7= t 'activerecord.attributes.pull.title'
-            %th.col-sm-1= t 'activerecord.models.skill'
-            %th.col-sm-1= t 'activerecord.attributes.repo.private'
-            %th.col-sm-2= t '.remaining_time'
-            %th.col-sm-1
-        %tbody
-          - @working_pulls.each do |pull|
-            %tr
-              %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
-              %td.text-center
-                %span.label.label-warning= pull.repo.skillings.first.skill.name
-              %td.text-center= pull.repo_private
-              %td.text-center= pull.remaining_time
-              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(pull), class: 'btn btn-block btn-outline-primary'
+      .panel.panel-default
+        .panel-body
+          %table.table.table-hover.pulls-on-dashboard-wrapper
+            %thead
+              %tr
+                %th.col-sm-6= t 'activerecord.attributes.pull.title'
+                %th.col-sm-2= t 'activerecord.models.skill'
+                %th.col-sm-1= t 'activerecord.attributes.repo.private'
+                %th.col-sm-2= t '.remaining_time'
+                %th.col-sm-1
+            %tbody
+              - @working_pulls.each do |pull|
+                %tr
+                  %td= link_to pull.title&.truncate(40), reviewers_pull_path(pull)
+                  %td.text-center
+                    %span.label.label-warning= pull.repo.skillings.first.skill.name
+                  %td.text-center= pull.repo_private
+                  %td.text-center= pull.remaining_time
+                  %td.text-center
+                    = link_to reviewers_pull_path(pull), class: 'btn btn-block btn-outline-primary' do
+                      %i.fas.fa-eye
+                      &nbsp;
+                      = t('helpers.links.confirm')
     - else
       作業中のプルリクエストはありません。
     // 審査中
     .page-header
-      %h3 審査中
+      %h5
+        %b
+          %i.fas.fa-hourglass-start
+          &nbsp;
+          審査中
     - if @pending_reviews.present?
-      %table.table.table-hover.pulls-on-dashboard-wrapper
-        %thead
-          %tr
-            %th.col-sm-7= t 'activerecord.attributes.pull.title'
-            %th.col-sm-3= t 'activerecord.models.skill'
-            %th.col-sm-2= t 'activerecord.attributes.repo.private'
-        %tbody
-          - @pending_reviews.each do |pending_review|
-            %tr
-              %td= pending_review.pull.title
-              %td.text-center
-                %span.label.label-warning= pending_review.pull.repo.skillings.first.skill.name
-              %td.text-center= pending_review.pull.repo_private
-      .text-center= paginate @reviewed_pulls
+      .panel.panel-default
+        .panel-body
+          %table.table.table-hover.pulls-on-dashboard-wrapper
+            %thead
+              %tr
+                %th.col-sm-6= t 'activerecord.attributes.pull.title'
+                %th.col-sm-3= t 'activerecord.models.skill'
+                %th.col-sm-3= t 'activerecord.attributes.repo.private'
+            %tbody
+              - @pending_reviews.each do |pending_review|
+                %tr
+                  %td= pending_review.pull.title
+                  %td.text-center
+                    %span.label.label-warning= pending_review.pull.repo.skillings.first.skill.name
+                  %td.text-center= pending_review.pull.repo_private
+          .text-center= paginate @reviewed_pulls
     - else
       審査中のレビューはありません。
     // 完了
     .page-header
-      %h3 完了
+      %h5
+        %b
+          %i.far.fa-check-circle
+          &nbsp;
+          完了
     - if @reviewed_pulls.present?
-      %table.table.table-hover.pulls-on-dashboard-wrapper
-        %thead
-          %tr
-            %th.col-sm-7= t 'activerecord.attributes.pull.title'
-            %th.col-sm-2= t 'activerecord.models.skill'
-            %th.col-sm-2= t 'activerecord.attributes.repo.private'
-            %th.col-sm-1
-        %tbody
-          - @reviewed_pulls.each do |reviewed_pull|
-            %tr
-              %td= link_to reviewed_pull.title&.truncate(40), reviewers_pull_path(reviewed_pull)
-              %td.text-center
-                %span.label.label-warning= reviewed_pull.repo.skillings.first.skill.name
-              %td.text-center= reviewed_pull.repo_private
-              %td.text-center= link_to t('helpers.links.confirm'), reviewers_pull_path(reviewed_pull), class: 'btn btn-block btn-outline-primary'
-      .text-center= paginate @reviewed_pulls
+      .panel.panel-default
+        .panel-body
+          %table.table.table-hover.pulls-on-dashboard-wrapper
+            %thead
+              %tr
+                %th.col-sm-6= t 'activerecord.attributes.pull.title'
+                %th.col-sm-3= t 'activerecord.models.skill'
+                %th.col-sm-2= t 'activerecord.attributes.repo.private'
+                %th.col-sm-1
+            %tbody
+              - @reviewed_pulls.each do |reviewed_pull|
+                %tr
+                  %td= link_to reviewed_pull.title&.truncate(40), reviewers_pull_path(reviewed_pull)
+                  %td.text-center
+                    %span.label.label-warning= reviewed_pull.repo.skillings.first.skill.name
+                  %td.text-center= reviewed_pull.repo_private
+                  %td.text-center
+                    = link_to reviewers_pull_path(reviewed_pull), class: 'btn btn-block btn-outline-primary' do
+                      %i.fas.fa-eye
+                      &nbsp;
+                      = t('helpers.links.confirm')
+          .text-center= paginate @reviewed_pulls
     - else
       完了したプルリクエストはありません。
