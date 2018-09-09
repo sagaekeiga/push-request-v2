@@ -10,6 +10,7 @@
 #  name        :string
 #  path        :string
 #  size        :string
+#  status      :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  repo_id     :bigint(8)
@@ -52,7 +53,15 @@ class Content < ApplicationRecord
     file: 1000,
     dir:  2000
   }
-
+  # 公開状況
+  #
+  # - hidden  : 非公開
+  # - showing : 公開
+  #
+  enum status: {
+    hidden:   1000,
+    showing:  2000
+  }
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -63,6 +72,11 @@ class Content < ApplicationRecord
   validates :reviewee, uniqueness: { scope: %i(repo name path file_type) }
 
   # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:hidden]
+
+  # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
@@ -70,10 +84,9 @@ class Content < ApplicationRecord
     ActiveRecord::Base.transaction do
       res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, '')
       res_contents.each do |res_content|
+        res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
         content = repo.contents.with_deleted.find_or_initialize_by(path: res_content['path'], reviewee: repo.reviewee)
         content.set_file_type_by(res_content['type'])
-        Rails.logger.info res_content
-        Rails.logger.info res_content['content']
         content.update_attributes!(
           content:   res_content['content'],
           html_url:  res_content['html_url'],

@@ -66,6 +66,7 @@ ActiveRecord::Schema.define(version: 20180908064707) do
     t.bigint "reviewee_id"
     t.bigint "repo_id"
     t.integer "file_type"
+    t.integer "status"
     t.string "size"
     t.string "name"
     t.string "path"
@@ -105,6 +106,7 @@ ActiveRecord::Schema.define(version: 20180908064707) do
     t.string "name"
     t.string "full_name"
     t.boolean "private"
+    t.integer "status"
     t.bigint "installation_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false

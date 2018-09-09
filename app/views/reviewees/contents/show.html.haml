@@ -2,21 +2,10 @@
   .container
     .row
       .content-show-wrapper
+        .page-header
+          %h4= @content.decorate.breadcrumbs
         - if @content.dir?
-          .panel.panel-default
-            .panel-heading
-              %b.text-right= l @content.created_at
-            .table-wrapper
-              %table.table.table-hover
-                %tbody
-                  - @contents.each do |content|
-                    %tr
-                      %td.file-name.col-sm-11
-                        = link_to [:reviewees, content.repo, content] do
-                          %i.fas{ class: content.dir? ? 'fa-folder' : 'fa-file' }
-                          &nbsp;
-                          = content.name
-                      %td.col-sm-1.text-right= link_to '公開', '#', class: 'btn btn-primary'
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files
         - else
           %h6= @content.path
           .panel.panel-default
@@ -27,8 +16,9 @@
                 %thead
                   %tr
                     %th{ scope: 'col' }
-                - Base64.decode64(@content.content)&.each_line&.with_index do |line, index|
-                  %tbody
-                    %tr
-                      %td.index= index
-                      %td.file-code= coderay(line, @content.path)
+                - if @content.content
+                  - Base64.decode64(@content.content)&.each_line&.with_index do |line, index|
+                    %tbody
+                      %tr
+                        %td.index= index
+                        %td.file-code= coderay(line, @content.path)

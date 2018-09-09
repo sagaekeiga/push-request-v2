@@ -4,6 +4,7 @@ class CreateContents < ActiveRecord::Migration[5.1]
       t.belongs_to :reviewee, foreign_key: true
       t.belongs_to :repo, foreign_key: true
       t.integer :file_type
+      t.integer :status
       t.string :size
       t.string :name
       t.string :path

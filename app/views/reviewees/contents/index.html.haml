@@ -1,15 +1,8 @@
 .col-xs-12
   .container
     .row
-      %table.table.table-hover
-        %thead
-          %tr
-            %th= t 'activerecord.models.pull'
-        %tbody
-          - @contents.each do |content|
-            %tr
-              %td
-                = link_to [:reviewees, content.repo, content] do
-                  %i.fas{ class: content.dir? ? 'fa-folder' : 'fa-file' }
-                  &nbsp;
-                  = content.name
+      .content-show-wrapper
+        .page-header
+          .pull-right= link_to @repo.text_by_status, reviewees_repo_path(@repo), method: :put, class: "btn #{@repo.btn_by_status}"
+          %h3= @repo.full_name
+        = render 'dirs', resource: @repo, dir_or_files: @dir_or_files

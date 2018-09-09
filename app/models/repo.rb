@@ -7,6 +7,7 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  installation_id :bigint(8)
@@ -44,8 +45,22 @@ class Repo < ApplicationRecord
   validates :installation_id, presence: true
 
   # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # 性別
+  #
+  # - hidden  : 非公開
+  # - showing : 公開
+  #
+  enum status: {
+    hidden:  1000,
+    showing: 2000
+  }
+
+  # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:hidden]
   attribute :private, default: false
 
   # @TODO テストコードを書く

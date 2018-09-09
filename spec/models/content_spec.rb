@@ -10,6 +10,7 @@
 #  name        :string
 #  path        :string
 #  size        :string
+#  status      :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  repo_id     :bigint(8)
