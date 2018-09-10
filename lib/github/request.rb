@@ -24,6 +24,23 @@ module Github
         _get "repos/#{repo.full_name}/contents/#{path}", repo.installation_id, :content
       end
 
+      def github_exec_fetch_changed_file_content!(repo, content_url)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{get_access_token(repo.installation_id)}",
+          'Accept': set_accept(:content)
+        }
+
+        res = get content_url, headers: headers
+
+        unless res.code == success_code(:content)
+          logger.error "[Github][#{event}] responseCode => #{res.code}"
+          logger.error "[Github][#{event}] responseMessage => #{res.message}"
+          logger.error "[Github][#{event}] subUrl => #{sub_url}"
+        end
+        res
+      end
+
       # GET ファイル差分取得
       def github_exec_fetch_changed_files!(pull)
         _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
@@ -66,8 +83,6 @@ module Github
           'Accept': set_accept(event)
         }
 
-        Rails.application.config.another_logger.info Settings.api.github.api_domain + sub_url
-        Rails.application.config.another_logger.info headers
         res = get Settings.api.github.api_domain + sub_url, headers: headers
 
         unless res.code == success_code(event)

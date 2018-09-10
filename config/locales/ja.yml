@@ -166,6 +166,8 @@ ja:
       install_repositories: GitHub Appをインストールし、レポジトリ・プルリクエストを取得しましょう。
     synchronizes: 同期
     bytes: "%{byte} Bytes"
+    view: View
+    back_pullrequest: Back Pullrequest
   reviewer_mailer:
     comment:
       title: コメントがつきました。

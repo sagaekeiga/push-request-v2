@@ -11,7 +11,10 @@
               .js-blob-wrapper
                 .panel.changed-file-wrapper
                   .panel-heading
-                    .panel-title= changed_file.filename
+                    .panel-title
+                      .pull-right
+                        = link_to t('views.view'), reviewers_pull_changed_file_path(@pull, changed_file), class: 'btn btn-default btn-sm'
+                      = changed_file.filename
                   .panel-body.file-border{ 'changed-file-id': changed_file.id }
                     .table-wrapper
                       %table

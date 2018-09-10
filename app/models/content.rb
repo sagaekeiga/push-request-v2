@@ -151,6 +151,9 @@ class Content < ApplicationRecord
     content
   end
 
+  def fetch_views
+  end
+
   # レスポンスはString型であり、Enumに対応できるよう変換する
   def set_file_type_by(file_type)
     case file_type

@@ -38,7 +38,6 @@ class ChangedFile < ApplicationRecord
   belongs_to :pull
   has_many :review_comments, dependent: :destroy
 
-  # @TODO リファクタできる気がする
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
   def self.fetch!(pull, token)
     ActiveRecord::Base.transaction do
@@ -112,6 +111,10 @@ class ChangedFile < ApplicationRecord
 
   def reviewer?(index, reviewer)
     review_comments.find_by(position: index, reviewer: reviewer).present?
+  end
+
+  def github_exec_fetch_content!
+    Github::Request.github_exec_fetch_changed_file_content!(pull.repo, contents_url)
   end
 
   #

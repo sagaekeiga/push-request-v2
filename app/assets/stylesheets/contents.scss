@@ -3,6 +3,9 @@
   .page-header {
     h4 {
       letter-spacing: $base-letter;
+      .btn-sm {
+        font-family: $font-static;
+      }
     }
   }
   .btn-outline-primary {
