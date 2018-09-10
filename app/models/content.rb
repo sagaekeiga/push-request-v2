@@ -77,57 +77,29 @@ class Content < ApplicationRecord
   attribute :status, default: statuses[:hidden]
 
   # -------------------------------------------------------------------------------
+  # Callbacks
+  # -------------------------------------------------------------------------------
+  after_update *%i(update_children_status)
+
+  # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
       res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, '')
-      res_contents.each do |res_content|
-        res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
-        content = repo.contents.with_deleted.find_or_initialize_by(path: res_content['path'], reviewee: repo.reviewee)
-        content.set_file_type_by(res_content['type'])
-        content.update_attributes!(
-          content:   res_content['content'],
-          html_url:  res_content['html_url'],
-          name:      res_content['name'],
-          path:      res_content['path'],
-          size:      res_content['size']
-        )
-        content.restore if content&.deleted?
-      end
+      Content.fetch_top_dirs_and_files(repo, res_contents)
       return true unless repo.contents
       1.step do |index|
         parents =
           if index == 1
             repo.contents.dir
           else
-            repo.contents.dir.select { |content| content.parent.present? && content.children.blank? }
+            repo.contents.dir.select { |content| content.is_sub_dir? }
           end
         break if parents.blank?
-        parents.each do |parent|
-          res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, parent.path)
-          next if res_contents.blank?
-          res_contents.each do |res_content|
-            res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
-            child = repo.contents.find_or_initialize_by(path: res_content['path'], reviewee: repo.reviewee)
-            child.set_file_type_by(res_content['type'])
-            Rails.logger.info res_content
-            Rails.logger.info res_content['content']
-            child.update_attributes!(
-              content:   res_content['content'],
-              html_url:  res_content['html_url'],
-              name:      res_content['name'],
-              path:      res_content['path'],
-              size:      res_content['size']
-            )
-            content_tree = ContentTree.find_or_initialize_by(
-              parent: parent,
-              child:  child
-            )
-            content_tree.save!
-          end
-        end
+        # サブディレクトリ・ファイルの取得
+        Content.fetch_sub_dirs_and_files!(parents)
       end
     end
   rescue => e
@@ -135,15 +107,51 @@ class Content < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     fail I18n.t('views.error.failed_create_pull')
   end
-  #
-  # def self.reached_end_point?
-  #   dir.pluck(:name).each do |file_name|
-  #     next if dir.count > 0
-  #     return false if dir.where(name: file_name).count > 0
-  #   end
-  #   true
-  # end
 
+  def self.fetch_top_dirs_and_files(repo, res_contents)
+    res_contents.each do |res_content|
+      # 画像やvendor配下はレビュワーが見る必要がなくデータ量が多いため除外
+      next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+      content = Content.fetch_single_content!(repo, res_content)
+      content.restore if content&.deleted?
+    end
+  end
+
+  def self.fetch_sub_dirs_and_files!(parents)
+    parents.each do |parent|
+      res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
+      next if res_contents.blank?
+      res_contents.each do |res_content|
+        next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+        child = Content.fetch_single_content!(parent.repo, res_content)
+        content_tree = ContentTree.find_or_initialize_by(
+          parent: parent,
+          child:  child
+        )
+        content_tree.save!
+      end
+    end
+  end
+
+  def self.fetch_single_content!(repo, res_content)
+    res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
+    content = repo.contents.with_deleted.find_or_initialize_by(
+      path:     res_content['path'],
+      name:     res_content['name'],
+      reviewee: repo.reviewee
+    )
+    content.set_file_type_by(res_content['type'])
+    content.update_attributes!(
+      content:   res_content['content'],
+      html_url:  res_content['html_url'],
+      name:      res_content['name'],
+      path:      res_content['path'],
+      size:      res_content['size']
+    )
+    content
+  end
+
+  # レスポンスはString型であり、Enumに対応できるよう変換する
   def set_file_type_by(file_type)
     case file_type
     when 'file'
@@ -151,5 +159,17 @@ class Content < ApplicationRecord
     when 'dir'
       assign_attributes(file_type: :dir)
     end
+  end
+
+  # 選択したディレクトリ配下もそのディレクトリと同じ公開ステータスに
+  def update_children_status
+    return if children.includes(:children).blank?
+    children.includes(:repo, :reviewee).each do |child|
+      child.update(status: status)
+    end
+  end
+
+  def is_sub_dir?
+    parent.present? && children.blank?
   end
 end

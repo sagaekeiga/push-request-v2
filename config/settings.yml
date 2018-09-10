@@ -17,3 +17,5 @@ site:
     ogp:
       type: 'website'
       image_path: 'top'
+contents:
+  prohibited_files: ['.png', '.jpg', '.jpeg', '.gif', '.keep', 'vendor', 'public']

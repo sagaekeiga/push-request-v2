@@ -15,8 +15,10 @@ class Reviewees::ContentsController < Reviewees::BaseController
     case @content.status
     when 'hidden'
       @content.showing!
+      @content.children.each(&:showing!) if @content.children.present?
     when 'showing'
       @content.hidden!
+      @content.children.each(&:hidden!) if @content.children.present?
     end
     respond_to do |format|
       format.html
