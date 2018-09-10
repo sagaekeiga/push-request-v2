@@ -22,4 +22,8 @@ class ContentDecorator < ApplicationDecorator
       '非公開にする'
     end
   end
+
+  def decode_by_base64
+    Base64.decode64(content).encode('Shift_JIS', 'UTF-8')
+  end
 end
