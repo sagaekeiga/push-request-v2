@@ -7,7 +7,6 @@
         - if @content.dir?
           = render 'dirs', resource: @content, dir_or_files: @dir_or_files
         - else
-          %h6= @content.path
           .panel.panel-default
             .panel-heading
               %b= t 'views.bytes', byte: @content.size

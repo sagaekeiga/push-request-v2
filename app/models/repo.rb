@@ -49,18 +49,20 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   # 性別
   #
+  # - loding  : 取得中
   # - hidden  : 非公開
   # - showing : 公開
   #
   enum status: {
-    hidden:  1000,
-    showing: 2000
+    loading: 1000,
+    hidden:  2000,
+    showing: 3000
   }
 
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:hidden]
+  attribute :status, default: statuses[:loading]
   attribute :private, default: false
 
   # @TODO テストコードを書く
@@ -90,7 +92,7 @@ class Repo < ApplicationRecord
             private: repository['private'],                            # プライベート
             installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
           )
-          Content.fetch!(repo)
+          FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
         end
         true

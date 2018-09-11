@@ -100,7 +100,9 @@ class Content < ApplicationRecord
         break if parents.blank?
         # サブディレクトリ・ファイルの取得
         Content.fetch_sub_dirs_and_files!(parents)
+        Rails.logger.info 'after_fetch_sub_dirs_and_files'
       end
+      repo.hidden!
     end
   rescue => e
     Rails.logger.error e
@@ -111,7 +113,7 @@ class Content < ApplicationRecord
   def self.fetch_top_dirs_and_files(repo, res_contents)
     res_contents.each do |res_content|
       # 画像やvendor配下はレビュワーが見る必要がなくデータ量が多いため除外
-      next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+      next if Settings.contents.prohibited_files.include?(res_content['name'])
       content = Content.fetch_single_content!(repo, res_content)
       content.restore if content&.deleted?
     end
@@ -122,7 +124,8 @@ class Content < ApplicationRecord
       res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
       next if res_contents.blank?
       res_contents.each do |res_content|
-        next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+        Rails.logger.info res_content['path']
+        next if Settings.contents.prohibited_files.include?(res_content['name'])
         child = Content.fetch_single_content!(parent.repo, res_content)
         content_tree = ContentTree.find_or_initialize_by(
           parent: parent,
