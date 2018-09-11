@@ -4,11 +4,11 @@ class Reviewees::ContentsController < Reviewees::BaseController
   skip_before_action :verify_authenticity_token, only: %i(update)
 
   def index
-    @dir_or_files = @repo.contents.order(file_type: :desc, name: :asc).includes(:parent).select { |content| content.parent.nil? }
+    @dir_or_files = @repo.contents.top
   end
 
   def show
-    @dir_or_files = @content.children.order(file_type: :desc, name: :asc).includes(:repo).decorate if @content.dir?
+    @dir_or_files = @content.children.sub(@content).decorate
   end
 
   def update

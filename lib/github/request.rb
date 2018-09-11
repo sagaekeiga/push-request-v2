@@ -66,8 +66,6 @@ module Github
           'Accept': set_accept(event)
         }
 
-        Rails.application.config.another_logger.info Settings.api.github.api_domain + sub_url
-        Rails.application.config.another_logger.info headers
         res = get Settings.api.github.api_domain + sub_url, headers: headers
 
         unless res.code == success_code(event)

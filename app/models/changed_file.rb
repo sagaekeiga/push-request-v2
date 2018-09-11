@@ -43,7 +43,6 @@ class ChangedFile < ApplicationRecord
   def self.fetch!(pull, token)
     ActiveRecord::Base.transaction do
       res_changed_files = Github::Request.github_exec_fetch_changed_files!(pull)
-      Rails.application.config.another_logger.info res_changed_files
       res_changed_files.each do |res_changed_file|
         changed_file = pull.changed_files.with_deleted.find_by(sha: res_changed_file['sha'])
         if changed_file.nil?

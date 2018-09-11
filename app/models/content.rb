@@ -77,6 +77,21 @@ class Content < ApplicationRecord
   attribute :status, default: statuses[:hidden]
 
   # -------------------------------------------------------------------------------
+  # Scope
+  # -------------------------------------------------------------------------------
+  # 最上層のディレクトリ・ファイルを取得
+  scope :top, lambda {
+    order(file_type: :desc, name: :asc).
+      includes(:parent).select { |content| content.parent.nil? }
+  }
+
+  # 配下のディレクトリ・ファイルを取得
+  scope :sub, lambda { |content|
+    if content.dir?
+      order(file_type: :desc, name: :asc).includes(:repo)
+    end
+  }
+  # -------------------------------------------------------------------------------
   # Callbacks
   # -------------------------------------------------------------------------------
   after_update *%i(update_children_status)

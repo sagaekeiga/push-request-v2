@@ -8,7 +8,7 @@ class Reviewees::ReposController < Reviewees::BaseController
     when 'showing'
       @repo.hidden!
     end
-    redirect_to reviewees_repo_contents_url(@repo), success: '公開しました'
+    redirect_to reviewees_repo_contents_url(@repo), success: t(".#{@repo.status}")
   end
 
   private

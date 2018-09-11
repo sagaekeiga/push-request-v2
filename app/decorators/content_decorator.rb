@@ -17,7 +17,7 @@ class ContentDecorator < ApplicationDecorator
   def text_by_status
     case status
     when 'hidden'
-      '公開する'
+      I18n.t(".status")
     when 'showing'
       '非公開にする'
     end
