@@ -1,8 +1,8 @@
 %ul.nav.md-pills.pills-primary.flex-column
   %li.nav-item
-    = link_to 'Dashboard', admins_dashboard_path, class: 'nav-link'
+    = link_to 'Dashboard', :root, class: 'nav-link'
   %li.nav-item
-    = link_to 'Reviews', admins_reviews_path, class: 'nav-link'
+    = link_to 'Reviews', [:admins, :reviews], class: 'nav-link'
   %li.nav-item
     %a.nav-link
       Billing details

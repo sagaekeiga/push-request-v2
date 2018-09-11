@@ -1,0 +1,9 @@
+.col-xs-12
+  .container
+    .reviewee-dashboard-wrapper
+      .greet
+        %h1.text-center= "Hello!   #{current_reviewer.github_account.nickname}"
+        %p.text-center ただいま審査中です。少々お待ちください。
+
+      .contact
+        %p.text-center= link_to '審査員へ問い合わせ', 'https://sagae528.sarahah.com/'

@@ -2,21 +2,19 @@
 #
 # Table name: review_comments
 #
-#  id                :bigint(8)        not null, primary key
-#  body              :text
-#  deleted_at        :datetime
-#  github_created_at :datetime
-#  github_updated_at :datetime
-#  path              :string
-#  position          :integer
-#  status            :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  changed_file_id   :bigint(8)
-#  github_id         :bigint(8)
-#  in_reply_to_id    :bigint(8)
-#  review_id         :bigint(8)
-#  reviewer_id       :bigint(8)
+#  id              :bigint(8)        not null, primary key
+#  body            :text
+#  deleted_at      :datetime
+#  path            :string
+#  position        :integer
+#  status          :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  changed_file_id :bigint(8)
+#  in_reply_to_id  :bigint(8)
+#  remote_id       :bigint(8)
+#  review_id       :bigint(8)
+#  reviewer_id     :bigint(8)
 #
 # Indexes
 #
@@ -62,75 +60,92 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :github_id, uniqueness: true, unless: -> { validation_context == :pending }
-  validates :body, presence: true
-  validates :path, presence: true
-  validates :position, presence: true, numericality: { only_integer: true }
+  validates :remote_id, uniqueness: true, allow_nil: true
+  validates :body,      presence: true
+  validates :path,      presence: true
 
   def self.calc_working_hours
+    return 0 if self.first.nil?
     start_time = self.first.created_at
     end_time = Time.zone.now
     working_hours = ((end_time - start_time).to_i / 60).floor
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  def self.create_or_restore!(pull)
-    ActiveRecord::Base.transaction do
-      response_review_comments_in_json_format = GithubAPI.receive_api_response_in_json_format_on "#{Settings.github.api_domain}repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments", pull.repo.installation_id
-      response_review_comments_in_json_format.each do |response_review_comment|
-        reviewer = Reviewers::GithubAccount.find_by(owner_id: response_review_comment['user']['id'])&.reviewer
-        changed_file = pull.changed_files.find_by(
-          commit_id: response_review_comment['commit_id'],
-          filename: response_review_comment['path']
-        )
-        review_comment = changed_file&.review_comments&.with_deleted&.find_or_initialize_by(github_id: response_review_comment['id'], reviewer: reviewer)
-        review_comment.restore if review_comment&.deleted?
-        review_comment&.update_attributes!(
-          github_id: response_review_comment['id'],
-          body: response_review_comment['body'],
-          path: response_review_comment['path'],
-          position: response_review_comment['position'],
-          reviewer: reviewer,
-          status: :commented,
-          in_reply_to_id: response_review_comment['in_reply_to_id'],
-          github_created_at: response_review_comment['created_at'],
-          github_updated_at: response_review_comment['updated_at']
-        )
-      end
+  def self.fetch!(params)
+    pull = Pull.find_by(
+      remote_id: params[:pull_request][:id],
+      number:    params[:pull_request][:number]
+    )
+
+    changed_file = pull.changed_files.find_by(
+      commit_id: params[:comment][:commit_id],
+      filename:  params[:comment][:path]
+    )
+
+    # 編集時の取得
+    if params[:changes].present?
+      return ReviewComment.fetch_changes!(params, pull, changed_file)
     end
+
+    review_comment = ReviewComment.find_or_initialize_by(
+      remote_id:      nil,
+      path:           params[:comment][:path],
+      position:       params[:comment][:position],
+      body:           params[:comment][:body],
+      changed_file:   changed_file
+    )
+
+    # レビュー時のレスポンス取得
+    # 返事の取得return
+    if params[:comment][:in_reply_to_id].nil?
+      return review_comment.fetch_remote_id!(params, pull)
+    else
+      return review_comment.fetch_reply!(params, pull)
+    end
+
+  end
+
+  # レビュー後にレビューコメントのremote_idを更新する
+  def fetch_remote_id!(params, pull)
+    ActiveRecord::Base.transaction do
+      update!(remote_id: params[:comment][:id])
+    end
+    true
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_review_comment')
+    false
   end
 
-  def self.recieve_immediate_review_comment!(params)
+  # リプライレスポンスの取得
+  def fetch_reply!(params, pull)
     ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.with_deleted.find_or_initialize_by(github_id: params[:comment][:id])
-      pull = Pull.find_by(remote_id: params[:pull_request][:id])
-      reviewer = Reviewers::GithubAccount.find_by(owner_id: params[:comment][:user][:id])&.reviewer
-      sender = Reviewers::GithubAccount.find_by(owner_id: params[:sender][:id])&.reviewer
-      changed_file = pull.changed_files.find_by(
-        commit_id: params[:comment][:commit_id],
-        filename: params[:comment][:path]
+      update_attributes!(
+        remote_id:      params[:comment][:id],
+        in_reply_to_id: params[:comment][:in_reply_to_id]
       )
-      # github appからのコメントはsenderが一致しない
-      if review_comment.persisted? && review_comment.body == params[:comment][:body] && sender.present?
-        review_comment.destroy
-      else
-        review_comment.update_attributes!(
-          github_id: params[:comment][:id],
-          body: params[:comment][:body],
-          path: params[:comment][:path],
-          position: params[:comment][:position],
-          changed_file: changed_file,
-          status: :commented,
-          in_reply_to_id: params[:comment][:in_reply_to_id],
-          github_created_at: params[:comment][:created_at],
-          github_updated_at: params[:comment][:updated_at]
-        )
-        review_comment.update_attributes!(reviewer: reviewer) if reviewer.present?
-      end
+      ReviewerMailer.comment(review_comment).deliver_later if params[:sender][:type] == 'Bot'
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  # Edit
+  def self.fetch_changes!(params, pull, changed_file)
+    ActiveRecord::Base.transaction do
+      review_comment = ReviewComment.find_by(remote_id: params[:comment][:id])
+      review_comment.update_attributes!(
+        remote_id:    params[:comment][:id],
+        body:         params[:comment][:body],
+        path:         params[:comment][:path],
+        position:     params[:comment][:position],
+        changed_file: changed_file,
+        status:       :commented
+      )
     end
     true
   rescue => e
@@ -160,14 +175,36 @@ class ReviewComment < ApplicationRecord
       body: body,
       in_reply_to: in_reply_to_id
     }
-    response = GithubAPI.receive_api_request_in_json_format_on "#{Settings.github.api_domain}repos/#{changed_file.pull.repo_full_name}/pulls/#{changed_file.pull.number}/comments", comment.to_json, changed_file.pull.repo.installation_id
-    if response.code == '201'
-      response = JSON.load(response.body)
-      update!(github_id: response['id'])
-      p 'OK'
+
+    Rails.logger.info comment.to_json
+
+    res = Github::Request.github_exec_review_comment!(comment.to_json, changed_file.pull)
+
+    if res.code == Settings.api.success.created.status
+      res = JSON.load(res.body)
+      update!(remote_id: res['id'])
+      Rails.logger.info 'OK'
     else
-      fail response.body
+      fail res.body
     end
   end
 
+  # 対象のレビューコメントを取得する
+  def target_comments
+    ReviewComment.where(
+      review: review,
+      path: path,
+      position: position,
+      in_reply_to_id: nil
+    )
+  end
+
+  # 返信コメントを返す
+  def replies
+    ReviewComment.where(
+      changed_file:   changed_file,
+      path:           path,
+      position:       position
+    ).where.not(in_reply_to_id: nil)
+  end
 end

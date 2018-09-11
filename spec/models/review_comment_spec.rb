@@ -2,21 +2,19 @@
 #
 # Table name: review_comments
 #
-#  id                :bigint(8)        not null, primary key
-#  body              :text
-#  deleted_at        :datetime
-#  github_created_at :datetime
-#  github_updated_at :datetime
-#  path              :string
-#  position          :integer
-#  status            :integer
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  changed_file_id   :bigint(8)
-#  github_id         :bigint(8)
-#  in_reply_to_id    :bigint(8)
-#  review_id         :bigint(8)
-#  reviewer_id       :bigint(8)
+#  id              :bigint(8)        not null, primary key
+#  body            :text
+#  deleted_at      :datetime
+#  path            :string
+#  position        :integer
+#  status          :integer
+#  created_at      :datetime         not null
+#  updated_at      :datetime         not null
+#  changed_file_id :bigint(8)
+#  in_reply_to_id  :bigint(8)
+#  remote_id       :bigint(8)
+#  review_id       :bigint(8)
+#  reviewer_id     :bigint(8)
 #
 # Indexes
 #

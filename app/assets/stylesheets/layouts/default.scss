@@ -1,5 +1,5 @@
 body {
-  padding-top: $navbar-height;
+  padding-top: $navbar-height - 17px;
   // padding-bottom: 1rem;
   background-color: $color-white;
   font-family: $font-static;
@@ -15,19 +15,27 @@ body {
   }
 }
 
-// .navbar-default {
-//   .navbar-brand {
-//     // color: $color-main;
-//     font-weight: bold;
-//   }
-// }
+.navbar-default {
+  .navbar-brand {
+    color: $color-white;
+    font-weight: bold;
+  }
+  border-color: $color-github-black;
+  .navbar-nav {
+    li {
+      a {
+        color: $color-white;
+      }
+    }
+  }
+}
 
 // @TODO bootstrap4で定義されていない？
-// .nav-text {
-//   margin-top: .5rem;
-//   margin-bottom: .5rem;
-// }
-
+.nav-text {
+  margin-top: .5rem;
+  margin-bottom: .5rem;
+  color: $color-white;
+}
 
 // --------------------------------------------------------------------------------
 // Table
@@ -304,7 +312,7 @@ textarea
 // footer
 // --------------------------------------------------------------------------------
 footer {
-  margin-top: $padding-base-vertical * 3;
+  background-color: $color-white;
   width: 100%;
   color: #448bbb;
   display: flex;
@@ -312,15 +320,19 @@ footer {
   align-items: center;
   justify-content: center;
   font-family: $font-static;
-  .footer-img {
-    width: 30px;
-    height: 30px;
-    text-align: center;
-  }
 }
 
+.footer {
+  margin-top: $base-margin * 2;
+  .container-fluid {
+    padding-left: 0;
+    padding-right: 0;
+    .social-corner {
+    }
+  }
+}
 // for sticky footer
-$footer-height: 100px;
+$footer-height: 150px;
 
 html {
   position: relative;
@@ -337,10 +349,31 @@ html {
       margin-top: 0;
       position: absolute;
       bottom: 0;
-      height: $footer-height;
+      height: $footer-height * 1.3;
+      background-color: $color-grey;
+      .col-xs-12 {
+        padding-left: 0;
+        padding-right: 0;
+      }
 
       @media (max-width: $screen-xs-max) {
-        height: $footer-height * 1.5;
+        height: $footer-height * 1.7;
+      }
+    }
+
+    footer.in {
+      margin-top: 0;
+      position: absolute;
+      bottom: 0;
+      height: $footer-height - 50px;
+      background-color: $color-white;
+      .col-xs-12 {
+        padding-left: 0;
+        padding-right: 0;
+      }
+
+      @media (max-width: $screen-xs-max) {
+        height: $footer-height * 1.7;
       }
     }
   }

@@ -2,10 +2,9 @@ require 'action_view'
 require 'action_view/helpers'
 include ActionView::Helpers::DateHelper
 class Reviewers::ReviewCommentsController < ApplicationController
-  protect_from_forgery except: %i(create)
+  protect_from_forgery except: %i(create update)
   before_action :set_changed_file, only: %i(create)
   before_action :set_pull, only: %i(create)
-  before_action :check_pull, only: %i(create)
   before_action :set_review_comment, only: %i(destroy update show)
 
   def create
@@ -19,13 +18,12 @@ class Reviewers::ReviewCommentsController < ApplicationController
       path: params[:path]&.gsub('\n', ''),
       body: params[:body],
       reviewer: reviewer,
-      in_reply_to_id: params[:reply].present? ? @changed_file.review_comments.last.github_id : nil
+      in_reply_to_id: params[:reply].present? ? @changed_file.review_comments.last.remote_id : nil
     )
-
     review_comment.status = :commented if params[:status]
 
-    if review_comment.save(context: :pending)
-      # @TODO review_commentにもcommit_idカラム追加
+    if review_comment.save
+      Rails.logger.info review_comment.to_yaml
       review_comment.send_github!(params[:commit_id]) if params[:commit_id]
       render json: {
         status: 'success',
@@ -34,7 +32,8 @@ class Reviewers::ReviewCommentsController < ApplicationController
         img: reviewer.github_account.avatar_url,
         name: reviewer.github_account.nickname,
         time: time_ago_in_words(review_comment.updated_at) + '前',
-        github_id: review_comment.github_id
+        remote_id: review_comment.remote_id,
+        review_id: review_comment.review_id
       }
     else
       render json: { status: 'failed' }
@@ -82,9 +81,5 @@ class Reviewers::ReviewCommentsController < ApplicationController
 
   def set_review_comment
     @review_comment = ReviewComment.find(params[:id])
-  end
-
-  def check_pull
-    redirect_to reviewers_dashboard_url unless @pull.agreed?
   end
 end

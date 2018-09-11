@@ -1,6 +1,5 @@
 class Admins::ReviewersController < Admins::BaseController
   before_action :set_reviewer, only: %i(show update)
-
   def show
   end
 
@@ -8,12 +7,9 @@ class Admins::ReviewersController < Admins::BaseController
     case params[:status]
     when 'pending'
       @reviewer.active!
-    when 'rejected'
-      @reviewer.rejected!
-    when 'quit'
-      @reviewer.quit!
+      ReviewerMailer.ok(@reviewer).deliver_later
     end
-    redirect_to [:admins, @reviewer], success: t('.success')
+    redirect_to [:admins, @reviewer]
   end
 
   private

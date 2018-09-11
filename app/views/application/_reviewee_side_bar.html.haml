@@ -1,27 +1,34 @@
-.col-sm-1.col-lg-1
-  %nav.navbar.navbar-default.navbar-fixed-side
-  %ul.list-group.text-center
-    %li.list-group-item
-      = link_to reviewees_dashboard_path do
-        %i.fas.fa-tachometer-alt
-        %br
-        %small= t('reviewers.dashboard.title')
-    %hr
-    %li.list-group-item
-      = link_to reviewees_pulls_path do
-        %i.fas.fa-check-circle
-        %br
-        %small= t('reviewees.pulls.title')
-    %hr
-    %li.list-group-item
-      = link_to reviewees_repos_path do
-        %i.fas.fa-table
-        %br
-        %small= t('reviewees.repos.title')
-    %hr
-    %li.list-group-item
-      = link_to reviewees_settings_integrations_path do
-        %i.fas.fa-cogs
-        %br
-        %small.setting= t('reviewees.settings.integrations.title')
-    %hr
+.reviewee-side-wrapper
+  .col-sm-1.col-lg-1
+    %nav.navbar.navbar-fixed-side
+    %ul.list-group.text-center
+      %li.list-group-item
+        = link_to reviewees_dashboard_path do
+          %i.fas.fa-tachometer-alt{ class: same_action_name?('dashboard') }
+          %br
+          %small{ class: same_action_name?('dashboard') }= t('reviewers.dashboard.title')
+      %hr
+      %li.list-group-item
+        = link_to reviewees_pulls_path do
+          %i.fas.fa-check-circle{ class: same_action_name?('pulls') }
+          %br
+          %small{ class: same_action_name?('pulls') }= t('reviewees.pulls.title')
+      %hr
+      %li.list-group-item
+        = link_to reviewees_repos_path do
+          %i.fas.fa-table{ class: same_action_name?('repos') }
+          %br
+          %small{ class: same_action_name?('repos') }= t('reviewees.repos.title')
+      %hr
+      %li.list-group-item
+        = link_to reviewees_settings_integrations_path do
+          %i.fas.fa-cogs{ class: same_action_name?('integrations') }
+          %br
+          %small.setting{ class: same_action_name?('integrations') }= t('reviewees.settings.integrations.title')
+      %hr
+      %li.list-group-item
+        = link_to 'https://qiita.com/k_s/private/e999d02b6d7686616ece', target: '_blank' do
+          %i.fas.fa-info-circle
+          %br
+          %small= t 'reviewers.dashboard.use'
+      %hr

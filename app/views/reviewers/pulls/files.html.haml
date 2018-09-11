@@ -1,42 +1,43 @@
-.col-xs-12
-  .page-header{ 'pull-id': @pull.id }
-    %h3= @pull.title
-  = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
-  .pulls-files-wrapper
-    .col-xs-12.col-sm-10
-      - unless @pull.agreed?
-        - if @changed_files.present?
-          - @changed_files.each do |changed_file|
-            .js-blob-wrapper
-              .card.changed-file-wrapper
-                .card-header= changed_file.filename
-                .card-body.file-border{ 'changed-file-id': changed_file.id }
-                  .table-wrapper
-                    %table
-                      %thead
-                        %tr
-                          %th{ scope: 'col' }
-                      - changed_file.patch&.each_line&.with_index do |line, index|
-                        %tbody
+.container
+  .col-xs-12
+    .page-header{ 'pull-id': @pull.id }
+      %h3= @pull.title
+    = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
+    .pulls-files-wrapper
+      .col-xs-12.col-sm-10
+        - unless @pull.agreed?
+          - if @changed_files.present?
+            - @changed_files.each do |changed_file|
+              .js-blob-wrapper
+                .panel.changed-file-wrapper
+                  .panel-heading
+                    .panel-title= changed_file.filename
+                  .panel-body.file-border{ 'changed-file-id': changed_file.id }
+                    .table-wrapper
+                      %table
+                        %thead
                           %tr
-                            %td.hidden= index
-                            - if line.start_with?('+')
-                              %td.markdown-highlight.bg-success.file-code= changed_file.coderay(line)
-                            - elsif line.start_with?('-')
-                              %td.markdown-highlight.bg-danger.file-code= changed_file.coderay(line)
-                            - elsif line.start_with?('@@')
-                              %td.markdown-highlight.bg-primary.file-code
-                                %pre= line
-                            - else
-                              %td.markdown-highlight.file-code= changed_file.coderay(line)
-          - unless @pull.reviewed? || @pull.completed?
-            = link_to @pull.decorate.link_title_by_status, reviewers_pull_path(@pull, status: @pull.status), method: :put, class: "btn btn-block #{@pull.decorate.btn_class_by_status}"
-        - else
-          = t '.no_changhed_files'
-    .col-xs-12.col-sm-2
-      .text-center
-        .label.label-default= @pull.status_i18n
-      %hr
-      - unless @pull.reviewed? || @pull.completed?
-        = link_to @pull.decorate.link_title_by_status, reviewers_pull_path(@pull, status: @pull.status), method: :put, class: "btn btn-block #{@pull.decorate.btn_class_by_status}"
+                            %th{ scope: 'col' }
+                        - changed_file.patch&.each_line&.with_index do |line, index|
+                          %tbody
+                            %tr
+                              %td.hidden= index
+                              - if line.start_with?('+')
+                                %td.markdown-highlight.bg-success.file-code= changed_file.coderay(line)
+                              - elsif line.start_with?('-')
+                                %td.markdown-highlight.bg-danger.file-code= changed_file.coderay(line)
+                              - elsif line.start_with?('@@')
+                                %td.markdown-highlight.bg-primary.file-code
+                                  %pre= line
+                              - else
+                                %td.markdown-highlight.file-code= changed_file.coderay(line)
+          - else
+            = t '.no_changhed_files'
+      .col-xs-12.col-sm-2
+        .side-wrapper
+          = render 'side', pull: @pull
+.review-btn-wrapper
+  - unless @pull.reviewed? || @pull.completed? || @pull.connected?
+    = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
+      %i.far.fa-comment
 = javascript_pack_tag 'marked'

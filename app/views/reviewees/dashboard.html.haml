@@ -1,31 +1,35 @@
-.reviewee-dashboard-wrapper
-  - if current_reviewee.repos.with_deleted.none?
-    .card.text-center
-      %h4.card-header STEP1 GitHub Appのインストール
-      .card-body
-        %p.card-text
-          あなたのレポジトリをPushRequestに同期するためにGitHub Appをインストールしましょう
-          %br
-          GitHub Appはレポジトリ単位で管理することが可能です。
-          GitHub上で更新された情報を即座にPushRequestに反映します。
-        = link_to 'インストール画面へ', ENV['GITHUB_APP_URL'], class: 'btn btn-primary', target: 'blank'
-
-    .card.text-center
-      %h4.card-header STEP2 レポジトリの同期
-      .card-body
-        %p.card-text
-          接続したGitHubアカウント上にあるレポジトリ・プルリクエストを同期しましょう。
-          %br
-          それらはあなた自身で選択することができます。
-          同期後も簡単に変更・取消が可能です。
-        = link_to '同期画面へ', ENV['GITHUB_APP_PUBLIC_PAGED_URL'], class: 'btn btn-primary', target: 'blank'
-
-    .card.text-center
-      %h4.card-header STEP3 プルリクエストの公開
-      .card-body
-        %p.card-text
-          プルリクエストを公開することによって、レビュワーがあなたのコードにコメントすることができるようになります。
-          %br
-          レビュワーのコメントはGitHub上のプルリクエストに反映されます。
-          あなたはコードはより洗練されたコードに修正することができます。
-        = link_to '公開画面へ', reviewees_pulls_path, class: 'btn btn-primary'
+.col-xs-12
+  .container
+    .reviewee-dashboard-wrapper
+      .greet
+        - if @reviewee.ok_git && @reviewee.ok_repo && @reviewee.ok_req
+          %h1.text-center= "Great!   #{current_reviewee.github_account.nickname}"
+          %p.text-center 準備が整いました。しばらくするとあなたのPullrequestにコメントがつきます
+        - else
+          %h1.text-center= "Hello!   #{current_reviewee.github_account.nickname}"
+          %p.text-center
+            コードレビューを受ける前に以下のチェックをしてください。
+            全ての準備を整えればあなたはコードレビューを受けることができます。
+        .col-xs-6.col-xs-offset-3
+          %table.table
+            %tbody
+              %tr
+                %th
+                  %i.fas.fa-check-circle{ class: @reviewee.ok_git }
+                %td GitHubアカウントを取り込む
+                %td= link_to '設定する', :reviewees_settings_integrations
+              %tr
+                %th
+                  %i.fas.fa-check-circle{ class: @reviewee.ok_repo }
+                %td PushRequestのGitHub Appをインストールする
+                %td= link_to '設定する', ENV['GITHUB_APP_URL']
+              %tr
+                %th
+                  %i.fas.fa-check-circle{ class: @reviewee.ok_repo }
+                %td Repository, Pullrequestを同期する
+                %td= link_to '設定する', ENV['GITHUB_APP_URL']
+              %tr
+                %th
+                  %i.fas.fa-check-circle{ class: @reviewee.ok_req }
+                %td 同期したPullRequestの公開
+                %td= link_to '設定する', :reviewees_pulls

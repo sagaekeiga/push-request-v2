@@ -59,6 +59,7 @@ Rails.application.routes.draw do
     namespace :reviewers do
       get :dashboard, :my_page
       get 'settings/integrations'
+      get :pending
       resource :skillings, only: %i(update) do
         get :skills, to: 'skillings#edit'
       end
@@ -67,23 +68,9 @@ Rails.application.routes.draw do
         resources :reviews, only: %i(create) do
           get :file, to: 'reviews#new', on: :collection
         end
+        resources :comments, only: %i(create update destroy)
       end
       resources :review_comments, only: %i(create update destroy show)
-    end
-
-    #
-    # Admin
-    #
-    devise_for :admins, path: 'admins', controllers: {
-      registrations: 'admins/registrations',
-      confirmations: 'admins/confirmations',
-      sessions: 'admins/sessions'
-    }
-
-    namespace :admins do
-      get :dashboard
-      resources :reviewers, only: %i(show update)
-      resources :reviews, only: %i(index show)
     end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)
@@ -94,4 +81,20 @@ Rails.application.routes.draw do
       mount Sidekiq::Web => '/sidekiq'
     end
   end
+  constraints(AdminDomainConstraint) do
+    root to: 'admins#dashboard'
+    #
+    # Admin
+    #
+    devise_for :admins, path: 'admins', controllers: {
+      registrations: 'admins/registrations',
+      confirmations: 'admins/confirmations',
+      sessions: 'admins/sessions'
+    }
+    namespace :admins do
+      resources :reviews, only: %i(index show update)
+      resources :reviewers, only: %i(show update)
+    end
+  end
+  get '*path', to: 'application#render_404'
 end

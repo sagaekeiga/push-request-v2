@@ -17,7 +17,7 @@
   @import "bootstrap";
   @import 'variables';
   @import 'bootstrap-variables';
-  @import 'bootstrap-material-design';
+  // @import 'bootstrap-material-design';
   // Fontawesome
   @import 'font-awesome-sprockets';
   @import 'font-awesome';
@@ -31,6 +31,7 @@
   @import 'reviews';
   @import 'welcomes';
   @import 'side_bar';
+  @import 'admins';
 
 .m-t-0 { margin-top: 0; }
 .m-t-1 { margin-top: $padding-base-vertical; }
@@ -63,4 +64,14 @@
 
 .container-fluid.no-login {
   padding-top: $navbar-height;
+}
+
+.reviewee-side-wrapper, .reviewer-side-wrapper {
+  .active {
+    color: $side-icon-color;
+  }
+  .col-sm-1 {
+    padding-left: 0;
+    padding-right: 0;
+  }
 }

@@ -19,8 +19,10 @@ $color-literal-gray: rgba(27,31,35,0.5);
 $color-github-green: #e6ffed;
 $color-github-red: #cb2431;
 $color-github-blue: #0366d6;
+$color-td: #536c79;
 $font-code: "SFMono-Regular",Consolas,"Liberation Mono",Menlo,Courier,monospace;
 $font-static: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
+$font-dashboard: Roboto,Helvetica Neue,Helvetica,Arial,sans-serif;
 $base-border: 1px solid rgba(27,31,35,0.2);
 $color-github-yellow: #fff5b1;
 $color-github-label-white: #586069;
@@ -31,6 +33,9 @@ $bg-color-github-panel: #f6f8fa;
 $color-dark-gray: #808080;
 $pullrequest-blue: #448bbb;
 $opacity-black: rgba(0, 0, 0, 1);
+$side-icon-color: #0366d6;
+$review-btn: #009688;
+$color-cancel: #f86c6b;
 // Spacing
 //
 // Control the default styling of most Bootstrap elements by modifying these
@@ -50,5 +55,20 @@ $base-margin: 16px;
 $base-padding: 4px;
 $base-border-radius: 3px;
 $base-font-size: 12px;
-$base-font-weight: 10;
+$base-font-weight: 300;
 $github-primary-color: #28a745;
+$base-height: 50px;
+$base-color-green: #4dbd74;
+
+.p-r-0 {
+  padding-right: 0;
+}
+.p-l-0 {
+  padding-left: 0;
+}
+.m-m-3 {
+  margin-bottom: $base-margin * 3;
+}
+
+/* PC */
+$base-sl-font-size: $base-font-size * 1.3;

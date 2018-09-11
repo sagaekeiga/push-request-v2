@@ -6,11 +6,13 @@
 #  body          :text
 #  deleted_at    :datetime
 #  event         :integer
-#  state         :string
+#  reason        :text
 #  working_hours :integer
 #  created_at    :datetime         not null
 #  updated_at    :datetime         not null
+#  commit_id     :string
 #  pull_id       :bigint(8)
+#  remote_id     :bigint(8)
 #  reviewer_id   :bigint(8)
 #
 # Indexes
@@ -30,45 +32,72 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewer
+  belongs_to :reviewer, optional: true
   belongs_to :pull
-  has_many :review_comments
+  has_many :review_comments, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Enumerables
   # -------------------------------------------------------------------------------
   # イベント
   #
-  # - pending         : 保留中
+  # - pending         : 審査中
   # - comment         : コメント
   # - request_changes : 修正を要求
   # - approve         : 承認
+  # - issue_comment   : issue, pullへのコメント
   #
   enum event: {
-    pending:  1000,
-    comment: 2000,
+    pending:         1000,
+    comment:         2000,
     request_changes: 3000,
-    approve: 4000
+    approve:         4000,
+    issue_comment:   5000,
+    refused:         6000
   }
 
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :event, default: events[:pending]
-  attribute :body, default: Settings.reviews.body
 
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :body, presence: true
   validates :working_hours, presence: true, on: %i(update)
+  validates :remote_id, uniqueness: true, allow_nil: true
+
+  # レビューはidが可変なので、commit_idを識別子にする
+  def self.fetch_remote_id!(params)
+    ActiveRecord::Base.transaction do
+      pull = Pull.find_by(
+        remote_id: params[:pull_request][:id],
+        number:    params[:pull_request][:number]
+      )
+      review = pull.reviews.find_by(body: params[:review][:body])
+      # レビューの内容を変えた場合は、commit_idから取得
+      review = pull.reviews.find_by(commit_id: params[:review][:commit_id]) if review.nil?
+      review.update!(
+        remote_id: params[:review][:id],
+        commit_id: params[:review][:commit_id]
+      )
+      repo = Repo.find_by_name(params[:repository][:name])
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
 
   #
   # リモートに送るレビューデータの作成・レビューコメントの更新をする
   #
-  def self.ready_to_review!(pull)
+  def self.ready_to_review!(pull, param_body)
     review = new(
-      pull: pull
+      pull: pull,
+      body: param_body,
+      event: :pending
     )
     review.save!
     review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
@@ -76,18 +105,46 @@ class Review < ApplicationRecord
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|
       review_comment.review = review
-      review_comment.save!(context: :pending)
+      review_comment.save!
     end
     review
   end
 
   #
+  # コメントを取得する
+  #
+  def self.fetch_issue_comments!(params)
+    ActiveRecord::Base.transaction do
+      return false if params[:sender][:type] == 'Bot'
+      repo = Repo.find_by_name(params[:repository][:name])
+      return false unless repo
+      # ① 該当するPRを取得
+      pull = repo.pulls.find_by(number: params[:issue][:number])
+      # ② ①がなければfalseを返す
+      return false unless pull
+      # ③ ①があればBodyを取得し作成
+      @review = pull.reviews.create!(
+        remote_id: params[:comment][:id],
+        body: params[:comment][:body],
+        event: :issue_comment
+      )
+    end
+    ReviewerMailer.issue_comment(@review).deliver_later
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  #
   # リモートのPRにレビューする
   #
-  def reflect!
+  def github_exec_review!
     ActiveRecord::Base.transaction do
       request_body = { body: body, event: 'COMMENT', comments: [] }
-      review_comments.each do |review_comment|
+
+      review_comments.where.not(reviewer: nil).pending.each do |review_comment|
         comment = {
           path: review_comment.path,
           position: review_comment.position.to_i,
@@ -96,20 +153,30 @@ class Review < ApplicationRecord
         request_body[:comments] << comment
       end
 
-      json_format_request_body = request_body.to_json
-      response = GithubAPI.receive_api_request_in_json_format_on "https://api.github.com/repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews", json_format_request_body, pull.repo.installation_id
-      if response.code == '200'
-        review_comments.each do |review_comment|
-          review_comment.status = :commented
-          review_comment.github_created_at = review_comment.updated_at
-          review_comment.github_updated_at = review_comment.updated_at
-          review_comment.save!(context: :pending)
-        end
-        comment!
-        pull.reviewed!
-      else
-        fail response.body
-      end
+      request_params = request_body.to_json
+      res = Github::Request.github_exec_review!(request_params, pull)
+
+      fail res.body unless res.code == Settings.api.success.status.code
+      review_comments.where.not(reviewer: nil).pending.each(&:commented!)
+      comment!
+      pull.reviewed!
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+  #
+  # リモートのISSUEまたはPRにレビューする
+  #
+  def github_exec_issue_comment!
+    ActiveRecord::Base.transaction do
+      body = { 'body': self.body }
+      res = Github::Request.github_exec_issue_comment!(body.to_json, pull)
+      fail res.body unless res.code == Settings.api.success.created.status
+      save!
     end
     true
   rescue => e

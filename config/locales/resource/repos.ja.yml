@@ -2,3 +2,6 @@ ja:
   activerecord:
     models:
       repo: レポジトリ
+    attributes:
+      repo:
+        title: レポジトリ名

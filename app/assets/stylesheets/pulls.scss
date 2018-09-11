@@ -1,7 +1,13 @@
+.page-header {
+  .label {
+    border-radius: 3px;
+  }
+}
 .review-comment-img {
   border-radius: $base-border-radius;
 }
 .pull-show-tab-wrapper {
+  font-family: $font-static;
   ul {
     margin-bottom: $base-margin;
     li {
@@ -12,21 +18,24 @@
 .pulls-files-wrapper {
   .col-sm-10 {
     padding-left: 0;
-    .card.changed-file-wrapper {
+    .panel.changed-file-wrapper {
       margin-top: $base-margin;
       margin-bottom: $base-margin;
       border: $base-border;
       box-shadow: none;
       max-width: 100%;
-      .card-header {
+      .panel-heading {
         background-color: $color-grey;
         font-family: $font-code;
         font-size: $base-font-size;
         padding: $base-padding * 2;
         padding: $base-padding * 3;
         max-width: 100%;
+        .panel-title {
+          font-size: $base-font-size;
+        }
       }
-      .card-body {
+      .panel-body {
         padding: 0;
         max-width: 100%;
         .table-wrapper {
@@ -66,18 +75,18 @@
             }
           }
         }
-        .card-text {
+        .panel-text {
           font-size: $base-font-size + 2px;
           padding: 0 $base-padding * 5;
         }
       }
     }
-    .card.review-comments {
+    .panel.review-comments {
       border-radius: $base-border-radius;
       margin: 0;
       border: $base-border;
       box-shadow: none;
-      .card-body {
+      .panel-body {
         padding: $base-padding * 5;
         table {
           border-collapse: collapse;
@@ -95,38 +104,142 @@
     }
   }
   .col-sm-2 {
+    margin-top: $base-margin;
     padding-right: 0;
+    padding-left: 5px;
+    .side-wrapper {
+      ul {
+        li.list-group-item {
+          padding: 0 0;
+          border: none;
+          strong {
+            color: #586069;
+            font-size: $base-font-size;
+          }
+          .pull-status {
+            margin-top: $base-margin;
+            .label {
+              width: 100%;
+              display: block;
+              padding: 6px 12px;
+              font-size: 12px;
+              border: 1px solid $color-github-label-border-white;
+              border-radius: $base-border-radius;
+              font-weight: 400;
+              &.label-default  {
+                color: $color-white;
+                background-color: #f86c6b !important;
+              }
+            }
+          }
+        }
+      }
+    }
   }
 }
 
 
 .pulls-conversation-wrapper {
+  font-family: $font-static;
+  font-weight: $base-font-weight;
   .col-sm-10 {
     padding-left: 0;
     .pull-body-wrapper {
-      font-family: $font-code;
       word-wrap: break-word;
-      .card {
+      .panel {
         margin-top: $base-margin;
         margin-bottom: $base-margin;
         border: $base-border;
         box-shadow: none;
-        .card-header {
+        .panel-heading {
           background-color: $color-grey;
-          font-family: $font-code;
           font-size: $base-font-size;
           padding: $base-padding * 2;
           width: 100%;
           padding: $base-padding * 3;
         }
-        .card-body {
+        .panel-body {
           padding: $base-padding * 5;
-          img {
-            width: 100%;
+          h1, h2, h3, h4, h5, h6 {
+            margin-top: 24px;
+            margin-bottom: 16px;
+            font-weight: 600;
+            line-height: 1.25;
           }
-          .card-text {
+          h1 {
+            padding-bottom: 0.3em;
+            font-size: 2em;
+            border-bottom: 1px solid #eaecef;
+          }
+          h2 {
+            padding-bottom: 0.3em;
+            font-size: 1.5em;
+            border-bottom: 1px solid #eaecef;
+          }
+          h3 {
+            font-size: 20px;
+            font-weight: 600;
+          }
+          h4 {
+            font-size: 1em;
+          }
+          h5 {
+            font-size: 0.875em;
+          }
+          h6 {
+            font-size: 0.85em;
+            color: #6a737d;
+          }
+          img {
+            max-width: 100%;
+          }
+          p {
+              margin-top: 0;
+              margin-bottom: 10px;
+          }
+          blockquote {
+            padding: 0 1em;
+            color: #6a737d;
+            border-left: 0.25em solid #dfe2e5;
             font-size: $base-font-size + 2px;
-            padding: 0 $base-padding * 5;
+          }
+          table {
+            display: block;
+            width: 100%;
+            overflow: auto;
+            thead {
+              display: table-header-group;
+              vertical-align: middle;
+              border-color: inherit;
+              tr {
+                  background-color: #fff;
+                  border-top: 1px solid #c6cbd1;
+                  th {
+                    padding: 6px 13px;
+                    border: 1px solid #dfe2e5;
+                  }
+              }
+            }
+            tbody {
+              display: table-row-group;
+              vertical-align: middle;
+              border-color: inherit;
+              tr {
+                display: table-row;
+                vertical-align: inherit;
+                border-color: inherit;
+                td, th {
+                  padding: 0;
+                }
+                td {
+                  padding: 6px 13px;
+                  border: 1px solid #dfe2e5;
+                }
+              }
+            }
+          }
+          .panel-text {
+            font-size: $base-font-size + 2px;
             pre {
               border-radius: none;
               border: none;
@@ -141,21 +254,48 @@
       }
     }
     .pulls-review-comment-wrapper {
-      .card {
+      .col-xs-2.timeline {
+        padding-right: 0px;
+      }
+      .col-xs-10.timeline {
+        padding-right: 0px;
+        padding-left: 30px;
+        border-left: 3px solid #e6ebf1;
+        .panel {
+          margin-bottom: $base-margin;
+        }
+      }
+      .review-wrapper {
+        .col-xs-12 {
+          padding-left: 0;
+          padding-right: 0;
+          padding-top: 0;
+          .panel {
+            margin-top: 0;
+            border: $base-border;
+            box-shadow: none;
+            max-width: 100%;
+            margin-bottom: - $base-margin + 15px;
+          } // .panel
+        }
+      }
+      .panel {
         margin-top: $base-margin;
-        margin-bottom: $base-margin;
         border: $base-border;
         box-shadow: none;
         max-width: 100%;
-        .card-header {
+        margin-bottom: - $base-margin + 15px;
+        .panel-heading {
           background-color: $bg-color-github-panel;
           font-family: $font-code;
-          font-size: $base-font-size;
           padding: $base-padding * 2;
           padding: $base-padding * 3;
           max-width: 100%;
+          .panel-title {
+            font-size: $base-font-size;
+          }
         }
-        .card-body {
+        .panel-body {
           padding: 0;
           max-width: 100%;
           .table-wrapper {
@@ -192,7 +332,7 @@
               }
             }
           }
-          .card-text {
+          .panel-text {
             font-size: $base-font-size + 2px;
             padding-top: $base-padding * 4;
             .col-xs-11 {
@@ -223,14 +363,65 @@
             }
             .col-xs-12.reply-wrapper {
               background-color: $bg-color-github-panel;
-              padding-left: 0px;
-              padding-right: 0px;
-              padding-top: $base-padding;
-              padding-bottom: $base-padding;
+              padding: $base-padding;
+              .col-xs-12 {
+                padding: $base-padding;
+              }
               .col-xs-11 {
                 padding-bottom: 0px;
               }
+              textarea {
+                margin-bottom: $base-padding * 2;
+              }
             }
+          }
+        }
+      } // .panel
+      .issue-comment-wrapper {
+        font-family: $font-static;
+        .col-xs-12 {
+          .col-xs-1 {
+          }
+          .col-xs-11 {
+            padding-left: 0;
+            padding-right: 0;
+            .panel.panel-default {
+              margin-top: 0px;
+              border-color: #c0d3eb;
+              .panel-heading {
+                background-color: #f1f8ff;
+                padding: $base-padding * 2;
+                padding: $base-padding * 3;
+                max-width: 100%;
+                .panel-title {
+                  .nickname {
+                    font-weight: bold;
+                    display: inline-block;
+                    font-size: $base-font-size * 1.2;
+                  }
+                }
+              }
+              .panel-body {
+                padding: $base-padding * 3;
+                pre {
+                  border: none;
+                  border-radius: 0;
+                }
+              }
+              margin-bottom: 1.5px;
+            }
+          }
+        }
+        .col-xs-12 {
+          padding-left: 0px;
+          padding-right: 0px;
+          .col-sm-2 {
+            border-right: none;
+            height: $base-height / 2;
+          }
+          .col-sm-10 {
+            border-left: 3px solid #e6ebf1;
+            height: $base-height / 2;
           }
         }
       }
@@ -238,5 +429,93 @@
   }
   .col-sm-2 {
     padding-right: 0;
+    padding-left: 5px;
+    .side-wrapper {
+      ul {
+        li.list-group-item {
+          padding: 0 0;
+          border: none;
+          strong {
+            color: #586069;
+            font-size: $base-font-size;
+          }
+          .pull-status {
+            margin-top: $base-margin;
+            .label {
+              width: 100%;
+              display: block;
+              padding: 6px 12px;
+              font-size: 12px;
+              border: 1px solid $color-github-label-border-white;
+              border-radius: $base-border-radius;
+              font-weight: 400;
+              &.label-default  {
+                color: $color-white;
+                background-color: #f86c6b !important;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+  .comment-wrapper {
+    .col-sm-10 {
+      .col-xs-12 {
+        border-top: 3px solid #e6ebf1;
+        padding-right: 0px;
+        padding-left: 0px;
+        .panel {
+          margin-top: $base-margin;
+          border-radius: $base-border-radius;
+          background-color: $color-github-light-grey;
+          border: solid 1px #d1d5da;
+          box-shadow: none;
+          .panel-body {
+            padding: $base-margin / 2 $base-margin / 2 0 $base-margin / 2;
+            .form-group {
+              margin-bottom: $base-margin / 2;
+            }
+          }
+        }
+      }
+    }
+    .col-sm-2 {
+    }
+  }
+  .col-sm-2.side {
+    margin-top: $base-margin;
+  }
+}
+
+// レビューボタン
+.review-btn-wrapper {
+  position:fixed;
+  bottom: 10px;
+  right: 10px;
+  z-index: 999;
+  .button {
+    display: inline-block;
+    text-decoration: none;
+    background-color: $review-btn;
+    color: $color-white;
+    width: 60px;
+    height: 60px;
+    line-height: 60px;
+    border-radius: 50%;
+    text-align: center;
+    font-weight: bold;
+    font-size: $base-font-size * 2;
+    vertical-align: middle;
+    overflow: hidden;
+    box-shadow: 0px 2px 2px rgba(0, 0, 0, 0.29);
+    transition: .4s;
+  }
+  .button:active {
+    -ms-transform: translateY(2px);
+    -webkit-transform: translateY(2px);
+    transform: translateY(2px);
+    box-shadow: 0 0 1px rgba(0, 0, 0, 0.15);
+    border-bottom: none;
   }
 }

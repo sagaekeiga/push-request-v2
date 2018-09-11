@@ -8,11 +8,11 @@ class Api::V1::GithubAppsController < ApplicationController
   # POST /github_apps/receive_webhook
   def receive_webhook
     case request.headers['X-GitHub-Event']
-    when 'installation_repositories'
+    when 'installation_repositories', 'installation'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id])
       return response_internal_server_error if @github_account.nil?
       # Add
-      status = @github_account.reviewee.repos.create_or_restore!(params) if params[:repositories_added].present?
+      CreateRepoJob.perform_later(@github_account, params.to_json) if params[:repositories_added].present? || params[:repositories].present?
       # Remove
       if params[:github_app][:repositories_removed].present?
         params[:github_app][:repositories_removed].each do |repositories_removed_params|
@@ -23,9 +23,13 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:github_app][:pull_request][:head][:user][:id])
       status = @github_account.reviewee.pulls.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?
+    when 'pull_request_review'
+      status = Review.fetch_remote_id!(params)
     when 'pull_request_review_comment'
-      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:comment][:user][:id])
-      status = ReviewComment.recieve_immediate_review_comment!(params)
+      status = ReviewComment.fetch!(params)
+    when 'issue_comment'
+      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])
+      status = Review.fetch_issue_comments!(params)
     end
     if status.is_a?(TrueClass)
       return response_success(controller_name, action_name)

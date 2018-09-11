@@ -20,7 +20,7 @@ class Skill < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_many :skillings, dependent: :destroy
-  has_many :reviewers, through: :skillings
+  has_many :reviewers
 
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -37,4 +37,16 @@ class Skill < ApplicationRecord
   # Validations
   # -------------------------------------------------------------------------------
   validates :name, presence: true, uniqueness: true
+
+  def self.top_match_by(alphabet)
+    language.where("name like '#{alphabet}%'").or(language.where("name like '#{alphabet.upcase}%'"))
+  end
+
+  def self.fetch!(skill_name, repo)
+    skill = find_by(name: skill_name)
+    skilling = skill.skillings.find_or_create_by!(
+      resource_type: 'Repo',
+      resource_id:   repo.id
+    )
+  end
 end

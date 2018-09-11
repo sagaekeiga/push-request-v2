@@ -6,6 +6,7 @@ ja:
       pull:
         id: ID
         status: ステータス
+        title: タイトル
   enums:
     pull:
       status:
@@ -15,3 +16,10 @@ ja:
         reviewed: レビュー済み
         completed: Merge/Close済み
         canceled: キャンセル済み
+      private:
+        true: 非公開
+        false: 公開中
+  pulls:
+    views:
+      private: 非公開
+      public: 公開中

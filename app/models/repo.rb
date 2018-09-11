@@ -25,6 +25,7 @@
 
 class Repo < ApplicationRecord
   acts_as_paranoid
+  paginates_per 10
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
@@ -54,31 +55,39 @@ class Repo < ApplicationRecord
   #
   # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
-  def self.create_or_restore!(installation_repositories_params)
-    ActiveRecord::Base.transaction do
-      installation_repositories_params[:repositories_added].each do |installation_repository_params|
-        repo = with_deleted.find_or_create_by(remote_id: installation_repository_params[:id])
-        repo.restore if repo&.deleted?
-        repo.update_attributes!(
-          remote_id: installation_repository_params[:id],
-          name: installation_repository_params[:name],
-          full_name: installation_repository_params[:full_name],
-          private: installation_repository_params[:private],
-          installation_id: installation_repositories_params[:installation][:id]
-        )
-        Pull.create_or_restore!(repo)
+  def self.fetch!(repositories_params)
+    repos =
+      if repositories_params['repositories_added'].present?
+        repositories_params['repositories_added']
+      else
+        repositories_params['repositories']
+      end
+    repos.each do |repository|
+      begin
+        ActiveRecord::Base.transaction do
+          repo = with_deleted.find_or_create_by(remote_id: repository['id'])
+          repo.restore if repo&.deleted?
+          repo.update_attributes!(
+            remote_id: repository['id'],                               # レポジトリID
+            name: repository['name'],                                  # レポジトリ名
+            full_name: repository['full_name'],                        # ニックネーム + レポジトリ名
+            private: repository['private'],                            # プライベート
+            installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
+          )
+          Pull.fetch!(repo)
+        end
+        true
+      rescue => e
+        Rails.logger.error e
+        Rails.logger.error e.backtrace.join("\n")
+        false
       end
     end
-    true
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    false
   end
 
   # レビュワーのスキルに合致するPRを取得する
   def self.pulls_suitable_for reviewer
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.request_reviewed.where(repo_id: repos&.pluck(:id))
+    Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 end

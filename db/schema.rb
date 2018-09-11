@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180602044824) do
+ActiveRecord::Schema.define(version: 20180827124308) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -45,6 +45,7 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.string "contents_url"
     t.text "patch"
     t.string "commit_id"
+    t.string "token"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -93,11 +94,9 @@ ActiveRecord::Schema.define(version: 20180602044824) do
     t.text "body"
     t.string "path"
     t.integer "position"
-    t.bigint "github_id"
     t.bigint "in_reply_to_id"
+    t.bigint "remote_id"
     t.integer "status"
-    t.datetime "github_created_at"
-    t.datetime "github_updated_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -128,7 +127,6 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewees_github_accounts", force: :cascade do |t|
     t.bigint "reviewee_id"
-    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"
@@ -174,7 +172,6 @@ ActiveRecord::Schema.define(version: 20180602044824) do
 
   create_table "reviewers_github_accounts", force: :cascade do |t|
     t.bigint "reviewer_id"
-    t.string "access_token"
     t.string "login"
     t.integer "owner_id"
     t.string "avatar_url"
@@ -201,10 +198,12 @@ ActiveRecord::Schema.define(version: 20180602044824) do
   create_table "reviews", force: :cascade do |t|
     t.bigint "pull_id"
     t.bigint "reviewer_id"
+    t.bigint "remote_id"
     t.text "body"
-    t.string "state"
+    t.text "reason"
     t.integer "event"
     t.integer "working_hours"
+    t.string "commit_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

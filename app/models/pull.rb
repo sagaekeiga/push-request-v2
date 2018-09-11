@@ -34,6 +34,7 @@
 class Pull < ApplicationRecord
   include GenToken, FriendlyId
   acts_as_paranoid
+  paginates_per 20
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
@@ -41,6 +42,7 @@ class Pull < ApplicationRecord
   belongs_to :reviewer, optional: true
   belongs_to :repo
   has_many :changed_files, dependent: :destroy
+  has_many :reviews, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -87,34 +89,32 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
-  # @TODO リファクタできる気がする
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
-  def self.create_or_restore!(repo)
+  def self.fetch!(repo)
     ActiveRecord::Base.transaction do
-      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls", repo.installation_id
-      response_pulls_in_json_format.each do |response_pull|
-        pull = repo.pulls.with_deleted.find_by(remote_id: response_pull['id'], reviewee: repo.reviewee)
+      # JSON
+      res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
+      res_pulls.each do |res_pull|
+        pull = repo.pulls.with_deleted.find_by(remote_id: res_pull['id'], reviewee: repo.reviewee)
         if pull.nil?
           pull = repo.pulls.create!(
-            remote_id: response_pull['id'],
-            number: response_pull['number'],
-            state: response_pull['state'],
-            reviewee: repo.reviewee,
-            title: response_pull['title'],
-            body: response_pull['body']
+            remote_id: res_pull['id'],
+            number:    res_pull['number'],
+            state:     res_pull['state'],
+            reviewee:  repo.reviewee,
+            title:     res_pull['title'],
+            body:      res_pull['body']
           )
-          skill = Skill.find_by(name: response_pull['head']['repo']['language'])
-          skilling = skill.skillings.find_or_create_by!(
-            resource_type: 'Repo',
-            resource_id: repo.id
-          )
+          skill = Skill.fetch!(res_pull['head']['repo']['language'], repo)
         end
         if pull&.deleted?
           pull.restore
           skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
           skillings.each(&:restore) if skillings.present?
         end
-        ChangedFile.create_or_restore!(pull)
+        return if pull.nil?
+        token = pull.changed_files.initialize_token
+        ChangedFile.fetch!(pull, token)
       end
     end
   rescue => e
@@ -131,26 +131,24 @@ class Pull < ApplicationRecord
         pull.update!(
           state: params[:state],
           title: params[:title],
-          body: params[:body]
+          body:  params[:body]
         )
         pull.update_status_by!(params[:state])
       else
         repo = Repo.find_by(remote_id: params[:head][:repo][:id])
         pull = create!(
           remote_id: params['id'],
-          number: params[:number],
-          state: params[:state],
-          title: params[:title],
-          body: params[:body],
-          repo: repo
+          number:    params[:number],
+          state:     params[:state],
+          title:     params[:title],
+          body:      params[:body],
+          repo:      repo
         )
-        skill = Skill.find_by(name: params[:head][:repo][:language])
-        skilling = skill.skillings.find_or_create_by!(
-          resource_type: 'Repo',
-          resource_id: repo.id
-        )
+        skill = Skill.fetch!(params[:head][:repo][:language], repo)
       end
-      ChangedFile.check_and_update!(pull, params[:head][:sha])
+      return if pull.nil?
+      token = pull.changed_files.initialize_token
+      ChangedFile.check_and_update!(pull, token)
     end
     true
   rescue => e
@@ -159,49 +157,16 @@ class Pull < ApplicationRecord
     false
   end
 
-  def self.update_diff_or_create!(repo)
-    ActiveRecord::Base.transaction do
-      response_pulls_in_json_format = GithubAPI.receive_api_response_in_json_format_on "https://api.github.com/repos/#{repo.full_name}/pulls", repo.installation_id
-      response_pulls_in_json_format.each do |response_pull|
-        attributes = {
-          remote_id: response_pull['id'],
-          number: response_pull['number'],
-          state: response_pull['state'],
-          reviewee: repo.reviewee,
-          title: response_pull['title'],
-          body: response_pull['body']
-        }
-        pull = with_deleted.find_by(remote_id: response_pull['id'])
-        pull = create!(attributes) if pull.nil?
-        if pull.can_update?
-          pull.update!(attributes)
-          pull.restore if pull&.deleted?
-          # request_reviewed/agreed/reviewed の場合にconnectedにならぬように。
-          pull.connected! if completed?
-        end
-        ChangedFile.create_or_restore!(pull)
-      end
-    end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_pull')
-  end
-
   # -------------------------------------------------------------------------------
   # InstanceMethods
   # -------------------------------------------------------------------------------
-  def already_pairing?
-    agreed? || reviewed? || completed?
-  end
-
   def reviewer? current_reviewer
     reviewer == current_reviewer
   end
 
   def last_committed_changed_files
     changed_file = changed_files.order(:id).last
-    changed_files.order(:id).where(commit_id: changed_file&.commit_id)
+    changed_files.order(:id).where(token: changed_file&.token)
   end
 
   # stateのパラメータに対応したstatusに更新する

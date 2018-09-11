@@ -1,0 +1,10 @@
+= @reviewer.github_account.name
+さん、こんにちは。
+
+%p= @review.pull.title + 'のレビューが審査を通過しました。'
+%br
+%br
+%p= simple_format(@review.reason)
+%br
+%br
+= link_to 'View on PushRequest', Settings.reviewers.pulls.show + @review.pull.token

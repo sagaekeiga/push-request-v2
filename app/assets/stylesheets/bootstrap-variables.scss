@@ -15,7 +15,7 @@ $gray:                   lighten($gray-base, 33.5%) !default; // #555
 $gray-light:             lighten($gray-base, 46.7%) !default; // #777
 $gray-lighter:           lighten($gray-base, 93.5%) !default; // #eee
 
-$brand-primary:         darken(#428bca, 6.5%) !default; // #337ab7
+$brand-primary:         $github-primary-color !default; // #337ab7
 $brand-success:         #5cb85c !default;
 $brand-info:            #5bc0de !default;
 $brand-warning:         #f0ad4e !default;
@@ -569,7 +569,7 @@ $popover-arrow-color:                 $popover-bg !default;
 // //** Default label background color
 // $label-default-bg:            $gray-light !default;
 // //** Primary label background color
-// $label-primary-bg:            $brand-primary !default;
+$label-primary-bg:            $brand-primary !default;
 // //** Success label background color
 $label-success-bg:            $color-black !default;
 // //** Info label background color
@@ -842,6 +842,9 @@ $badge-border-radius:         0px !default;
   color: $color-white;
   background-color: $github-primary-color;
   background-image: linear-gradient(-180deg, #34d058 0%, $github-primary-color 90%);
+  border-color: $github-primary-color;
+  font-weight: 600;
+  border-radius: 0.25em;
 }
 
 .btn.btn-danger {
@@ -858,4 +861,6 @@ $badge-border-radius:         0px !default;
   background-image: linear-gradient(-180deg, #fafbfc 0%, #eff3f6 90%);;
   font-weight: bold;
   border: 1px solid rgba(27,31,35,0.2);
+  font-weight: 600;
+  border-radius: 0.25em;
 }

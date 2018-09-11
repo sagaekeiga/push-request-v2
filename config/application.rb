@@ -23,10 +23,10 @@ module PushRequestV2
     config.active_record.default_timezone = :local
 
     config.active_support.use_standard_json_time_format = true
-    config.autoload_paths << Rails.root.join('lib')
-    config.autoload_paths << Rails.root.join('app/services')
+    config.paths.add 'lib', eager_load: true
     config.autoload_paths << Rails.root.join('app/decorators')
     config.i18n.load_path += Dir[Rails.root.join('config', 'locales', '**', '*.{rb,yml}')]
+    config.dsn = ENV['SENTRY_RAVEN_URL']
 
     config.generators do |g|
       g.factory_bot true

@@ -1,8 +1,7 @@
 !!!
 %html
   %head
-    %meta{ content: 'text/html; charset=UTF-8', 'http-equiv': 'Content-Type' }/
-    %meta{ name: 'viewport', content: 'width=device-width, initial-scale=1.0' }
+    = render partial: 'meta'
     %title push-request-v2
     = csrf_meta_tags
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
@@ -14,41 +13,50 @@
         = render 'reviewees_navbar'
       - elsif reviewer_signed_in?
         = render 'reviewers_navbar'
-      - elsif admin_signed_in?
-        = render 'admins_navbar'
       - else
         = render 'navbar'
-    - if reviewee_signed_in?
-      .container-fluid.body-container
-        .row.side-bar-wrapper
-          = render 'reviewee_side_bar'
-          .col-sm-11
+    .top-wrapper
+      - if reviewee_signed_in?
+        .container-fluid.body-container
+          .row.side-bar-wrapper
+            = render 'reviewee_side_bar'
+            .col-sm-11
+              - !content_for?(:flash) && flash && flash.each do |key, message|
+                .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
+                  %strong= message
+              = yield
+      - elsif reviewer_signed_in?
+        .container-fluid.body-container
+          - unless current_reviewer.pending?
+            .row.side-bar-wrapper
+              = render 'reviewer_side_bar'
+              .col-sm-11
+                - !content_for?(:flash) && flash && flash.each do |key, message|
+                  .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
+                    %strong= message
+                = yield
+          - else
+            .col-sm-12
+              - !content_for?(:flash) && flash && flash.each do |key, message|
+                .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
+                  %strong= message
+              = yield
+      - elsif admin_signed_in?
+        .col-sm-12
+          .container.admin
             - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
+              .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
                 %strong= message
             = yield
-    - elsif reviewer_signed_in?
-      .container-fluid.body-container
-        .row.side-bar-wrapper
-          = render 'reviewer_side_bar'
-          .col-sm-11
-            - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
-                %strong= message
-            = yield
-    - elsif admin_signed_in?
-      .container-fluid.body-container
-        - !content_for?(:flash) && flash && flash.each do |key, message|
-          .alert{ class: "alert-#{key}", role: 'alert' }
-            %strong= message
-        = yield
-    - else
-      .container-fluid.top
-        - unless controller_name == 'welcome'
-          .container-fluid.body-container
-            - !content_for?(:flash) && flash && flash.each do |key, message|
-              .alert{ class: "alert-#{key}", role: 'alert' }
-                %strong= message
-        = yield
-    - if controller_name == 'welcome'
-      = render 'footer'
+      - else
+        .container-fluid.top
+          - unless controller_name == 'welcome'
+            .container-fluid.body-container
+              - !content_for?(:flash) && flash && flash.each do |key, message|
+                .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
+                  %strong= message
+          = yield
+    .footer
+      .container-fluid
+        .text-center
+          = render 'footer'

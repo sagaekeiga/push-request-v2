@@ -1,7 +1,41 @@
-%footer.footer
-  .container
-    .col-xs-5
-      = link_to 'twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
-    .col-xs-2
-    .col-xs-5
-      = link_to 'facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+- if controller_name == 'welcome'
+  %footer
+    .col-xs-12
+      = link_to 'お問い合わせ', 'https://sagae528.sarahah.com/', target: '_blank'
+      |
+      = link_to 'Twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
+      |
+      = link_to 'Facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+      |
+      = link_to '企業向け', 'https://pushrequest.jp/'
+      |
+      = link_to 'Reviewer', :new_reviewer_registration
+      |
+      = link_to 'ヘルプ', 'https://hackmd.io/s/B1bv92HIQ'
+      |
+      = link_to '利用規約', 'https://hackmd.io/s/BkrUv3BLQ'
+      |
+      = link_to 'セキュリティポリシー', 'https://hackmd.io/s/S1X9tnrLm'
+      |
+      = link_to 'バグ報告', 'https://github.com/sagaekeiga/push-request-bug'
+      %hr
+      = render 'social_button'
+- else
+  %footer.in
+    .col-xs-12
+      %hr
+        = link_to 'お問い合わせ', 'https://sagae528.sarahah.com/', target: '_blank'
+        |
+        = link_to 'Twitter', 'https://twitter.com/sagae_kig?lang=ja', target: '_blank'
+        |
+        = link_to 'Facebook', 'https://www.facebook.com/profile.php?id=100008242595679', target: '_blank'
+        |
+        = link_to '企業向け', 'https://pushrequest.jp/'
+        |
+        = link_to 'ヘルプ', 'https://hackmd.io/s/B1bv92HIQ'
+        |
+        = link_to '利用規約', 'https://hackmd.io/s/BkrUv3BLQ'
+        |
+        = link_to 'セキュリティポリシー', 'https://hackmd.io/s/S1X9tnrLm'
+        |
+        = link_to 'バグ報告', 'https://github.com/sagaekeiga/push-request-bug'

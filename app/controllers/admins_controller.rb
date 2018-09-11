@@ -1,5 +1,5 @@
 class AdminsController < Admins::BaseController
   def dashboard
-    @pending_reviewers = Reviewer.order(created_at: :desc).pending.page(params[:page]).select{ |reviewer| reviewer.github_account.present? }
+    @pending_reviewers = Reviewer.pending.includes(:github_account)
   end
 end
