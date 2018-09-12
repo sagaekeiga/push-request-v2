@@ -102,7 +102,7 @@ class Content < ApplicationRecord
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, '')
+      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
       Content.fetch_top_dirs_and_files(repo, res_contents)
       return true unless repo.contents
       1.step do |index|
@@ -115,7 +115,6 @@ class Content < ApplicationRecord
         break if parents.blank?
         # サブディレクトリ・ファイルの取得
         Content.fetch_sub_dirs_and_files!(parents)
-        Rails.logger.info 'after_fetch_sub_dirs_and_files'
       end
       repo.hidden!
     end
