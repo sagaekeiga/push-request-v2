@@ -3,11 +3,11 @@ class Reviewers::ContentsController < Reviewers::BaseController
   before_action :set_content, only: %i(show)
 
   def index
-    @dir_or_files = @repo.contents.order(file_type: :desc, name: :asc).includes(:parent).select { |content| content.parent.nil? }
+    @dir_or_files = @repo.contents.top
   end
 
   def show
-    @dir_or_files = @content.children.order(file_type: :desc, name: :asc).includes(:repo).decorate if @content.dir?
+    @dir_or_files = @content.children.sub(@content).decorate
   end
 
   private

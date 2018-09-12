@@ -84,6 +84,12 @@
   table {
     td {
       color: $color-td;
+      .img-responsive {
+        max-width: 25%;
+      }
+      i {
+        color: $color-line;
+      }
     }
   }
 }

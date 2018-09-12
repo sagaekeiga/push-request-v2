@@ -13,7 +13,7 @@
                 = dir_or_file.name
             %td.col-sm-1.text-right
               %button{ type: 'button',
-                class: "btn #{dir_or_file.decorate.btn_by_status} update-dir-file-button",
+                class: "btn #{t("contents.views.buttons.#{dir_or_file.status}")} update-dir-file-button",
                 'content-id': dir_or_file.id,
-                'repo-id': dir_or_file.repo.id }= dir_or_file.decorate.text_by_status
+                'repo-id': dir_or_file.repo.id }= t "reviewees.contents.update.#{dir_or_file.status}"
 = javascript_pack_tag 'update-content'

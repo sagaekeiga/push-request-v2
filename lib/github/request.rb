@@ -20,7 +20,7 @@ module Github
       end
 
       # GET レポジトリファイルの取得
-      def github_exec_fetch_repo_contents!(repo, path)
+      def github_exec_fetch_repo_contents!(repo, path = '')
         _get "repos/#{repo.full_name}/contents/#{path}", repo.installation_id, :content
       end
 

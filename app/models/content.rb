@@ -77,6 +77,21 @@ class Content < ApplicationRecord
   attribute :status, default: statuses[:hidden]
 
   # -------------------------------------------------------------------------------
+  # Scope
+  # -------------------------------------------------------------------------------
+  # 最上層のディレクトリ・ファイルを取得
+  scope :top, lambda {
+    order(file_type: :desc, name: :asc).
+      includes(:parent).select { |content| content.parent.nil? }
+  }
+
+  # 配下のディレクトリ・ファイルを取得
+  scope :sub, lambda { |content|
+    if content.dir?
+      order(file_type: :desc, name: :asc).includes(:repo)
+    end
+  }
+  # -------------------------------------------------------------------------------
   # Callbacks
   # -------------------------------------------------------------------------------
   after_update *%i(update_children_status)
@@ -87,7 +102,7 @@ class Content < ApplicationRecord
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, '')
+      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
       Content.fetch_top_dirs_and_files(repo, res_contents)
       return true unless repo.contents
       1.step do |index|
@@ -101,17 +116,18 @@ class Content < ApplicationRecord
         # サブディレクトリ・ファイルの取得
         Content.fetch_sub_dirs_and_files!(parents)
       end
+      repo.hidden!
     end
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_pull')
+    fail I18n.t('views.error.failed_create_contents')
   end
 
   def self.fetch_top_dirs_and_files(repo, res_contents)
     res_contents.each do |res_content|
       # 画像やvendor配下はレビュワーが見る必要がなくデータ量が多いため除外
-      next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+      next if Settings.contents.prohibited_files.include?(res_content['name'])
       content = Content.fetch_single_content!(repo, res_content)
       content.restore if content&.deleted?
     end
@@ -122,7 +138,8 @@ class Content < ApplicationRecord
       res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
       next if res_contents.blank?
       res_contents.each do |res_content|
-        next if Settings.contents.prohibited_files.include?(File.extname(res_content['name']))
+        Rails.logger.info res_content['path']
+        next if Settings.contents.prohibited_files.include?(res_content['name'])
         child = Content.fetch_single_content!(parent.repo, res_content)
         content_tree = ContentTree.find_or_initialize_by(
           parent: parent,
