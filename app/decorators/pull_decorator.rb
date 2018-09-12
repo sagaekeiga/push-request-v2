@@ -47,7 +47,7 @@ class PullDecorator < ApplicationDecorator
   end
 
   def back_path
-    if 'agreed'
+    if agreed?
       h.file_reviewers_pull_reviews_path(object)
     else
       h.reviewers_pull_files_path(object)

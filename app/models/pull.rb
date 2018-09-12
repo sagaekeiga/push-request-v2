@@ -174,8 +174,8 @@ class Pull < ApplicationRecord
     case state_params
     when 'closed', 'merged'
       completed!
-    when 'open'
-      connected!
+    # when 'open'
+    #   connected!
     end
   end
 
