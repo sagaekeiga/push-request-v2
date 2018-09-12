@@ -121,7 +121,7 @@ class Content < ApplicationRecord
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_pull')
+    fail I18n.t('views.error.failed_create_contents')
   end
 
   def self.fetch_top_dirs_and_files(repo, res_contents)
