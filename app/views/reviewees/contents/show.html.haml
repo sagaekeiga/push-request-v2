@@ -1,0 +1,23 @@
+.col-xs-12
+  .container
+    .row
+      .content-show-wrapper
+        .page-header
+          %h4= @content.decorate.breadcrumbs
+        - if @content.dir?
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files
+        - else
+          .panel.panel-default
+            .panel-heading
+              %b= t 'views.bytes', byte: @content.size
+            .table-wrapper
+              %table
+                %thead
+                  %tr
+                    %th{ scope: 'col' }
+                - if @content.content
+                  - Base64.decode64(@content.content)&.each_line&.with_index do |line, index|
+                    %tbody
+                      %tr
+                        %td.index= index
+                        %td.file-code= coderay(line, @content.path)

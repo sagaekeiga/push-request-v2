@@ -4,10 +4,17 @@
       %li.nav-item
         = link_to reviewers_pull_path(pull), class: 'nav-link' do
           %i.glyphicon.glyphicon-comment
+          &nbsp;
           = t 'reviewers.pulls.show.conversation'
+      %li.nav-item
+        = link_to reviewers_pull_path(pull), class: 'nav-link' do
+          %i.fas.fa-code
+          &nbsp;
+          = t 'reviewers.pulls.show.code'
       %li.nav-item
         = link_to file_reviewers_pull_reviews_path(pull), class: 'nav-link' do
           %i.glyphicon.glyphicon-file
+          &nbsp;
           = t 'reviewers.pulls.show.changed_files'
           %span.badge.badge-default= changed_files&.count
 - else
@@ -16,9 +23,16 @@
       %li.nav-item
         = link_to reviewers_pull_path(pull), class: 'nav-link' do
           %i.glyphicon.glyphicon-comment
+          &nbsp;
           = t 'reviewers.pulls.show.conversation'
+      %li.nav-item
+        = link_to reviewers_repo_contents_path(pull.repo), class: 'nav-link' do
+          %i.fas.fa-code
+          &nbsp;
+          = t 'reviewers.pulls.show.code'
       %li.nav-item
         = link_to reviewers_pull_files_path(pull), class: 'nav-link' do
           %i.glyphicon.glyphicon-file
+          &nbsp;
           = t 'reviewers.pulls.show.changed_files'
           %span.badge.badge-default= changed_files&.count

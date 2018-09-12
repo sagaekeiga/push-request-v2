@@ -1,12 +1,13 @@
 ja:
   activerecord:
     models:
-      repo: レポジトリ
+      content: ディレクトリ/ファイル
     attributes:
-      repo:
-        title: レポジトリ名
-        status: 同期
-  repos:
+      content:
+        id: ID
+        status: ステータス
+        title: タイトル
+  contents:
     views:
       hidden: 非公開
       showing: 公開中

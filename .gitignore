@@ -43,3 +43,6 @@ yarn-debug.log*
 
 # coverage rate
 /coverage
+
+# Ignore bundler gems.
+vendor/bundle

@@ -7,6 +7,7 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  installation_id :bigint(8)
@@ -33,6 +34,7 @@ class Repo < ApplicationRecord
   has_many :pulls, dependent: :destroy
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
+  has_many :contents
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -43,8 +45,24 @@ class Repo < ApplicationRecord
   validates :installation_id, presence: true
 
   # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # 性別
+  #
+  # - loding  : 取得中
+  # - hidden  : 非公開
+  # - showing : 公開
+  #
+  enum status: {
+    loading: 1000,
+    hidden:  2000,
+    showing: 3000
+  }
+
+  # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:loading]
   attribute :private, default: false
 
   # @TODO テストコードを書く
@@ -74,6 +92,7 @@ class Repo < ApplicationRecord
             private: repository['private'],                            # プライベート
             installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
           )
+          FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
         end
         true

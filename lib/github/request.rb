@@ -19,6 +19,11 @@ module Github
         _post sub_url(:review_comment, pull), pull.repo.installation_id, :review_comment, params
       end
 
+      # GET レポジトリファイルの取得
+      def github_exec_fetch_repo_contents!(repo, path = '')
+        _get "repos/#{repo.full_name}/contents/#{path}", repo.installation_id, :content
+      end
+
       # GET ファイル差分取得
       def github_exec_fetch_changed_files!(pull)
         _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
@@ -117,6 +122,8 @@ module Github
           return Settings.api.github.request.header.accept.pull
         when :review_comment
           return Settings.api.github.request.header.accept.review_comment
+        when :content
+          return Settings.api.github.request.header.accept.pull
         end
       end
 
@@ -133,6 +140,8 @@ module Github
           return Settings.api.success.created.status
         when :review_comment
           return Settings.api.success.created.status
+        when :content
+          return Settings.api.success.status.code
         end
       end
 

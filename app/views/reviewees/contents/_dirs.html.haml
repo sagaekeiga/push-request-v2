@@ -1,0 +1,19 @@
+.panel.panel-default
+  .panel-heading
+    %b.text-right= l resource.created_at
+  .table-wrapper
+    %table.table.table-hover
+      %tbody
+        - dir_or_files.each do |dir_or_file|
+          %tr
+            %td.file-name.col-sm-11
+              = link_to [:reviewees, dir_or_file.repo, dir_or_file] do
+                %i.fas{ class: dir_or_file.dir? ? 'fa-folder' : 'fa-file' }
+                &nbsp;
+                = dir_or_file.name
+            %td.col-sm-1.text-right
+              %button{ type: 'button',
+                class: "btn #{t("contents.views.buttons.#{dir_or_file.status}")} update-dir-file-button",
+                'content-id': dir_or_file.id,
+                'repo-id': dir_or_file.repo.id }= t "reviewees.contents.update.#{dir_or_file.status}"
+= javascript_pack_tag 'update-content'
