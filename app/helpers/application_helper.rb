@@ -65,4 +65,9 @@ module ApplicationHelper
   def coderay(line, path)
     CodeRay.scan(line, symbolized_lang(path)).div.html_safe
   end
+
+  # Base64でデコード
+  def decode_by_base64(content)
+    Base64.decode64(content).encode('Shift_JIS', 'UTF-8')
+  end
 end

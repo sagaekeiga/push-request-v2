@@ -69,7 +69,7 @@ class Content < ApplicationRecord
   validates :path, presence: true
   validates :size, presence: true
   validates :file_type, presence: true
-  validates :reviewee, uniqueness: { scope: %i(repo name path file_type) }
+  validates :reviewee, uniqueness: { scope: %i(repo path file_type) }
 
   # -------------------------------------------------------------------------------
   # Attributes

@@ -45,4 +45,12 @@ class PullDecorator < ApplicationDecorator
       I18n.t 'reviewers.my_page.unit_hour_and_minutes', working_hours: (sum_minutes / 60)&.floor.to_s, working_minutes: (sum_minutes % 60)&.floor.to_s
     end
   end
+
+  def back_path
+    if agreed?
+      h.file_reviewers_pull_reviews_path(object)
+    else
+      h.reviewers_pull_files_path(object)
+    end
+  end
 end

@@ -16,7 +16,7 @@
                   %tr
                     %th{ scope: 'col' }
                 - if @content.content
-                  - Base64.decode64(@content.content)&.each_line&.with_index do |line, index|
+                  - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
                     %tbody
                       %tr
                         %td.index= index
