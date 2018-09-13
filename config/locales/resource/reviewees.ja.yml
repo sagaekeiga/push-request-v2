@@ -33,6 +33,10 @@ ja:
       update:
         hidden: 公開する
         showing: 非公開にする
+    issues:
+      update:
+        hidden: 公開する
+        showing: 非公開にする
     settings:
       integrations:
         title: 設定

@@ -46,6 +46,7 @@ Rails.application.routes.draw do
       resources :pulls, only: %i(update)
       resources :repos, only: %i(update) do
         resources :contents, only: %i(index show update)
+        resources :issues, only: %i(index show update)        
       end
     end
 

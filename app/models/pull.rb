@@ -6,7 +6,6 @@
 #  body        :string
 #  deleted_at  :datetime
 #  number      :integer
-#  state       :string
 #  status      :integer
 #  title       :string
 #  token       :string
@@ -50,7 +49,6 @@ class Pull < ApplicationRecord
   validates :token, uniqueness: true
   validates :remote_id, presence: true, uniqueness: true, on: %i(create)
   validates :number, presence: true
-  validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
 
@@ -100,7 +98,6 @@ class Pull < ApplicationRecord
           pull = repo.pulls.create!(
             remote_id: res_pull['id'],
             number:    res_pull['number'],
-            state:     res_pull['state'],
             reviewee:  repo.reviewee,
             title:     res_pull['title'],
             body:      res_pull['body']
@@ -129,7 +126,6 @@ class Pull < ApplicationRecord
       pull = find_by(remote_id: params[:id])
       if pull.present?
         pull.update!(
-          state: params[:state],
           title: params[:title],
           body:  params[:body]
         )
@@ -139,7 +135,6 @@ class Pull < ApplicationRecord
         pull = create!(
           remote_id: params['id'],
           number:    params[:number],
-          state:     params[:state],
           title:     params[:title],
           body:      params[:body],
           repo:      repo

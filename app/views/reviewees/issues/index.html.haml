@@ -6,4 +6,11 @@
           .pull-right= link_to t("reviewees.repos.index.#{@repo.status}"), reviewees_repo_path(@repo), method: :put, class: "btn #{t("contents.views.buttons.#{@repo.status}")}"
           %h3= @repo.full_name
         = render 'shared/repos/tab', repo: @repo
-        = render 'dirs', resource: @repo, dir_or_files: @dir_or_files
+        .panel.panel-default
+          .panel-heading
+            %b.text-right= l @repo.created_at
+          .table-wrapper
+            %table.table.table-hover
+              %tbody
+                = render @issues
+= javascript_pack_tag 'update-resource'

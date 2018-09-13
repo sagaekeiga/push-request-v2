@@ -56,6 +56,7 @@ ja:
         conversation: Conversation
         changed_files: Changed Files
         code: Code
+        issue: Issues
         expiured_at: "%{time} までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。"
         review_comment: Reviewee Comment
         no_changhed_files: 変更がありません
