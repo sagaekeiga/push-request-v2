@@ -5,5 +5,5 @@
         .page-header
           .pull-right= link_to t("reviewees.repos.index.#{@repo.status}"), reviewees_repo_path(@repo), method: :put, class: "btn #{t("contents.views.buttons.#{@repo.status}")}"
           %h3= @repo.full_name
-        = render 'shared/repos/tab', repo: @repo
+        = render 'reviewers/shared/repos/tab', repo: @repo
         = render 'dirs', resource: @repo, dir_or_files: @dir_or_files
