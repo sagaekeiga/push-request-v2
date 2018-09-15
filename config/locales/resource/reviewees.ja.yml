@@ -42,7 +42,8 @@ ja:
         title: 設定
         integrations: インテグレーション
         configure: 設定
-        connect: Connect
+        authorize: 認証する
+        authorized: 認証済み
         configure_connect: GitHubアカウント連携の設定をします。
         alert:
           danger: Githubに接続してください

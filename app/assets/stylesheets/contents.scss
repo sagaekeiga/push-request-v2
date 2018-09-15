@@ -13,11 +13,11 @@
     background-color: transparent;
     background-image: none;
     border-color: $base-color-blue;
-  }
-  .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
-    color: $color-white;
-    background-color: $base-color-blue;
-    border-color: $base-color-blue;
+    &:hover, &:focus, &:active, &.active, .open > .dropdown-toggle.btn-outline-primary {
+      color: $color-white;
+      background-color: $base-color-blue;
+      border-color: $base-color-blue;
+    }
   }
   .btn-outline-danger {
     background-color: $color-white;
@@ -25,11 +25,11 @@
     box-shadow: none;
     border-color: $color-cancel;
     color: $color-cancel;
-  }
-  .btn-outline-danger:hover, .btn-outline-danger:focus, .btn-outline-danger:active, .btn-outline-danger.active, .open>.dropdown-toggle.btn-outline-danger {
-    color: $color-white;
-    background-color: $color-cancel;
-    border-color: $color-cancel;
+    &:hover, &:focus, &:active, &.active, .open > .dropdown-toggle.btn-outline-danger {
+      color: $color-white;
+      background-color: $color-cancel;
+      border-color: $color-cancel;
+    }
   }
   .panel.panel-default {
     box-shadow: none;

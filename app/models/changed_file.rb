@@ -56,9 +56,6 @@ class ChangedFile < ApplicationRecord
     ActiveRecord::Base.transaction do
       res_changed_files = Github::Request.github_exec_fetch_changed_files!(commit)
       res_changed_files['files'].each do |res_changed_file|
-        Rails.logger.info commit.present?
-        Rails.logger.info commit.pull.present?
-        Rails.logger.info commit.pull.changed_files.present?
         changed_file = commit.pull.changed_files.with_deleted.find_or_initialize_by(
           commit: commit,
           event: :pushed,

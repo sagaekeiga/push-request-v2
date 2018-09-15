@@ -59,7 +59,7 @@ class PullDecorator < ApplicationDecorator
     files_changed.count
   end
 
-  # ブランチ差分
+  # コミット数
   def commits_count
     commits.count
   end
