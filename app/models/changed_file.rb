@@ -56,7 +56,10 @@ class ChangedFile < ApplicationRecord
     ActiveRecord::Base.transaction do
       res_changed_files = Github::Request.github_exec_fetch_changed_files!(commit)
       res_changed_files['files'].each do |res_changed_file|
-        changed_file = commit.pull.changed_files.with_deleted.find_or_initializ_by(
+        Rails.logger.info commit.present?
+        Rails.logger.info commit.pull.present?
+        Rails.logger.info commit.pull.changed_files.present?
+        changed_file = commit.pull.changed_files.with_deleted.find_or_initialize_by(
           commit: commit,
           event: :pushed,
           filename: res_changed_file['filename']
@@ -68,7 +71,7 @@ class ChangedFile < ApplicationRecord
           deletions:    res_changed_file['deletions'],
           filename:     res_changed_file['filename'],
           patch:        res_changed_file['patch'],
-          contents_url:  res_changed_file['contents_url']
+          contents_url: res_changed_file['contents_url']
         )
       end
     end
