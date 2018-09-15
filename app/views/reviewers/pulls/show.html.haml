@@ -2,7 +2,7 @@
   .col-xs-12
     .page-header{ 'pull-id': @pull.id }
       %h3= @pull.title
-    = render 'reviewers/shared/pulls/tab', pull: @pull,  changed_files: @changed_files
+    = render 'reviewers/shared/pulls/tab', pull: @pull
     - unless @pending_review
       .pulls-conversation-wrapper
         .col-xs-12.col-sm-10
