@@ -83,17 +83,4 @@ class ChangedFile < ApplicationRecord
   def already_updated?(pull, double_file_names)
     filename.in?(double_file_names) && pull.changed_files.find_by(filename: filename).id != id
   end
-
-  #
-  # トークンの生成
-  #
-  def self.initialize_token
-    loop do
-      @changed_file = self.new
-      @changed_file.token = SecureRandom.hex(10)
-      token = ChangedFile.find_by(token: @changed_file.token)
-      break if token.nil?
-    end
-    @changed_file.token
-  end
 end

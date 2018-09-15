@@ -163,6 +163,7 @@ class Pull < ApplicationRecord
     reviewer == current_reviewer
   end
 
+  # 最新のファイル差分を取得する
   def files_changed
     double_file_names = changed_files.pluck(:filename).group_by{ |i| i }.reject{ |k,v| v.one? }.keys
     self.changed_files.reject { |changed_file| changed_file.already_updated?(self, double_file_names) }
