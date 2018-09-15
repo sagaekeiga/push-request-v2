@@ -59,33 +59,6 @@ class ChangedFile < ApplicationRecord
     fail I18n.t('views.error.failed_create_changed_file')
   end
 
-  def self.check_and_update!(pull, token)
-    ActiveRecord::Base.transaction do
-      res_changed_files = Github::Request.github_exec_fetch_changed_files!(pull)
-      res_changed_files.each do |res_changed_file|
-        changed_file = pull.changed_files.find_or_create_by!(
-          sha:          res_changed_file['sha'],
-          additions:    res_changed_file['additions'],
-          blob_url:     res_changed_file['blob_url'],
-          difference:   res_changed_file['changes'],
-          contents_url: res_changed_file['contents_url'],
-          deletions:    res_changed_file['deletions'],
-          filename:     res_changed_file['filename'],
-          patch:        res_changed_file['patch'],
-          raw_url:      res_changed_file['raw_url'],
-          status:       res_changed_file['status'],
-          commit_id:    res_changed_file['contents_url'].match(/ref=/).post_match,
-          token:        token
-        )
-      end
-    end
-    true
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_changed_file')
-  end
-
   def reviewed?(index)
     review_comments.find_by(position: index).review.present?
   end
@@ -106,6 +79,7 @@ class ChangedFile < ApplicationRecord
     Github::Request.github_exec_fetch_changed_file_content!(pull.repo, contents_url)
   end
 
+  # 最新の差分を取得する
   def already_updated?(pull, double_file_names)
     filename.in?(double_file_names) && pull.changed_files.find_by(filename: filename).id != id
   end

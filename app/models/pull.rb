@@ -114,8 +114,6 @@ class Pull < ApplicationRecord
           skillings.each(&:restore) if skillings.present?
         end
         return if pull.nil?
-        # token = pull.changed_files.initialize_token
-        # ChangedFile.fetch!(pull, token)
         Commit.fetch!(pull)
       end
     end
@@ -149,8 +147,7 @@ class Pull < ApplicationRecord
         skill = Skill.fetch!(params[:head][:repo][:language], repo)
       end
       return if pull.nil?
-      token = pull.changed_files.initialize_token
-      ChangedFile.check_and_update!(pull, token)
+      Commit.fetch!(pull)
     end
     true
   rescue => e
@@ -168,8 +165,7 @@ class Pull < ApplicationRecord
 
   def files_changed
     double_file_names = changed_files.pluck(:filename).group_by{ |i| i }.reject{ |k,v| v.one? }.keys
-    changed_files = self.changed_files.reject { |changed_file| changed_file.already_updated?(self, double_file_names) }
-    changed_files
+    self.changed_files.reject { |changed_file| changed_file.already_updated?(self, double_file_names) }
   end
 
   # stateのパラメータに対応したstatusに更新する
