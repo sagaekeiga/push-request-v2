@@ -1,19 +1,26 @@
 .setting-integrations-wrapper {
-  .col-sm-8 {
-    padding-left: 0px;
-    padding-right: 0px;
-    .card {
-      border: 1px solid $color-github-label-border-white;
-      box-shadow: none;
-      h4 {
-        margin-top: $base-margin / 2;
-        font-weight: bold;
+  margin-top: $base-margin * 4;
+  .panel.panel-default {
+    border: 1px solid $color-github-label-border-white;
+    box-shadow: none;
+    h4 {
+      margin-top: $base-margin / 2;
+      font-weight: bold;
+    }
+    .panel-body {
+      .btn-outline-primary {
+        margin-top: $base-margin * 2;
+        margin-bottom: $base-margin * 2;
+        color: $base-color-blue;
+        background-color: transparent;
+        background-image: none;
+        border-color: $base-color-blue;
       }
-      .card-body {
+      .btn-outline-primary:hover, .btn-outline-primary:focus, .btn-outline-primary:active, .btn-outline-primary.active, .open>.dropdown-toggle.btn-outline-primary {
+        color: $color-white;
+        background-color: $base-color-blue;
+        border-color: $base-color-blue;
       }
     }
-  }
-  .col-sm-4 {
-    padding-left: 0px;
   }
 }
