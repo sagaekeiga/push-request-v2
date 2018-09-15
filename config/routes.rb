@@ -74,6 +74,7 @@ Rails.application.routes.draw do
         end
         resources :comments, only: %i(create update destroy)
         resources :changed_files, only: %i(show)
+        resources :commits, only: %i(index show)
       end
       resources :review_comments, only: %i(create update destroy show)
       resources :repos do

@@ -3,8 +3,10 @@
 # Table name: pulls
 #
 #  id          :bigint(8)        not null, primary key
+#  base_label  :string
 #  body        :string
 #  deleted_at  :datetime
+#  head_label  :string
 #  number      :integer
 #  status      :integer
 #  title       :string

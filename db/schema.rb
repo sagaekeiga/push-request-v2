@@ -34,23 +34,33 @@ ActiveRecord::Schema.define(version: 20180912122204) do
 
   create_table "changed_files", force: :cascade do |t|
     t.bigint "pull_id"
-    t.string "sha"
+    t.bigint "commit_id"
     t.string "filename"
-    t.string "status"
     t.integer "additions"
     t.integer "deletions"
     t.integer "difference"
-    t.string "blob_url"
-    t.string "raw_url"
     t.string "contents_url"
     t.text "patch"
-    t.string "commit_id"
-    t.string "token"
+    t.integer "event"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["commit_id"], name: "index_changed_files_on_commit_id"
     t.index ["deleted_at"], name: "index_changed_files_on_deleted_at"
     t.index ["pull_id"], name: "index_changed_files_on_pull_id"
+  end
+
+  create_table "commits", force: :cascade do |t|
+    t.bigint "reviewee_id"
+    t.bigint "pull_id"
+    t.string "sha"
+    t.string "message"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_commits_on_deleted_at"
+    t.index ["pull_id"], name: "index_commits_on_pull_id"
+    t.index ["reviewee_id"], name: "index_commits_on_reviewee_id"
   end
 
   create_table "content_trees", force: :cascade do |t|
@@ -107,6 +117,8 @@ ActiveRecord::Schema.define(version: 20180912122204) do
     t.string "body"
     t.integer "status"
     t.string "token"
+    t.string "base_label"
+    t.string "head_label"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -277,7 +289,10 @@ ActiveRecord::Schema.define(version: 20180912122204) do
     t.index ["deleted_at"], name: "index_skills_on_deleted_at"
   end
 
+  add_foreign_key "changed_files", "commits"
   add_foreign_key "changed_files", "pulls"
+  add_foreign_key "commits", "pulls"
+  add_foreign_key "commits", "reviewees"
   add_foreign_key "contents", "repos"
   add_foreign_key "contents", "reviewees"
   add_foreign_key "issues", "repos"

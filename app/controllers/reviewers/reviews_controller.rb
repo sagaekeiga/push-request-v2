@@ -6,7 +6,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
     @review = Review.new
-    @changed_files = @pull.last_committed_changed_files.decorate
+    @changed_files = @pull.files_changed
   end
 
   # POST /reviewers/pulls/:pull_id/reviews
@@ -20,7 +20,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     @review = Review.new
-    @changed_files = @pull.last_committed_changed_files.decorate
+    @changed_files = @pull.files_changed
     flash[:danger] = 'レビューに失敗しました'
     render :new
   end

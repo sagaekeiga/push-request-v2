@@ -41,11 +41,6 @@ module Github
         res
       end
 
-      # GET ファイル差分取得
-      def github_exec_fetch_changed_files!(pull)
-        _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
-      end
-
       # GET プルリクエスト取得
       def github_exec_fetch_pulls!(repo)
         _get sub_url_for(repo, :pull), repo.installation_id, :pull
@@ -54,6 +49,23 @@ module Github
       # GET ISSUE取得
       def github_exec_fetch_issues!(repo)
         _get sub_url_for(repo, :issue), repo.installation_id, :issue
+      end
+
+      # GET コミット取得
+      def github_exec_fetch_commits!(pull)
+        _get sub_url(:commit, pull), pull.repo.installation_id, :commit
+      end
+
+      # GET 前のコミットのファイル差分取得
+      # ref: https://developer.github.com/v3/repos/commits/#get-a-single-commit
+      def github_exec_fetch_changed_files!(commit)
+        _get "repos/#{commit.pull.repo_full_name}/commits/#{commit.sha}", commit.pull.repo.installation_id, :changed_file
+      end
+
+      # GET ファイル差分取得
+      # ref: https://developer.github.com/v3/repos/commits/#compare-two-commits
+      def github_exec_fetch_diff!(pull)
+        _get "repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}", pull.repo.installation_id, :diff
       end
 
       private
@@ -135,38 +147,22 @@ module Github
       def set_accept(event)
         case event
         when :review, :get_access_token
-          return Settings.api.github.request.header.accept.review
+          return Settings.api.github.request.header.accept.machine_man_preview_json
         when :issue_comment
-          return Settings.api.github.request.header.accept.issue_comment
-        when :changed_file
-          return Settings.api.github.request.header.accept.changed_file
-        when :pull
-          return Settings.api.github.request.header.accept.pull
+          return Settings.api.github.request.header.accept.machine_man_preview
+        when :changed_file, :pull, :content, :issue, :commit, :diff
+          return Settings.api.github.request.header.accept.symmetra_preview_json
         when :review_comment
-          return Settings.api.github.request.header.accept.review_comment
-        when :content
-          return Settings.api.github.request.header.accept.pull
-        when :issue
-          return Settings.api.github.request.header.accept.issue
+          return Settings.api.github.request.header.accept.squirrel_girl_preview
         end
       end
 
       # 成功時のレスポンスコード
       def success_code(event)
         case event
-        when :review
-          return Settings.api.success.status.code
-        when :issue_comment
-          return Settings.api.success.created.status
-        when :changed_file
-          return Settings.api.success.created.status
-        when :pull
-          return Settings.api.success.created.status
-        when :review_comment
-          return Settings.api.success.created.status
-        when :content
-          return Settings.api.success.status.code
-        when :issue
+        when :issue_comment, :changed_file, :pull, :review_comment
+          return Settings.api.created.status.code
+        when :content, :commit, :issue, :diff, :review
           return Settings.api.success.status.code
         end
       end
@@ -181,6 +177,8 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
         when :review_comment
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
+        when :commit
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/commits"
         end
       end
 

@@ -53,4 +53,14 @@ class PullDecorator < ApplicationDecorator
       h.reviewers_pull_files_path(object)
     end
   end
+
+  # ブランチ差分
+  def files_changed_count
+    files_changed.count
+  end
+
+  # コミット数
+  def commits_count
+    commits.count
+  end
 end
