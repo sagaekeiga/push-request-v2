@@ -71,11 +71,9 @@
 }
 
 .reviewee-side-wrapper, .reviewer-side-wrapper {
+  max-width: 75%;
+  font-size: $base-font-size;
   .active {
     color: $side-icon-color;
-  }
-  .col-sm-1 {
-    padding-left: 0;
-    padding-right: 0;
   }
 }

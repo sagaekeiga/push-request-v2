@@ -20,8 +20,9 @@ api:
   success:
     status:
       code: 200
-    created:
-      status: 201
+  created:
+    status:
+      code: 201
   github:
     web_domain: https://github.com/
     api_domain: https://api.github.com/
@@ -29,12 +30,7 @@ api:
       access_token_uri: https://api.github.com/installations/
       header:
         accept:
-          review: application/vnd.github.machine-man-preview+json
-          issue_comment: application/vnd.github.machine-man-preview
-          access_token: application/vnd.github.machine-man-preview+json
-          changed_file: application/vnd.github.symmetra-preview+json
-          pull: application/vnd.github.symmetra-preview+json
-          review_comment: application/vnd.github.squirrel-girl-preview
-          issue: application/vnd.github.symmetra-preview+json
-          commit: application/vnd.github.symmetra-preview+json
-          diff: application/vnd.github.symmetra-preview+json
+          machine_man_preview_json: application/vnd.github.machine-man-preview+json
+          machine_man_preview: application/vnd.github.machine-man-preview
+          symmetra_preview_json: application/vnd.github.symmetra-preview+json
+          squirrel_girl_preview: application/vnd.github.squirrel-girl-preview

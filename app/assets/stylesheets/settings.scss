@@ -8,6 +8,10 @@
       font-weight: bold;
     }
     .panel-body {
+      .authorized {
+        margin-top: $base-margin;
+        margin-bottom: $base-margin / 2;
+      }
       .btn-outline-primary {
         margin-top: $base-margin * 2;
         margin-bottom: $base-margin * 2;

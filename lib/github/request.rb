@@ -147,46 +147,22 @@ module Github
       def set_accept(event)
         case event
         when :review, :get_access_token
-          return Settings.api.github.request.header.accept.review
+          return Settings.api.github.request.header.accept.machine_man_preview_json
         when :issue_comment
-          return Settings.api.github.request.header.accept.issue_comment
-        when :changed_file
-          return Settings.api.github.request.header.accept.changed_file
-        when :pull
-          return Settings.api.github.request.header.accept.pull
+          return Settings.api.github.request.header.accept.machine_man_preview
+        when :changed_file, :pull, :content, :issue, :commit, :diff
+          return Settings.api.github.request.header.accept.symmetra_preview_json
         when :review_comment
-          return Settings.api.github.request.header.accept.review_comment
-        when :content
-          return Settings.api.github.request.header.accept.pull
-        when :commit
-          return Settings.api.github.request.header.accept.commit
-        when :issue
-          return Settings.api.github.request.header.accept.issue
-        when :diff
-          return Settings.api.github.request.header.accept.diff
+          return Settings.api.github.request.header.accept.squirrel_girl_preview
         end
       end
 
       # 成功時のレスポンスコード
       def success_code(event)
         case event
-        when :review
-          return Settings.api.success.status.code
-        when :issue_comment
-          return Settings.api.success.created.status
-        when :changed_file
-          return Settings.api.success.created.status
-        when :pull
-          return Settings.api.success.created.status
-        when :review_comment
-          return Settings.api.success.created.status
-        when :content
-          return Settings.api.success.status.code
-        when :commit
-          return Settings.api.success.status.code
-        when :issue
-          return Settings.api.success.status.code
-        when :diff
+        when :issue_comment, :changed_file, :pull, :review_comment
+          return Settings.api.created.status.code
+        when :content, :commit, :issue, :diff, :review
           return Settings.api.success.status.code
         end
       end
@@ -197,9 +173,6 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
         when :issue_comment
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
-        when :pull
-          repo = pull
-          return "repos/#{repo.full_name}/pulls"
         when :changed_file
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
         when :review_comment
