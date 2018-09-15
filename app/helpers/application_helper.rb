@@ -35,6 +35,10 @@ module ApplicationHelper
     'active' if controller.controller_name.in?(controller_names)
   end
 
+  def is_same_controller_and_action_name?(controller_name, action_name)
+    'active' if controller.controller_name.eql?(controller_name) && controller.action_name.eql?(action_name)
+  end
+
   # 言語をシンボルで返す
   def symbolized_lang(path)
     case File.extname(path)
