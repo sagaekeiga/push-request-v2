@@ -27,8 +27,12 @@ module ApplicationHelper
     time_ago_in_words(datetime) + '前' if datetime
   end
 
-  def same_action_name?(action_name)
+  def is_same_action_name?(action_name)
     'active' if action_name == controller.action_name
+  end
+
+  def is_same_controller_name?(controller_names)
+    'active' if controller.controller_name.in?(controller_names)
   end
 
   # 言語をシンボルで返す

@@ -48,7 +48,12 @@ module Github
 
       # GET プルリクエスト取得
       def github_exec_fetch_pulls!(repo)
-        _get sub_url(:pull, repo), repo.installation_id, :pull
+        _get sub_url_for(repo, :pull), repo.installation_id, :pull
+      end
+
+      # GET ISSUE取得
+      def github_exec_fetch_issues!(repo)
+        _get sub_url_for(repo, :issue), repo.installation_id, :issue
       end
 
       private
@@ -141,6 +146,8 @@ module Github
           return Settings.api.github.request.header.accept.review_comment
         when :content
           return Settings.api.github.request.header.accept.pull
+        when :issue
+          return Settings.api.github.request.header.accept.issue
         end
       end
 
@@ -159,6 +166,8 @@ module Github
           return Settings.api.success.created.status
         when :content
           return Settings.api.success.status.code
+        when :issue
+          return Settings.api.success.status.code
         end
       end
 
@@ -170,11 +179,17 @@ module Github
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
         when :changed_file
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
-        when :pull
-          repo = pull
-          return "repos/#{repo.full_name}/pulls"
         when :review_comment
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
+        end
+      end
+
+      def sub_url_for(repo, event)
+        case event
+        when :issue
+          return "repos/#{repo.full_name}/issues"
+        when :pull
+          return "repos/#{repo.full_name}/pulls"
         end
       end
 
