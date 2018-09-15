@@ -47,6 +47,6 @@ class Commit < ApplicationRecord
   rescue => e
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_pull')
+    fail I18n.t('views.error.failed_create_commit')
   end
 end
