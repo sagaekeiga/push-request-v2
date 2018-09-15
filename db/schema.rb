@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180908064707) do
+ActiveRecord::Schema.define(version: 20180912122204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -89,13 +89,29 @@ ActiveRecord::Schema.define(version: 20180908064707) do
     t.index ["reviewee_id"], name: "index_contents_on_reviewee_id"
   end
 
+  create_table "issues", force: :cascade do |t|
+    t.bigint "repo_id"
+    t.bigint "reviewee_id"
+    t.bigint "remote_id"
+    t.integer "number"
+    t.integer "status"
+    t.integer "publish"
+    t.string "title"
+    t.text "body"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_issues_on_deleted_at"
+    t.index ["repo_id"], name: "index_issues_on_repo_id"
+    t.index ["reviewee_id"], name: "index_issues_on_reviewee_id"
+  end
+
   create_table "pulls", force: :cascade do |t|
     t.bigint "reviewer_id"
     t.bigint "reviewee_id"
     t.bigint "repo_id"
     t.integer "remote_id"
     t.integer "number"
-    t.string "state"
     t.string "title"
     t.string "body"
     t.integer "status"
@@ -276,6 +292,8 @@ ActiveRecord::Schema.define(version: 20180908064707) do
   add_foreign_key "commits", "reviewees"
   add_foreign_key "contents", "repos"
   add_foreign_key "contents", "reviewees"
+  add_foreign_key "issues", "repos"
+  add_foreign_key "issues", "reviewees"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "pulls", "reviewers"

@@ -1,0 +1,16 @@
+class CreateIssues < ActiveRecord::Migration[5.1]
+  def change
+    create_table :issues do |t|
+      t.belongs_to :repo, foreign_key: true
+      t.belongs_to :reviewee, foreign_key: true
+      t.bigint :remote_id
+      t.integer :number
+      t.integer :status
+      t.integer :publish
+      t.string :title
+      t.text :body
+      t.datetime :deleted_at, index: true
+      t.timestamps
+    end
+  end
+end

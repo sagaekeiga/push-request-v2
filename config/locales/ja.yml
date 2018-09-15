@@ -155,6 +155,7 @@ ja:
       failed_create_changed_file: changed fileの保存に失敗しました。
       failed_create_review_comment: review commentの保存に失敗しました。
       failed_create_contents: ディレクトリまたはファイルの保存に失敗しました。
+      failed_create_issue: issueの保存に失敗しました。
       failed_create_commit: コミットの保存に失敗しました。
     status:
       request_reviewed: Request Review

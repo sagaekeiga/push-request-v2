@@ -35,6 +35,7 @@ class Repo < ApplicationRecord
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
   has_many :contents
+  has_many :issues
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -65,7 +66,6 @@ class Repo < ApplicationRecord
   attribute :status, default: statuses[:loading]
   attribute :private, default: false
 
-  # @TODO テストコードを書く
   #
   # リモートのレポジトリを保存する or リストアする
   #
@@ -94,6 +94,7 @@ class Repo < ApplicationRecord
           )
           FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
+          Issue.fetch!(repo)
         end
         true
       rescue => e

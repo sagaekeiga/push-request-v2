@@ -4,21 +4,21 @@
     %ul.list-group.text-center
       %li.list-group-item
         = link_to reviewers_dashboard_path do
-          %i.fas.fa-tachometer-alt{ class: same_action_name?('dashboard') }
+          %i.fas.fa-tachometer-alt{ class: is_same_action_name?('dashboard') }
           %br
-          %small{ class: same_action_name?('dashboard') }= t('reviewers.dashboard.title')
+          %small{ class: is_same_action_name?('dashboard') }= t('reviewers.dashboard.title')
       %hr
       %li.list-group-item
         = link_to reviewers_my_page_path do
-          %i.fas.fa-user{ class: same_action_name?('my_page') }
+          %i.fas.fa-user{ class: is_same_action_name?('my_page') }
           %br
-          %small{ class: same_action_name?('my_page') }= t('reviewers.my_page.title')
+          %small{ class: is_same_action_name?('my_page') }= t('reviewers.my_page.title')
       %hr
       %li.list-group-item
         = link_to :skills_reviewers_skillings do
-          %i.fas.fa-rocket{ class: same_action_name?('edit') }
+          %i.fas.fa-rocket{ class: is_same_action_name?('edit') }
           %br
-          %small{ class: same_action_name?('edit') }= t 'reviewers.dashboard.skill'
+          %small{ class: is_same_action_name?('edit') }= t 'reviewers.dashboard.skill'
       %hr
       %li.list-group-item
         = link_to 'https://qiita.com/k_s/private/7389692e39b5bea8177a', target: '_blank' do

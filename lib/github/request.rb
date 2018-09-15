@@ -43,7 +43,12 @@ module Github
 
       # GET プルリクエスト取得
       def github_exec_fetch_pulls!(repo)
-        _get sub_url(:pull, repo), repo.installation_id, :pull
+        _get sub_url_for(repo, :pull), repo.installation_id, :pull
+      end
+
+      # GET ISSUE取得
+      def github_exec_fetch_issues!(repo)
+        _get sub_url_for(repo, :issue), repo.installation_id, :issue
       end
 
       # GET コミット取得
@@ -146,8 +151,13 @@ module Github
           return Settings.api.github.request.header.accept.review_comment
         when :content
           return Settings.api.github.request.header.accept.pull
+<<<<<<< HEAD
         when :commit
           return Settings.api.github.request.header.accept.commit
+=======
+        when :issue
+          return Settings.api.github.request.header.accept.issue
+>>>>>>> master
         end
       end
 
@@ -166,7 +176,11 @@ module Github
           return Settings.api.success.created.status
         when :content
           return Settings.api.success.status.code
+<<<<<<< HEAD
         when :commit
+=======
+        when :issue
+>>>>>>> master
           return Settings.api.success.status.code
         end
       end
@@ -177,13 +191,27 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
         when :issue_comment
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
+<<<<<<< HEAD
         when :pull
           repo = pull
           return "repos/#{repo.full_name}/pulls"
+=======
+        when :changed_file
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
+>>>>>>> master
         when :review_comment
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
         when :commit
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/commits"
+        end
+      end
+
+      def sub_url_for(repo, event)
+        case event
+        when :issue
+          return "repos/#{repo.full_name}/issues"
+        when :pull
+          return "repos/#{repo.full_name}/pulls"
         end
       end
 
