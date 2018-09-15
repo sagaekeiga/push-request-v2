@@ -37,3 +37,4 @@ api:
           review_comment: application/vnd.github.squirrel-girl-preview
           issue: application/vnd.github.symmetra-preview+json
           commit: application/vnd.github.symmetra-preview+json
+          diff: application/vnd.github.symmetra-preview+json

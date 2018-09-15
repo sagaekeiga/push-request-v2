@@ -24,12 +24,20 @@
         %i.glyphicon.glyphicon-comment
         &nbsp;
         = t 'reviewers.pulls.show.conversation'
+    %li{ class: is_same_controller_name?('commits') }
+      = link_to reviewers_pull_commits_path(pull), class: 'nav-link' do
+        %i.fas.fa-history
+        &nbsp;
+        = t 'reviewers.pulls.show.commits'
+        &nbsp;
+        %span.badge.badge-default= pull.commits_count
     %li{ class: is_same_action_name?('files') }
       = link_to reviewers_pull_files_path(pull), class: 'nav-link' do
         %i.glyphicon.glyphicon-file
         &nbsp;
         = t 'reviewers.pulls.show.changed_files'
-        %span.badge.badge-default= changed_files&.count
+        &nbsp;
+        %span.badge.badge-default= pull.files_changed_count
     %li{ class: is_same_controller_name?('content') }
       = link_to reviewers_repo_contents_path(pull.repo), class: 'nav-link' do
         %i.fas.fa-project-diagram

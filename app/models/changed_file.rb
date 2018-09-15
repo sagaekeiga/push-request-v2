@@ -8,6 +8,7 @@
 #  deleted_at   :datetime
 #  deletions    :integer
 #  difference   :integer
+#  event        :integer
 #  filename     :string
 #  patch        :text
 #  created_at   :datetime         not null
@@ -32,18 +33,36 @@ class ChangedFile < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :commit
+  belongs_to :commit, optional: true
   belongs_to :pull
   has_many :review_comments, dependent: :destroy
-
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # ファイルタイプ
+  #
+  # - committed : コミット
+  # - compared  : FileChanged
+  #
+  enum event: {
+    pushed: 1000,
+    compared:  2000
+  }
+  # -------------------------------------------------------------------------------
+  # ClassMethods
+  # -------------------------------------------------------------------------------
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
   def self.fetch!(commit)
     ActiveRecord::Base.transaction do
       res_changed_files = Github::Request.github_exec_fetch_changed_files!(commit)
       res_changed_files['files'].each do |res_changed_file|
-        changed_file = commit.pull.changed_files.with_deleted.find_or_initialize_by(commit: commit, filename: res_changed_file['filename'])
+        changed_file = commit.pull.changed_files.with_deleted.find_or_initializ_by(
+          commit: commit,
+          event: :pushed,
+          filename: res_changed_file['filename']
+        )
         changed_file.restore if changed_file&.deleted?
-        changed_file = changed_file.update_attributes!(
+        changed_file.update_attributes!(
           additions:    res_changed_file['additions'],
           difference:   res_changed_file['changes'],
           deletions:    res_changed_file['deletions'],
@@ -59,6 +78,32 @@ class ChangedFile < ApplicationRecord
     fail I18n.t('views.error.failed_create_changed_file')
   end
 
+  def self.fetch_diff!(pull)
+    ActiveRecord::Base.transaction do
+      res_diffs = Github::Request.github_exec_fetch_diff!(pull)
+      commit = pull.commits.last
+      res_diffs['files'].each do |res_diff|
+        changed_file = pull.changed_files.create!(
+          commit:        commit,
+          event:         :compared,
+          filename:      res_diff['filename'],
+          additions:     res_diff['additions'],
+          difference:    res_diff['changes'],
+          deletions:     res_diff['deletions'],
+          patch:         res_diff['patch'],
+          contents_url:  res_diff['contents_url']
+        )
+      end
+    end
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    fail I18n.t('views.error.failed_create_changed_file')
+  end
+
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
   def reviewed?(index)
     review_comments.find_by(position: index).review.present?
   end

@@ -10,6 +10,8 @@ class CreatePulls < ActiveRecord::Migration[5.1]
       t.string :body
       t.integer :status
       t.string :token
+      t.string :base_label
+      t.string :head_label
       t.datetime :deleted_at, index: true
       t.timestamps
     end

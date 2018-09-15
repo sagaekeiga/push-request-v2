@@ -56,9 +56,16 @@ module Github
         _get sub_url(:commit, pull), pull.repo.installation_id, :commit
       end
 
-      # GET ファイル差分取得
+      # GET 前のコミットのファイル差分取得
+      # ref: https://developer.github.com/v3/repos/commits/#get-a-single-commit
       def github_exec_fetch_changed_files!(commit)
         _get "repos/#{commit.pull.repo_full_name}/commits/#{commit.sha}", commit.pull.repo.installation_id, :changed_file
+      end
+
+      # GET ファイル差分取得
+      # ref: https://developer.github.com/v3/repos/commits/#compare-two-commits
+      def github_exec_fetch_diff!(pull)
+        _get "repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}", pull.repo.installation_id, :diff
       end
 
       private
@@ -151,13 +158,12 @@ module Github
           return Settings.api.github.request.header.accept.review_comment
         when :content
           return Settings.api.github.request.header.accept.pull
-<<<<<<< HEAD
         when :commit
           return Settings.api.github.request.header.accept.commit
-=======
         when :issue
           return Settings.api.github.request.header.accept.issue
->>>>>>> master
+        when :diff
+          return Settings.api.github.request.header.accept.diff
         end
       end
 
@@ -176,11 +182,11 @@ module Github
           return Settings.api.success.created.status
         when :content
           return Settings.api.success.status.code
-<<<<<<< HEAD
         when :commit
-=======
+          return Settings.api.success.status.code
         when :issue
->>>>>>> master
+          return Settings.api.success.status.code
+        when :diff
           return Settings.api.success.status.code
         end
       end
@@ -191,14 +197,11 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
         when :issue_comment
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
-<<<<<<< HEAD
         when :pull
           repo = pull
           return "repos/#{repo.full_name}/pulls"
-=======
         when :changed_file
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
->>>>>>> master
         when :review_comment
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
         when :commit

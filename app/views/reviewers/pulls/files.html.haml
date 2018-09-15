@@ -2,7 +2,7 @@
   .col-xs-12
     .page-header{ 'pull-id': @pull.id }
       %h3= @pull.title
-    = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
+    = render 'reviewers/shared/pulls/tab', pull: @pull, changed_files: @changed_files
     .pulls-files-wrapper
       .col-xs-12.col-sm-10
         - unless @pull.agreed?
@@ -43,4 +43,3 @@
   - unless @pull.reviewed? || @pull.completed? || @pull.connected?
     = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
       %i.far.fa-comment
-= javascript_pack_tag 'marked'

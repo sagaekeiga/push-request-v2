@@ -9,6 +9,7 @@ class CreateChangedFiles < ActiveRecord::Migration[5.1]
       t.integer :difference
       t.string :contents_url
       t.text :patch
+      t.integer :event
       t.datetime :deleted_at, index: true
       t.timestamps
     end

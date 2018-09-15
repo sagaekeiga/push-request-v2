@@ -32,16 +32,24 @@ class Commit < ApplicationRecord
   belongs_to :pull
   has_many :changed_files, dependent: :destroy
   # -------------------------------------------------------------------------------
+  # Validations
+  # -------------------------------------------------------------------------------
+  validates :sha, uniqueness: true
+  # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
   def self.fetch!(pull)
     ActiveRecord::Base.transaction do
       res_commits = Github::Request.github_exec_fetch_commits!(pull)
       res_commits.each do |res_commit|
-        commit = pull.commits.with_deleted.find_or_initialize_by(sha: res_commit['sha'], reviewee: pull.repo.reviewee)
+        commit = pull.commits.with_deleted.find_or_initialize_by(
+          sha: res_commit['sha'],
+          reviewee: pull.repo.reviewee
+        )
         commit.restore if commit.deleted?
         commit.update_attributes!(message: res_commit['commit']['message'])
         ChangedFile.fetch!(commit)
+        ChangedFile.fetch_diff!(pull)
       end
     end
   rescue => e

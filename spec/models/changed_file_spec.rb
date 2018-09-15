@@ -8,6 +8,7 @@
 #  deleted_at   :datetime
 #  deletions    :integer
 #  difference   :integer
+#  event        :integer
 #  filename     :string
 #  patch        :text
 #  created_at   :datetime         not null

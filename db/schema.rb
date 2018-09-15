@@ -41,6 +41,7 @@ ActiveRecord::Schema.define(version: 20180912122204) do
     t.integer "difference"
     t.string "contents_url"
     t.text "patch"
+    t.integer "event"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -116,6 +117,8 @@ ActiveRecord::Schema.define(version: 20180912122204) do
     t.string "body"
     t.integer "status"
     t.string "token"
+    t.string "base_label"
+    t.string "head_label"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

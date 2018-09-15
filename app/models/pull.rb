@@ -3,8 +3,10 @@
 # Table name: pulls
 #
 #  id          :bigint(8)        not null, primary key
+#  base_label  :string
 #  body        :string
 #  deleted_at  :datetime
+#  head_label  :string
 #  number      :integer
 #  status      :integer
 #  title       :string
@@ -91,26 +93,27 @@ class Pull < ApplicationRecord
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
-      # JSON
       res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
       res_pulls.each do |res_pull|
-        pull = repo.pulls.with_deleted.find_by(remote_id: res_pull['id'], reviewee: repo.reviewee)
-        if pull.nil?
-          pull = repo.pulls.create!(
-            remote_id: res_pull['id'],
-            number:    res_pull['number'],
-            reviewee:  repo.reviewee,
-            title:     res_pull['title'],
-            body:      res_pull['body']
-          )
-          skill = Skill.fetch!(res_pull['head']['repo']['language'], repo)
-        end
+        pull = repo.pulls.with_deleted.find_or_initialize_by(
+          remote_id: res_pull['id'],
+          reviewee: repo.reviewee
+        )
+        pull.update_attributes!(
+          remote_id:  res_pull['id'],
+          number:     res_pull['number'],
+          reviewee:   repo.reviewee,
+          title:      res_pull['title'],
+          body:       res_pull['body'],
+          head_label: res_pull['head']['label'],
+          base_label: res_pull['base']['label']
+        )
+        skill = Skill.fetch!(res_pull['head']['repo']['language'], repo)
         if pull&.deleted?
           pull.restore
           skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
           skillings.each(&:restore) if skillings.present?
         end
-        return if pull.nil?
         Commit.fetch!(pull)
       end
     end
@@ -160,8 +163,7 @@ class Pull < ApplicationRecord
 
   # 最新のファイル差分を取得する
   def files_changed
-    double_file_names = changed_files.pluck(:filename).group_by{ |i| i }.reject{ |k,v| v.one? }.keys
-    self.changed_files.reject { |changed_file| changed_file.already_updated?(self, double_file_names) }
+    @changed_files = changed_files.where(commit: commits.last).compared.order(created_at: :asc)
   end
 
   # stateのパラメータに対応したstatusに更新する
