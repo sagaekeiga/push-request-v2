@@ -43,6 +43,7 @@ class Pull < ApplicationRecord
   belongs_to :repo
   has_many :changed_files, dependent: :destroy
   has_many :reviews, dependent: :destroy
+  has_many :commits, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -113,8 +114,9 @@ class Pull < ApplicationRecord
           skillings.each(&:restore) if skillings.present?
         end
         return if pull.nil?
-        token = pull.changed_files.initialize_token
-        ChangedFile.fetch!(pull, token)
+        # token = pull.changed_files.initialize_token
+        # ChangedFile.fetch!(pull, token)
+        Commit.fetch!(pull)
       end
     end
   rescue => e
@@ -164,9 +166,10 @@ class Pull < ApplicationRecord
     reviewer == current_reviewer
   end
 
-  def last_committed_changed_files
-    changed_file = changed_files.order(:id).last
-    changed_files.order(:id).where(token: changed_file&.token)
+  def files_changed
+    double_file_names = changed_files.pluck(:filename).group_by{ |i| i }.reject{ |k,v| v.one? }.keys
+    changed_files = self.changed_files.reject { |changed_file| changed_file.already_updated?(self, double_file_names) }
+    changed_files
   end
 
   # stateのパラメータに対応したstatusに更新する

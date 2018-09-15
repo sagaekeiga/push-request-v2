@@ -44,7 +44,7 @@ class Reviewers::PullsController < Reviewers::BaseController
   end
 
   def set_changed_files
-    @changed_files = @pull.last_committed_changed_files.decorate
+    @changed_files = @pull.files_changed
   end
 
   # 他のレビュワーに承認されたら情報保護的に非公開にしたい

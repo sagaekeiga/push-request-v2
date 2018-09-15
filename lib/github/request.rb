@@ -41,14 +41,19 @@ module Github
         res
       end
 
-      # GET ファイル差分取得
-      def github_exec_fetch_changed_files!(pull)
-        _get sub_url(:changed_file, pull), pull.repo.installation_id, :changed_file
-      end
-
       # GET プルリクエスト取得
       def github_exec_fetch_pulls!(repo)
         _get sub_url(:pull, repo), repo.installation_id, :pull
+      end
+
+      # GET コミット取得
+      def github_exec_fetch_commits!(pull)
+        _get sub_url(:commit, pull), pull.repo.installation_id, :commit
+      end
+
+      # GET ファイル差分取得
+      def github_exec_fetch_changed_files!(commit)
+        _get "repos/#{commit.pull.repo_full_name}/commits/#{commit.sha}", commit.pull.repo.installation_id, :changed_file
       end
 
       private
@@ -141,6 +146,8 @@ module Github
           return Settings.api.github.request.header.accept.review_comment
         when :content
           return Settings.api.github.request.header.accept.pull
+        when :commit
+          return Settings.api.github.request.header.accept.commit
         end
       end
 
@@ -159,6 +166,8 @@ module Github
           return Settings.api.success.created.status
         when :content
           return Settings.api.success.status.code
+        when :commit
+          return Settings.api.success.status.code
         end
       end
 
@@ -168,13 +177,13 @@ module Github
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/reviews"
         when :issue_comment
           return "repos/#{pull.repo_full_name}/issues/#{pull.number}/comments"
-        when :changed_file
-          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/files"
         when :pull
           repo = pull
           return "repos/#{repo.full_name}/pulls"
         when :review_comment
           return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/comments"
+        when :commit
+          return "repos/#{pull.repo_full_name}/pulls/#{pull.number}/commits"
         end
       end
 

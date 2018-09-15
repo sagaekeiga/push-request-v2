@@ -26,14 +26,14 @@
                             %tr
                               %td.hidden= index
                               - if line.start_with?('+')
-                                %td.markdown-highlight.bg-success.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.bg-success.file-code= changed_file.decorate.coderay(line)
                               - elsif line.start_with?('-')
-                                %td.markdown-highlight.bg-danger.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.bg-danger.file-code= changed_file.decorate.coderay(line)
                               - elsif line.start_with?('@@')
                                 %td.markdown-highlight.bg-primary.file-code
                                   %pre= line
                               - else
-                                %td.markdown-highlight.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.file-code= changed_file.decorate.coderay(line)
           - else
             = t '.no_changhed_files'
       .col-xs-12.col-sm-2
