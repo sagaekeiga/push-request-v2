@@ -139,7 +139,10 @@ class Content < ApplicationRecord
       res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
       next if res_contents.blank?
       res_contents.each do |res_content|
+        p '================================='
         Rails.logger.info res_content
+        p res_content
+        p '================================='
         next if Settings.contents.prohibited_files.include?(res_content['name'])
         child = Content.fetch_single_content!(parent.repo, res_content)
         content_tree = ContentTree.find_or_initialize_by(
