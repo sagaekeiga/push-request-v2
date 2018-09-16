@@ -14,14 +14,12 @@
             %tr
               %th.col-sm-4= t 'activerecord.models.pull'
               %th.col-sm-5= t 'activerecord.models.repo'
-              %th.col-sm-1= t 'activerecord.models.repo.private'
               %th.col-sm-1= t 'activerecord.attributes.pull.status'
           %tbody
             - @pulls.decorate.each do |pull|
               %tr
                 %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
                 %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
-                %td.text-center= pull.repo.private?
                 %td.text-center
                   - if pull.connected? || pull.canceled?
                     = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn btn-block #{pull.btn_class_by_status}"

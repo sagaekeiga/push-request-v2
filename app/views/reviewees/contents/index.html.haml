@@ -12,7 +12,7 @@
               = link_to t("reviewees.repos.index.#{@repo.status}"),
                 reviewees_repo_path(@repo),
                 method: :put,
-                class: "btn #{t("contents.views.buttons.#{@repo.status}")}"
+                class: "btn #{t("views.statuses.buttons.#{@repo.status}")}"
           %h3= @repo.full_name
         = render 'reviewees/shared/repos/tab', repo: @repo
         .panel.panel-default

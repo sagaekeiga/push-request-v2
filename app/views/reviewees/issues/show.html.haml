@@ -21,8 +21,8 @@
               .panel-body
                 .md-wrapper= markdown(@issue.body)
             %button{ type: 'button',
-              class: "btn #{t("issues.views.buttons.#{@issue.publish}")} update-issue-button",
+              class: "btn #{t("views.statuses.buttons.#{@issue.publish}")} update-issue-button",
               'issue-id': @issue.id,
-              'repo-id': @issue.repo.id }= t "reviewees.issues.update.#{@issue.publish}"
+              'repo-id': @issue.repo.id }= t "views.statuses.text.#{@issue.publish}"
           .col-sm-3
 = javascript_pack_tag 'update-resource'

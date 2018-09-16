@@ -173,7 +173,7 @@ ja:
     back_pullrequest: Back Pullrequest
     statuses:
       text:
-        hidden: 公開にする
+        hidden: 公開する
         showing: 非公開にする
       buttons:
         hidden: btn-outline-primary

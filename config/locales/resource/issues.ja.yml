@@ -14,10 +14,3 @@ ja:
       publish:
         hidden: 非公開
         showing: 公開中
-  issues:
-    views:
-      hidden: 非公開
-      showing: 公開中
-      buttons:
-        hidden: btn-outline-primary
-        showing: btn-outline-danger
