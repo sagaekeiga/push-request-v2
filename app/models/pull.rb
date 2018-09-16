@@ -94,6 +94,7 @@ class Pull < ApplicationRecord
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
       res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
+      Rails.logger.info res_pulls
       res_pulls.each do |res_pull|
         pull = repo.pulls.with_deleted.find_or_initialize_by(
           remote_id: res_pull['id'],
