@@ -135,10 +135,11 @@ class Content < ApplicationRecord
 
   def self.fetch_sub_dirs_and_files!(parents)
     parents.each do |parent|
+      Rails.logger.info parent.path
       res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
       next if res_contents.blank?
       res_contents.each do |res_content|
-        Rails.logger.info res_content['path']
+        Rails.logger.info res_content
         next if Settings.contents.prohibited_files.include?(res_content['name'])
         child = Content.fetch_single_content!(parent.repo, res_content)
         content_tree = ContentTree.find_or_initialize_by(
