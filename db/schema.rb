@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180827124308) do
+ActiveRecord::Schema.define(version: 20180912122204) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -34,23 +34,77 @@ ActiveRecord::Schema.define(version: 20180827124308) do
 
   create_table "changed_files", force: :cascade do |t|
     t.bigint "pull_id"
-    t.string "sha"
+    t.bigint "commit_id"
     t.string "filename"
-    t.string "status"
     t.integer "additions"
     t.integer "deletions"
     t.integer "difference"
-    t.string "blob_url"
-    t.string "raw_url"
     t.string "contents_url"
     t.text "patch"
-    t.string "commit_id"
-    t.string "token"
+    t.integer "event"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["commit_id"], name: "index_changed_files_on_commit_id"
     t.index ["deleted_at"], name: "index_changed_files_on_deleted_at"
     t.index ["pull_id"], name: "index_changed_files_on_pull_id"
+  end
+
+  create_table "commits", force: :cascade do |t|
+    t.bigint "reviewee_id"
+    t.bigint "pull_id"
+    t.string "sha"
+    t.string "message"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_commits_on_deleted_at"
+    t.index ["pull_id"], name: "index_commits_on_pull_id"
+    t.index ["reviewee_id"], name: "index_commits_on_reviewee_id"
+  end
+
+  create_table "content_trees", force: :cascade do |t|
+    t.bigint "parent_id"
+    t.bigint "child_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["child_id"], name: "index_content_trees_on_child_id"
+    t.index ["parent_id"], name: "index_content_trees_on_parent_id"
+  end
+
+  create_table "contents", force: :cascade do |t|
+    t.bigint "reviewee_id"
+    t.bigint "repo_id"
+    t.integer "file_type"
+    t.integer "status"
+    t.string "size"
+    t.string "name"
+    t.string "path"
+    t.text "content"
+    t.string "html_url"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_contents_on_deleted_at"
+    t.index ["repo_id"], name: "index_contents_on_repo_id"
+    t.index ["reviewee_id"], name: "index_contents_on_reviewee_id"
+  end
+
+  create_table "issues", force: :cascade do |t|
+    t.bigint "repo_id"
+    t.bigint "reviewee_id"
+    t.bigint "remote_id"
+    t.integer "number"
+    t.integer "status"
+    t.integer "publish"
+    t.string "title"
+    t.text "body"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_issues_on_deleted_at"
+    t.index ["repo_id"], name: "index_issues_on_repo_id"
+    t.index ["reviewee_id"], name: "index_issues_on_reviewee_id"
   end
 
   create_table "pulls", force: :cascade do |t|
@@ -59,11 +113,12 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.bigint "repo_id"
     t.integer "remote_id"
     t.integer "number"
-    t.string "state"
     t.string "title"
     t.string "body"
     t.integer "status"
     t.string "token"
+    t.string "base_label"
+    t.string "head_label"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -79,6 +134,7 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.string "name"
     t.string "full_name"
     t.boolean "private"
+    t.integer "status"
     t.bigint "installation_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -233,7 +289,14 @@ ActiveRecord::Schema.define(version: 20180827124308) do
     t.index ["deleted_at"], name: "index_skills_on_deleted_at"
   end
 
+  add_foreign_key "changed_files", "commits"
   add_foreign_key "changed_files", "pulls"
+  add_foreign_key "commits", "pulls"
+  add_foreign_key "commits", "reviewees"
+  add_foreign_key "contents", "repos"
+  add_foreign_key "contents", "reviewees"
+  add_foreign_key "issues", "repos"
+  add_foreign_key "issues", "reviewees"
   add_foreign_key "pulls", "repos"
   add_foreign_key "pulls", "reviewees"
   add_foreign_key "pulls", "reviewers"

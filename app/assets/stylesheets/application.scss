@@ -32,6 +32,10 @@
   @import 'welcomes';
   @import 'side_bar';
   @import 'admins';
+  @import 'contents';
+  @import 'issues';
+  @import 'reviewers';
+  @import 'commits';
 
 .m-t-0 { margin-top: 0; }
 .m-t-1 { margin-top: $padding-base-vertical; }
@@ -67,11 +71,9 @@
 }
 
 .reviewee-side-wrapper, .reviewer-side-wrapper {
+  max-width: 75%;
+  font-size: $base-font-size;
   .active {
     color: $side-icon-color;
-  }
-  .col-sm-1 {
-    padding-left: 0;
-    padding-right: 0;
   }
 }

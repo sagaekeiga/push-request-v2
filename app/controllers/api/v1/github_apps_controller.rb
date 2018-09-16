@@ -20,6 +20,9 @@ class Api::V1::GithubAppsController < ApplicationController
         end
         status = true
       end
+    when 'issues'
+      @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])
+      status = @github_account.reviewee.issues.update_by_issue_event!(params)
     when 'pull_request'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:github_app][:pull_request][:head][:user][:id])
       status = @github_account.reviewee.pulls.update_by_pull_request_event!(params[:github_app][:pull_request]) if params[:github_app][:pull_request].present?

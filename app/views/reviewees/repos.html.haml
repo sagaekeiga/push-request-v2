@@ -11,11 +11,22 @@
         %table.table
           %thead
             %tr
-              %th= t 'activerecord.attributes.repo.title'
+              %th.col-sm-11= t 'activerecord.attributes.repo.title'
+              %th.col-sm-1= t 'activerecord.attributes.repo.status'
           %tbody
             - @repos.each do |repo|
               %tr
-                %td= link_to repo.full_name, repo.decorate.remote_url, target: 'blank'
+                %td
+                  - if repo.loading?
+                    = repo.full_name
+                  - else
+                    = link_to repo.full_name, reviewees_repo_contents_path(repo)
+                %td
+                  - if repo.loading?
+                    = image_tag 'loading-content', class: 'img-responsive center-block'
+                  - else
+                    .text-center
+                      %i.fas.fa-check-circle
 
         .text-center= paginate @repos
 

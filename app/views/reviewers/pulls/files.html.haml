@@ -2,7 +2,7 @@
   .col-xs-12
     .page-header{ 'pull-id': @pull.id }
       %h3= @pull.title
-    = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
+    = render 'reviewers/shared/pulls/tab', pull: @pull
     .pulls-files-wrapper
       .col-xs-12.col-sm-10
         - unless @pull.agreed?
@@ -11,7 +11,10 @@
               .js-blob-wrapper
                 .panel.changed-file-wrapper
                   .panel-heading
-                    .panel-title= changed_file.filename
+                    .panel-title
+                      .pull-right
+                        = link_to t('views.view'), reviewers_pull_changed_file_path(@pull, changed_file), class: 'btn btn-default btn-sm'
+                      = changed_file.filename
                   .panel-body.file-border{ 'changed-file-id': changed_file.id }
                     .table-wrapper
                       %table
@@ -23,14 +26,14 @@
                             %tr
                               %td.hidden= index
                               - if line.start_with?('+')
-                                %td.markdown-highlight.bg-success.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.bg-success.file-code= changed_file.decorate.coderay(line)
                               - elsif line.start_with?('-')
-                                %td.markdown-highlight.bg-danger.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.bg-danger.file-code= changed_file.decorate.coderay(line)
                               - elsif line.start_with?('@@')
                                 %td.markdown-highlight.bg-primary.file-code
                                   %pre= line
                               - else
-                                %td.markdown-highlight.file-code= changed_file.coderay(line)
+                                %td.markdown-highlight.file-code= changed_file.decorate.coderay(line)
           - else
             = t '.no_changhed_files'
       .col-xs-12.col-sm-2
@@ -40,4 +43,3 @@
   - unless @pull.reviewed? || @pull.completed? || @pull.connected?
     = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
       %i.far.fa-comment
-= javascript_pack_tag 'marked'
