@@ -5,9 +5,8 @@
         .page-header
           %h4= @content.path
         - if @content.dir?
-          = render 'dirs', resource: @content, dir_or_files: @dir_or_files
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme
         - else
-          %h6= @content.path
           .panel.panel-default
             .panel-heading
               %b= t 'views.bytes', byte: @content.size
@@ -17,7 +16,7 @@
                   %tr
                     %th{ scope: 'col' }
                 - if @content.content
-                  - Base64.decode64(@content.content).encode('Shift_JIS', 'UTF-8')&.each_line&.with_index do |line, index|
+                  - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
                     %tbody
                       %tr
                         %td.index= index

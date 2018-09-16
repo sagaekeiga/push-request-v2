@@ -76,6 +76,6 @@ module ApplicationHelper
 
   # Base64でデコード
   def decode_by_base64(content)
-    Base64.decode64(content).encode('Shift_JIS', 'UTF-8')
+    Base64.decode64(content).force_encoding('UTF-8')
   end
 end

@@ -12,3 +12,9 @@
                   %i.fas{ class: dir_or_file.dir? ? 'fa-folder' : 'fa-file' }
                   &nbsp;
                   = dir_or_file.name
+- if readme
+  .panel.panel-default
+    .panel-heading= readme.name
+    .panel-body
+      .md-wrapper
+        = markdown(readme.decorate.decode_by_base64)

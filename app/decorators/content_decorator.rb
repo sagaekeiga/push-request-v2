@@ -6,6 +6,6 @@ class ContentDecorator < ApplicationDecorator
   end
 
   def decode_by_base64
-    Base64.decode64(content).encode('Shift_JIS', 'UTF-8')
+    Base64.decode64(object.content).force_encoding('UTF-8')
   end
 end
