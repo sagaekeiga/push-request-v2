@@ -95,15 +95,18 @@ class Issue < ApplicationRecord
 
   def self.update_by_issue_event!(params)
     ActiveRecord::Base.transaction do
-      issue = find_by(
+      issue = find_or_initialize_by(
         remote_id: params[:issue][:id],
         number: params[:issue][:number]
       )
-      issue.update_status_by!(params[:issue][:state])
+      repo_id = Repo.find_by(remote_id: params[:repository][:id]).id
       issue.update_attributes!(
+        repo_id: repo_id,
+        remote_id: params[:issue][:id],
         title: params[:issue][:title],
         body: params[:issue][:body]
       )
+      issue.update_status_by!(params[:issue][:state])
     end
     true
   rescue => e
