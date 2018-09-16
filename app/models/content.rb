@@ -101,28 +101,32 @@ class Content < ApplicationRecord
   # -------------------------------------------------------------------------------
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
-    ActiveRecord::Base.transaction do
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
-      Content.fetch_top_dirs_and_files(repo, res_contents)
-      return true unless repo.contents
-      1.step do |index|
-        parents =
-          if index == 1
-            repo.contents.dir
-          else
-            repo.contents.dir.select { |content| content.is_sub_dir? }
-          end
-        break if parents.blank?
-        # サブディレクトリ・ファイルの取得
-        Content.fetch_sub_dirs_and_files!(parents)
+    count = 0
+    begin
+      ActiveRecord::Base.transaction do
+        res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
+        Content.fetch_top_dirs_and_files(repo, res_contents)
+        return true unless repo.contents
+        1.step do |index|
+          parents =
+            if index == 1
+              repo.contents.dir
+            else
+              repo.contents.dir.select { |content| content.is_sub_dir? }
+            end
+          break if parents.blank?
+          # サブディレクトリ・ファイルの取得
+          Content.fetch_sub_dirs_and_files!(parents)
+        end
+        repo.hidden!
       end
-      repo.hidden!
+    rescue => e
+      Rails.logger.error e
+      Rails.logger.error e.backtrace.join("\n")
+      fail I18n.t('views.error.failed_create_contents')
+      count += 1
+      retry if count < 3
     end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_contents')
-    retry
   end
 
   def self.fetch_top_dirs_and_files(repo, res_contents)
