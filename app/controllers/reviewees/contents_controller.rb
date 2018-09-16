@@ -5,6 +5,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
 
   def index
     @dir_or_files = @repo.contents.top
+    @readme = @repo.contents.find_by(name: 'README.md')
   end
 
   def show
