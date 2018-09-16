@@ -1397,6 +1397,7 @@ DEPENDENCIES
   rspec-rails
   rspec-request_describer
   rubocop
+  rubyzip
   sass-rails (~> 5.0)
   selenium-webdriver
   sentry-raven

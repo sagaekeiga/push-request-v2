@@ -59,6 +59,7 @@ ja:
         issue: Issues
         project: Project
         commits: Commit
+        wikis: Wiki
         expiured_at: "%{time} までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。"
         review_comment: Reviewee Comment
         no_changhed_files: 変更がありません

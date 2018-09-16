@@ -36,6 +36,7 @@ class Reviewee < ApplicationRecord
   has_many :repos
   has_many :pulls
   has_many :issues
+  has_many :wikis
 
   def connect_to_github(auth)
     reviewee_github_account = build_github_account(

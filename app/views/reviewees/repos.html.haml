@@ -17,10 +17,7 @@
             - @repos.each do |repo|
               %tr
                 %td
-                  - if repo.loading?
-                    = repo.full_name
-                  - else
-                    = link_to repo.full_name, reviewees_repo_contents_path(repo)
+                  = link_to repo.full_name, reviewees_repo_contents_path(repo)
                 %td
                   - if repo.loading?
                     = image_tag 'loading-content', class: 'img-responsive center-block'

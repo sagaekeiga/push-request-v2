@@ -1,0 +1,21 @@
+ja:
+  activerecord:
+    models:
+      wiki: wiki
+    attributes:
+      wiki:
+        id: ID
+        title: タイトル
+        bnody: 内容
+  enums:
+    wiki:
+      status:
+        hidden: 非公開
+        showing: 公開中
+  wikis:
+    views:
+      hidden: 非公開にする
+      showing: 公開する
+      buttons:
+        hidden: btn-outline-primary
+        showing: btn-outline-danger

@@ -3,9 +3,17 @@
     %li{ class: is_same_controller_name?('contents') }
       = link_to reviewees_repo_contents_path(repo), class: 'nav-link' do
         %i.fas.fa-code
-        = t 'reviewers.pulls.show.code'
+        &nbsp;
+        %b= t 'reviewers.pulls.show.code'
     %li{ class: is_same_controller_name?('issues') }
       = link_to reviewees_repo_issues_path(repo), class: 'nav-link' do
         %i.fas.fa-exclamation-circle
-        = t 'reviewers.pulls.show.issues'
+        &nbsp;
+        %b= t 'reviewers.pulls.show.issues'
+        &nbsp;
         %span.badge.badge-default
+    %li{ class: is_same_controller_name?('wikis') }
+      = link_to reviewees_repo_wikis_path(repo), class: 'nav-link' do
+        %i.fas.fa-book
+        &nbsp;
+        %b= t 'reviewers.pulls.show.wikis'
