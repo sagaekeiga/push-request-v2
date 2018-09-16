@@ -9,7 +9,7 @@ class CreateRevieweesGithubAccounts < ActiveRecord::Migration[5.1]
       t.string :email
       t.string :url
       t.string :html_url
-      t.string :user_type
+      t.integer :user_type
       t.string :name
       t.string :nickname
       t.string :company

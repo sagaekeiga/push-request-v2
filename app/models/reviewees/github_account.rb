@@ -17,7 +17,7 @@
 #  reviewee_created_at :datetime
 #  reviewee_updated_at :datetime
 #  url                 :string
-#  user_type           :string
+#  user_type           :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  gravatar_id         :string
@@ -44,4 +44,27 @@ class Reviewees::GithubAccount < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
+  # -------------------------------------------------------------------------------
+  # Enumerables
+  # -------------------------------------------------------------------------------
+  # ユーザー種類
+  #
+  # - developer : 個人
+  # - org       : 企業
+  #
+  enum user_type: {
+    developer: 1000,
+    org:       2000
+  }
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
+  def update_by_user_type!(user_type_params)
+    case user_type_params
+    when 'User'
+      developer!
+    when 'Organization'
+      org!
+    end
+  end
 end

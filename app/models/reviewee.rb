@@ -46,7 +46,6 @@ class Reviewee < ApplicationRecord
       email: auth['info']['email'],
       url: auth['info']['url'],
       html_url: auth['extra']['raw_info']['html_url'],
-      user_type: auth['extra']['raw_info']['type'],
       nickname: auth['info']['nickname'],
       name: auth['info']['name'],
       company: auth['info']['company'],
@@ -57,5 +56,6 @@ class Reviewee < ApplicationRecord
       reviewee_updated_at: auth['extra']['raw_info']['updated_at']
     )
     reviewee_github_account.save!
+    reviewee_github_account.update_by_user_type!(auth['extra']['raw_info']['type'])
   end
 end

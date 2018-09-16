@@ -17,7 +17,7 @@
 #  reviewee_created_at :datetime
 #  reviewee_updated_at :datetime
 #  url                 :string
-#  user_type           :string
+#  user_type           :integer
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  gravatar_id         :string
