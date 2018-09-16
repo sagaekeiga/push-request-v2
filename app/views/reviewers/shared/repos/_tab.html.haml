@@ -5,10 +5,16 @@
       = link_to reviewers_repo_contents_path(repo), class: 'nav-link' do
         %i.fas.fa-code
         &nbsp;
-        = t 'reviewers.pulls.show.code'
+        %b= t 'reviewers.pulls.show.code'
     // Issues
     %li{ class: is_same_controller_name?('issues') }
       = link_to reviewers_repo_issues_path(repo), class: 'nav-link' do
         %i.fas.fa-exclamation-circle
         &nbsp;
-        = t 'reviewers.pulls.show.issue'
+        %b= t 'reviewers.pulls.show.issue'
+    // Wikis
+    %li{ class: is_same_controller_name?('wikis') }
+      = link_to reviewers_repo_wikis_path(repo), class: 'nav-link' do
+        %i.fas.fa-book
+        &nbsp;
+        %b= t 'reviewers.pulls.show.wikis'

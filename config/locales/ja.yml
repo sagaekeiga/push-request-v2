@@ -171,6 +171,13 @@ ja:
     bytes: "%{byte} Bytes"
     view: View
     back_pullrequest: Back Pullrequest
+    statuses:
+      text:
+        hidden: 公開する
+        showing: 非公開にする
+      buttons:
+        hidden: btn-outline-primary
+        showing: btn-outline-danger
   reviewer_mailer:
     comment:
       title: コメントがつきました。

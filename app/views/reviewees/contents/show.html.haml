@@ -5,7 +5,11 @@
         .page-header
           %h4= @content.decorate.breadcrumbs
         - if @content.dir?
-          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme
+          .panel.panel-default
+            .table-wrapper
+              %table.table.table-hover
+                %tbody
+                  = render @dir_or_files, repo: @repo
         - else
           .panel.panel-default
             .panel-heading
@@ -21,3 +25,4 @@
                       %tr
                         %td.index= index
                         %td.file-code= coderay(line, @content.path)
+= javascript_pack_tag 'update-resource'

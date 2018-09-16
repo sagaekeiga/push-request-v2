@@ -34,8 +34,9 @@ class Repo < ApplicationRecord
   has_many :pulls, dependent: :destroy
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
-  has_many :contents
-  has_many :issues
+  has_many :contents, dependent: :destroy
+  has_many :issues, dependent: :destroy
+  has_many :wikis, dependent: :destroy
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
@@ -109,5 +110,35 @@ class Repo < ApplicationRecord
   def self.pulls_suitable_for reviewer
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
     Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+  end
+
+  def import_wikis!(file_params, reviewee)
+    ActiveRecord::Base.transaction do
+      wikis.delete_all
+      zipfile = file_params
+      Zip::File.open(zipfile.path) do |zip|
+        zip.each do |entry|
+          next unless File.extname(entry.name).eql?('.md')
+          @title = File.basename(entry.name).gsub('.md', '')
+          ext = File.extname(entry.name)
+          Tempfile.open([File.basename(entry.to_s), ext]) do |file|
+            entry.extract(file.path) { true }
+            body = file.read
+            wiki = wikis.new(
+              reviewee: reviewee,
+              title: @title,
+              body: body
+            )
+            wiki.save!
+            file.close!
+          end
+        end
+      end
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
   end
 end

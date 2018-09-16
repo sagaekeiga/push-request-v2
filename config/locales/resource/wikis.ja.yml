@@ -1,16 +1,14 @@
 ja:
   activerecord:
     models:
-      issue: issue
+      wiki: wiki
     attributes:
-      issue:
+      wiki:
         id: ID
         title: タイトル
+        bnody: 内容
   enums:
-    issue:
+    wiki:
       status:
-        opened: Open
-        closed: Close
-      publish:
         hidden: 非公開
         showing: 公開中

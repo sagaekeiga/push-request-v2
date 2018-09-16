@@ -3,7 +3,29 @@
     .row
       .content-show-wrapper
         .page-header
-          .pull-right= link_to t("reviewees.repos.index.#{@repo.status}"), reviewees_repo_path(@repo), method: :put, class: "btn #{t("contents.views.buttons.#{@repo.status}")}"
+          .pull-right
+            - if @repo.loading?
+              %i.fas.fa-hourglass-start
+              &nbsp;
+              = t("reviewees.repos.index.#{@repo.status}")
+            - else
+              = link_to t("reviewees.repos.index.#{@repo.status}"),
+                reviewees_repo_path(@repo),
+                method: :put,
+                class: "btn #{t("views.statuses.buttons.#{@repo.status}")}"
           %h3= @repo.full_name
         = render 'reviewees/shared/repos/tab', repo: @repo
-        = render 'dirs', resource: @repo, dir_or_files: @dir_or_files, readme: @readme
+        .panel.panel-default
+          .panel-heading
+            %b.text-right= l @repo.created_at
+          .table-wrapper
+            %table.table.table-hover
+              %tbody
+                = render @dir_or_files, repo: @repo
+        - if @readme
+          .panel.panel-default
+            .panel-heading= @readme.name
+            .panel-body
+              .md-wrapper
+                = markdown(@readme.decorate.decode_by_base64)
+= javascript_pack_tag 'update-resource'

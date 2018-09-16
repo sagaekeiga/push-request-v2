@@ -47,6 +47,9 @@ Rails.application.routes.draw do
       resources :repos, only: %i(update) do
         resources :contents, only: %i(index show update)
         resources :issues, only: %i(index show update)
+        resources :wikis do
+          post :import, on: :collection
+        end
       end
     end
 
@@ -80,6 +83,7 @@ Rails.application.routes.draw do
       resources :repos do
         resources :contents, only: %i(index show)
         resources :issues, only: %i(index show)
+        resources :wikis, only: %i(index show)
       end
     end
 

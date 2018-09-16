@@ -120,6 +120,7 @@ gem 'html_truncator', '~> 0.2'
 gem 'ransack'
 gem 'google-analytics-rails'
 gem 'sentry-raven'
+gem 'rubyzip'
 group :development, :test do
   gem 'bullet'
   gem 'rails-flog', require: "flog"

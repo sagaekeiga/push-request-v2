@@ -17,14 +17,7 @@ class Reviewees::IssuesController < Reviewees::BaseController
     when 'showing'
       @issue.hidden!
     end
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: {
-          publish: @issue.publish
-        }
-      end
-    end
+    render json: { publish: @issue.publish }
   end
 
   private

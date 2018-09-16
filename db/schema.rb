@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180912122204) do
+ActiveRecord::Schema.define(version: 20180916080439) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -289,6 +289,20 @@ ActiveRecord::Schema.define(version: 20180912122204) do
     t.index ["deleted_at"], name: "index_skills_on_deleted_at"
   end
 
+  create_table "wikis", force: :cascade do |t|
+    t.bigint "repo_id"
+    t.bigint "reviewee_id"
+    t.string "title"
+    t.text "body"
+    t.integer "status"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_wikis_on_deleted_at"
+    t.index ["repo_id"], name: "index_wikis_on_repo_id"
+    t.index ["reviewee_id"], name: "index_wikis_on_reviewee_id"
+  end
+
   add_foreign_key "changed_files", "commits"
   add_foreign_key "changed_files", "pulls"
   add_foreign_key "commits", "pulls"
@@ -309,4 +323,6 @@ ActiveRecord::Schema.define(version: 20180912122204) do
   add_foreign_key "reviews", "pulls"
   add_foreign_key "reviews", "reviewers"
   add_foreign_key "skillings", "skills"
+  add_foreign_key "wikis", "repos"
+  add_foreign_key "wikis", "reviewees"
 end
