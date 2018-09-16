@@ -16,4 +16,10 @@
                 class: "btn #{t("contents.views.buttons.#{dir_or_file.status}")} update-dir-file-button",
                 'content-id': dir_or_file.id,
                 'repo-id': dir_or_file.repo.id }= t "reviewees.contents.update.#{dir_or_file.status}"
+- if readme
+  .panel.panel-default
+    .panel-heading= readme.name
+    .panel-body
+      .md-wrapper
+        = markdown(readme.decorate.decode_by_base64)
 = javascript_pack_tag 'update-resource'
