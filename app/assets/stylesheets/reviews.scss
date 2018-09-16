@@ -15,6 +15,11 @@
         font-size: $base-font-size;
         width: 100%;
         padding: $base-padding * 3;
+        .btn-sm {
+          font-size: $base-font-size;
+          margin-top: - $base-margin / 3;
+          font-family: $font-static;
+        }
       }
       .panel-body {
         padding: 0;

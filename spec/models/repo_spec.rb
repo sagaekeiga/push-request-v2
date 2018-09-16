@@ -7,6 +7,7 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  installation_id :bigint(8)

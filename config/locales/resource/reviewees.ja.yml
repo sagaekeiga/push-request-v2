@@ -19,16 +19,31 @@ ja:
     repos:
       title: レポジトリ
       add_repo: レポジトリを追加する
+      update:
+        showing: 公開しました
+        hidden: 非公開にしました
+      index:
+        showing: このレポジトリ全体を非公開にする
+        hidden: このレポジトリ全体を公開する
     pulls:
       title: プルリクエスト
       empty: プルリクエストがありません。
       set_pulls: 設定する
+    contents:
+      update:
+        hidden: 公開する
+        showing: 非公開にする
+    issues:
+      update:
+        hidden: 公開する
+        showing: 非公開にする
     settings:
       integrations:
         title: 設定
         integrations: インテグレーション
         configure: 設定
-        connect: Connect
+        authorize: 認証する
+        authorized: 認証済み
         configure_connect: GitHubアカウント連携の設定をします。
         alert:
           danger: Githubに接続してください

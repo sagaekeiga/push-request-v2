@@ -1,0 +1,16 @@
+ja:
+  activerecord:
+    models:
+      content: ディレクトリ/ファイル
+    attributes:
+      content:
+        id: ID
+        status: ステータス
+        title: タイトル
+  contents:
+    views:
+      hidden: 非公開
+      showing: 公開中
+      buttons:
+        hidden: btn-outline-primary
+        showing: btn-outline-danger

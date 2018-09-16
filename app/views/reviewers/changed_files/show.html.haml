@@ -1,0 +1,22 @@
+.col-xs-12
+  .container
+    .row
+      .content-show-wrapper
+        .page-header
+          %h4
+            .pull-right= link_to t('views.back_pullrequest'), @pull.decorate.back_path, class: 'btn btn-default btn-sm'
+            = @res['path']
+        .panel.panel-default
+          .panel-heading
+            %b= t 'views.bytes', byte: @res['size']
+          .table-wrapper
+            %table
+              %thead
+                %tr
+                  %th{ scope: 'col' }
+              - if @res['content']
+                - decode_by_base64(@res['content'])&.each_line&.with_index do |line, index|
+                  %tbody
+                    %tr
+                      %td.index= index
+                      %td.file-code= coderay(line, @res['path'])

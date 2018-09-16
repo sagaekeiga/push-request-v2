@@ -1,5 +1,6 @@
 class ChangedFileDecorator < ApplicationDecorator
   delegate_all
+
   # 言語をシンボルで返す
   def symbolized_lang
     case File.extname(filename)

@@ -44,6 +44,10 @@ Rails.application.routes.draw do
       get :dashboard, :pulls, :repos
       get 'settings/integrations'
       resources :pulls, only: %i(update)
+      resources :repos, only: %i(update) do
+        resources :contents, only: %i(index show update)
+        resources :issues, only: %i(index show update)
+      end
     end
 
     #
@@ -69,8 +73,14 @@ Rails.application.routes.draw do
           get :file, to: 'reviews#new', on: :collection
         end
         resources :comments, only: %i(create update destroy)
+        resources :changed_files, only: %i(show)
+        resources :commits, only: %i(index show)
       end
       resources :review_comments, only: %i(create update destroy show)
+      resources :repos do
+        resources :contents, only: %i(index show)
+        resources :issues, only: %i(index show)
+      end
     end
 
     if !Rails.env.production? && defined?(LetterOpenerWeb)

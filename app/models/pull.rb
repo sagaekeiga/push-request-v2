@@ -3,10 +3,11 @@
 # Table name: pulls
 #
 #  id          :bigint(8)        not null, primary key
+#  base_label  :string
 #  body        :string
 #  deleted_at  :datetime
+#  head_label  :string
 #  number      :integer
-#  state       :string
 #  status      :integer
 #  title       :string
 #  token       :string
@@ -43,6 +44,7 @@ class Pull < ApplicationRecord
   belongs_to :repo
   has_many :changed_files, dependent: :destroy
   has_many :reviews, dependent: :destroy
+  has_many :commits, dependent: :destroy
 
   # -------------------------------------------------------------------------------
   # Validations
@@ -50,7 +52,6 @@ class Pull < ApplicationRecord
   validates :token, uniqueness: true
   validates :remote_id, presence: true, uniqueness: true, on: %i(create)
   validates :number, presence: true
-  validates :state, presence: true
   validates :title, presence: true
   validates :status, presence: true
 
@@ -92,29 +93,28 @@ class Pull < ApplicationRecord
   # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
   def self.fetch!(repo)
     ActiveRecord::Base.transaction do
-      # JSON
       res_pulls = Github::Request.github_exec_fetch_pulls!(repo)
       res_pulls.each do |res_pull|
-        pull = repo.pulls.with_deleted.find_by(remote_id: res_pull['id'], reviewee: repo.reviewee)
-        if pull.nil?
-          pull = repo.pulls.create!(
-            remote_id: res_pull['id'],
-            number:    res_pull['number'],
-            state:     res_pull['state'],
-            reviewee:  repo.reviewee,
-            title:     res_pull['title'],
-            body:      res_pull['body']
-          )
-          skill = Skill.fetch!(res_pull['head']['repo']['language'], repo)
-        end
+        pull = repo.pulls.with_deleted.find_or_initialize_by(
+          remote_id: res_pull['id'],
+          reviewee: repo.reviewee
+        )
+        pull.update_attributes!(
+          remote_id:  res_pull['id'],
+          number:     res_pull['number'],
+          reviewee:   repo.reviewee,
+          title:      res_pull['title'],
+          body:       res_pull['body'],
+          head_label: res_pull['head']['label'],
+          base_label: res_pull['base']['label']
+        )
+        skill = Skill.fetch!(res_pull['head']['repo']['language'], repo)
         if pull&.deleted?
           pull.restore
           skillings = repo.skillings.with_deleted.where(resource_type: 'Repo')
           skillings.each(&:restore) if skillings.present?
         end
-        return if pull.nil?
-        token = pull.changed_files.initialize_token
-        ChangedFile.fetch!(pull, token)
+        Commit.fetch!(pull)
       end
     end
   rescue => e
@@ -129,7 +129,6 @@ class Pull < ApplicationRecord
       pull = find_by(remote_id: params[:id])
       if pull.present?
         pull.update!(
-          state: params[:state],
           title: params[:title],
           body:  params[:body]
         )
@@ -139,7 +138,6 @@ class Pull < ApplicationRecord
         pull = create!(
           remote_id: params['id'],
           number:    params[:number],
-          state:     params[:state],
           title:     params[:title],
           body:      params[:body],
           repo:      repo
@@ -147,8 +145,7 @@ class Pull < ApplicationRecord
         skill = Skill.fetch!(params[:head][:repo][:language], repo)
       end
       return if pull.nil?
-      token = pull.changed_files.initialize_token
-      ChangedFile.check_and_update!(pull, token)
+      Commit.fetch!(pull)
     end
     true
   rescue => e
@@ -164,9 +161,9 @@ class Pull < ApplicationRecord
     reviewer == current_reviewer
   end
 
-  def last_committed_changed_files
-    changed_file = changed_files.order(:id).last
-    changed_files.order(:id).where(token: changed_file&.token)
+  # 最新のファイル差分を取得する
+  def files_changed
+    @changed_files = changed_files.where(commit: commits.last).compared.order(created_at: :asc)
   end
 
   # stateのパラメータに対応したstatusに更新する
@@ -174,8 +171,6 @@ class Pull < ApplicationRecord
     case state_params
     when 'closed', 'merged'
       completed!
-    when 'open'
-      connected!
     end
   end
 

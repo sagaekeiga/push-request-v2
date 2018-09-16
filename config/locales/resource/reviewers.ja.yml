@@ -54,7 +54,11 @@ ja:
     pulls:
       show:
         conversation: Conversation
-        changed_files: Changed Files
+        changed_files: Files Changed
+        code: Code
+        issue: Issues
+        project: Project
+        commits: Commit
         expiured_at: "%{time} までにレビューをしてください。時間内にレビューがされない場合は自動キャンセルされます。"
         review_comment: Reviewee Comment
         no_changhed_files: 変更がありません

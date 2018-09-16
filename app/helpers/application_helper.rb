@@ -27,7 +27,55 @@ module ApplicationHelper
     time_ago_in_words(datetime) + '前' if datetime
   end
 
-  def same_action_name?(action_name)
+  def is_same_action_name?(action_name)
     'active' if action_name == controller.action_name
+  end
+
+  def is_same_controller_name?(controller_names)
+    'active' if controller.controller_name.in?(controller_names)
+  end
+
+  def is_same_controller_and_action_name?(controller_name, action_name)
+    'active' if controller.controller_name.eql?(controller_name) && controller.action_name.eql?(action_name)
+  end
+
+  # 言語をシンボルで返す
+  def symbolized_lang(path)
+    case File.extname(path)
+    when '.rb', '.rake'
+      :ruby
+    when '.cc', '.cp', '.cpp', '.cxx', '.c'
+      :c
+    when '.py'
+      :python
+    when '.js', '.coffee'
+      :javascript
+    when '.java'
+      :java
+    when '.html'
+      :html
+    when '.php'
+      :php
+    when '.sass', '.scss'
+      :sass
+    when '.css'
+      :css
+    when '.yml'
+      :yaml
+    when '.haml'
+      :html
+    else
+      :html
+    end
+  end
+
+  # シンタックスハイライトで返す
+  def coderay(line, path)
+    CodeRay.scan(line, symbolized_lang(path)).div.html_safe
+  end
+
+  # Base64でデコード
+  def decode_by_base64(content)
+    Base64.decode64(content).encode('Shift_JIS', 'UTF-8')
   end
 end

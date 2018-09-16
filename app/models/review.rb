@@ -175,7 +175,7 @@ class Review < ApplicationRecord
     ActiveRecord::Base.transaction do
       body = { 'body': self.body }
       res = Github::Request.github_exec_issue_comment!(body.to_json, pull)
-      fail res.body unless res.code == Settings.api.success.created.status
+      fail res.body unless res.code == Settings.api.created.status.code
       save!
     end
     true

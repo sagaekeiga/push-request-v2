@@ -1,0 +1,8 @@
+.reviewers-shared-pulls-tab-wrapper, .reviewers-shared-repos-tab-wrapper {
+  margin-bottom: $base-margin;
+  li {
+    a {
+      color: $color-dark-gray;
+    }
+  }
+}

@@ -17,3 +17,5 @@ site:
     ogp:
       type: 'website'
       image_path: 'top'
+contents:
+  prohibited_files: ['vendor', 'public', 'log', 'node_modules', 'tmp', 'coverage']
