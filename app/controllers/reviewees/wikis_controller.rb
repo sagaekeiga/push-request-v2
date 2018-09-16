@@ -24,7 +24,8 @@ class Reviewees::WikisController < Reviewees::BaseController
   # POST /reviewees/repos/:repo_id/wikis/import
   def import
     import = @repo.import_wikis!(params[:file], current_reviewee)
-    redirect_to reviewees_repo_wikis_url(@repo), success: import ? 'インポートが完了しました' : 'インポートに失敗しました'
+    flash = import ? { success: t('.success') } : { danger: t('.failed') }
+    redirect_to reviewees_repo_wikis_url(@repo), flash
   end
 
   private

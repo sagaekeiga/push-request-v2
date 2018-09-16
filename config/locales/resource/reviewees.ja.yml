@@ -30,18 +30,10 @@ ja:
       title: プルリクエスト
       empty: プルリクエストがありません。
       set_pulls: 設定する
-    contents:
-      update:
-        hidden: 公開する
-        showing: 非公開にする
-    issues:
-      update:
-        hidden: 公開する
-        showing: 非公開にする
     wikis:
-      update:
-        hidden: 公開する
-        showing: 非公開にする
+      import:
+        success: インポートが完了しました
+        failed: インポートに失敗しました
     settings:
       integrations:
         title: 設定
