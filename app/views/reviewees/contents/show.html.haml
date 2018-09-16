@@ -5,7 +5,7 @@
         .page-header
           %h4= @content.decorate.breadcrumbs
         - if @content.dir?
-          = render 'dirs', resource: @content, dir_or_files: @dir_or_files
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme
         - else
           .panel.panel-default
             .panel-heading

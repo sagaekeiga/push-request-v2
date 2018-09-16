@@ -14,7 +14,8 @@
                 .panel
                   .panel-heading= t '.reviewee_comment'
                   .panel-body
-                    = markdown(@pull.body)
+                    .md-wrapper
+                      = markdown(@pull.body)
           .pulls-review-comment-wrapper
             - @reviews.includes(:reviewer).each do |review|
               - if review.comment?
