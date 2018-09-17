@@ -114,7 +114,7 @@ class Content < ApplicationRecord
           end
         break if parents.blank?
         # サブディレクトリ・ファイルの取得
-        parents.each{ |parent| parent.fetch_sub_dirs_and_files! }
+        parents.each(&:fetch_sub_dirs_and_files!)
       end
       repo.hidden!
     end
