@@ -114,7 +114,7 @@ class Content < ApplicationRecord
           end
         break if parents.blank?
         # サブディレクトリ・ファイルの取得
-        Content.fetch_sub_dirs_and_files!(parents)
+        parents.each{ |parent| parent.fetch_sub_dirs_and_files! }
       end
       repo.hidden!
     end
@@ -133,19 +133,17 @@ class Content < ApplicationRecord
     end
   end
 
-  def self.fetch_sub_dirs_and_files!(parents)
+  def fetch_sub_dirs_and_files!
     count = 0
     begin
-      parents.each do |parent|
-        Rails.logger.info parent.path
-        res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
+      ActiveRecord::Base.transaction do
+        res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, path)
         next if res_contents.blank?
         res_contents.each do |res_content|
-          Rails.logger.info res_content
           next if Settings.contents.prohibited_files.include?(res_content['name'])
-          child = Content.fetch_single_content!(parent.repo, res_content)
+          child = Content.fetch_single_content!(repo, res_content)
           content_tree = ContentTree.find_or_initialize_by(
-            parent: parent,
+            parent: self,
             child:  child
           )
           content_tree.save!
