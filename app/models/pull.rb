@@ -64,14 +64,12 @@ class Pull < ApplicationRecord
   # - request_reviewed : レビューをリクエストした
   # - reviewed         : レビューを完了した
   # - completed        : リモートのPRをMerge/Closeした
-  # - canceled         : キャンセルされた
   #
   enum status: {
     connected:  1000,
     request_reviewed: 2000,
     reviewed: 4000,
     completed: 5000,
-    canceled: 6000
   }
 
   # -------------------------------------------------------------------------------
@@ -174,10 +172,5 @@ class Pull < ApplicationRecord
 
   def can_update?
     present? && !changed_files&.review_commented? && changed_files.exists?
-  end
-
-  # レビューコメントを削除する
-  def cancel_review_comments!
-    changed_files.joins(:review_comments).each { |changed_file| changed_file.review_comments.delete_all }
   end
 end

@@ -1,12 +1,9 @@
 class Reviewees::PullsController < Reviewees::BaseController
   before_action :set_pull, only: %i(update)
   before_action :check_present_changed_files, only: %i(update)
-  before_action :check_present_review, only: %i(update)
 
-  # @TODO キャンセルされた場合は、PRにキャンセル通知がコメントされる。
   def update
     if @pull.update(status: params[:status])
-      @pull.cancel_review_comments! if @pull.canceled?
       redirect_to reviewees_pulls_url
     else
       @pulls = current_reviewee.pulls.order(created_at: :desc)
@@ -23,10 +20,5 @@ class Reviewees::PullsController < Reviewees::BaseController
   # 変更点のないPRはレビュワーはコメントできない
   def check_present_changed_files
     redirect_to request.referrer, danger: t('reviewees.views.no_changed_files') if @pull.changed_files.none?
-  end
-
-  # すでにレビューされている場合はキャンセルできない
-  def check_present_review
-    redirect_to request.referrer, danger: t('reviewees.views.already_reviewed') if @pull.changed_files.review_commented?
   end
 end
