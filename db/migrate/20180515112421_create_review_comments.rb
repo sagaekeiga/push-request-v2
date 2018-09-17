@@ -10,6 +10,7 @@ class CreateReviewComments < ActiveRecord::Migration[5.1]
       t.bigint :in_reply_to_id
       t.bigint :remote_id
       t.integer :status
+      t.integer :root_id
       t.datetime :deleted_at, index: true
       t.timestamps
     end

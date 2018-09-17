@@ -15,6 +15,7 @@
 #  remote_id       :bigint(8)
 #  review_id       :bigint(8)
 #  reviewer_id     :bigint(8)
+#  root_id         :integer
 #
 # Indexes
 #

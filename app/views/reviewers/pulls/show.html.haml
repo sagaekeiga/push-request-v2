@@ -7,8 +7,6 @@
       .pulls-conversation-wrapper
         .col-xs-12.col-sm-10
           .pulls-body-wrapper
-            - if @pull.agreed?
-              .text-danger= t '.expiured_at', time: (l (@pull.updated_at + 2.hours).to_time)
             - if @pull.body.present?
               .pull-body-wrapper
                 .panel
@@ -26,7 +24,7 @@
                 -# コメント
                 .issue-comment-wrapper
                   = render 'issue_comment', review: review
-              - review.review_comments.where(in_reply_to_id: nil).includes(:reviewer, :changed_file).each do |review_comment|
+              - review.review_comments.reviewed.each do |review_comment|
                 .col-xs-2.timeline
                 .col-xs-10.timeline
                   .panel
@@ -71,6 +69,7 @@
                                 .text-right
                                   %button{ type: 'button', class: 'btn btn-default reply-cancel-btn' } Cancel
                                   %button{ type: 'button', class: 'btn btn-primary reply-submit-btn' } Comment
+                                  %input{ type: 'hidden', value: review_comment.id, class: 'root_id' }
                                   %input{ type: 'hidden', value: review_comment.path, class: 'path' }
                                   %input{ type: 'hidden', value: review_comment.position, class: 'position' }
                                   %input{ type: 'hidden', value: current_reviewer.id, class: 'reviewer_id' }
@@ -87,8 +86,4 @@
     - else
       %h1.text-center 審査中
       %p.text-center 審査が通るまで少々お待ちください
-.review-btn-wrapper
-  - unless @pull.reviewed? || @pull.completed? || @pull.connected?
-    = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
-      %i.far.fa-comment
 = javascript_pack_tag 'reply'

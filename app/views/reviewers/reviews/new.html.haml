@@ -2,7 +2,7 @@
   .container
     .page-header{ 'pull-id': @pull.id }
       %h3= @pull.title
-    = render 'reviewers/shared/tab', pull: @pull, changed_files: @changed_files
+    = render 'reviewers/shared/pulls/tab', pull: @pull, changed_files: @changed_files
 
     - unless @pending_review
 

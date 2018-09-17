@@ -100,7 +100,7 @@ class Review < ApplicationRecord
       event: :pending
     )
     review.save!
-    review_comments = review.reviewer.review_comments.order(:created_at).where(changed_file: pull.changed_files)
+    review_comments = review.reviewer.review_comments.pending.order(:created_at).where(changed_file: pull.changed_files)
     working_hours = review_comments.calc_working_hours
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|

@@ -1,12 +1,11 @@
 class Reviewers::ReviewsController < Reviewers::BaseController
   before_action :set_pull, only: %i(new create)
-  before_action :check_pull, only: %i(new create)
   before_action :check_pending_review, only: %i(new create)
 
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
     @review = Review.new
-    @changed_files = @pull.files_changed
+    @changed_files = @pull.files_changed.decorate
   end
 
   # POST /reviewers/pulls/:pull_id/reviews
@@ -28,11 +27,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.friendly.find(params[:pull_token])
-  end
-
-  def check_pull
-    redirect_to reviewers_dashboard_url unless @pull.agreed?
+    @pull = Pull.friendly.find(params[:pull_token]).decorate
   end
 
   def check_pending_review

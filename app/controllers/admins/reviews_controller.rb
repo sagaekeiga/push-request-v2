@@ -7,7 +7,7 @@ class Admins::ReviewsController < Admins::BaseController
 
   def show
     @pull = @review.pull
-    @changed_files = @review.pull.files_changed
+    @changed_files = @review.pull.files_changed.decorate
   end
 
   def update

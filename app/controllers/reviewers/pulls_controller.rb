@@ -1,7 +1,6 @@
 class Reviewers::PullsController < Reviewers::BaseController
   before_action :set_pull, only: %i(show update files)
   before_action :set_changed_files, only: %i(show files)
-  before_action :check_reviewer, only: %i(show update)
 
   def show
     @review = Review.new
@@ -45,10 +44,5 @@ class Reviewers::PullsController < Reviewers::BaseController
 
   def set_changed_files
     @changed_files = @pull.files_changed.decorate
-  end
-
-  # 他のレビュワーに承認されたら情報保護的に非公開にしたい
-  def check_reviewer
-    redirect_to reviewers_dashboard_url if @pull.agreed? && !@pull.reviewer?(current_reviewer)
   end
 end

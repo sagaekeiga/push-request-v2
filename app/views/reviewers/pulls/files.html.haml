@@ -39,7 +39,3 @@
       .col-xs-12.col-sm-2
         .side-wrapper
           = render 'side', pull: @pull
-.review-btn-wrapper
-  - unless @pull.reviewed? || @pull.completed? || @pull.connected?
-    = link_to reviewers_pull_path(@pull, status: @pull.status), method: :put, data: { confirm: 'レビューします。よろしいですか？' }, class: "button #{@pull.decorate.btn_class_by_status}" do
-      %i.far.fa-comment

@@ -153,6 +153,7 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.bigint "in_reply_to_id"
     t.bigint "remote_id"
     t.integer "status"
+    t.integer "root_id"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
