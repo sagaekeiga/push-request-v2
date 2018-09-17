@@ -3,12 +3,12 @@ module MarkdownHelper
     options = {
       filter_html:     true,
       hard_wrap:       true,
-      space_after_headers: true,
+      space_after_headers: true
     }
     extensions = {
       autolink:           true,
       no_intra_emphasis:  true,
-      fenced_code_blocks: true,
+      fenced_code_blocks: true
     }
     unless @markdown
       renderer = Redcarpet::Render::HTML.new(options)
