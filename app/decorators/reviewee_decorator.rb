@@ -9,6 +9,6 @@ class RevieweeDecorator < ApplicationDecorator
   end
 
   def ok_req
-    pulls.present? && pulls.where(status: %i(request_reviewed agreed reviewed)).present? ? 'ok' : ''
+    pulls.present? && pulls.where(status: %i(request_reviewed reviewed)).present? ? 'ok' : ''
   end
 end

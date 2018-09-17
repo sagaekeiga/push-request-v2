@@ -12,7 +12,7 @@
                   %i.fas{ class: dir_or_file.dir? ? 'fa-folder' : 'fa-file' }
                   &nbsp;
                   = dir_or_file.name
-- if readme
+- if readme && readme.showing?
   .panel.panel-default
     .panel-heading= readme.name
     .panel-body

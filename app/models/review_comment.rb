@@ -89,8 +89,6 @@ class ReviewComment < ApplicationRecord
       number:    params[:pull_request][:number]
     )
 
-    Rails.logger.info pull.inspect
-
     commit = pull.commits.find_by(
       sha: params[:comment][:commit_id]
     )
@@ -99,10 +97,6 @@ class ReviewComment < ApplicationRecord
       pull: pull,
       filename:  params[:comment][:path]
     )
-
-    Rails.logger.debug params[:comment][:commit_id]
-    Rails.logger.debug params[:comment][:path]
-    Rails.logger.info changed_file.inspect
 
     # 編集時の取得
     if params[:changes].present?
@@ -116,9 +110,6 @@ class ReviewComment < ApplicationRecord
       body:           params[:comment][:body],
       changed_file:   changed_file
     )
-
-    Rails.logger.info review_comment.inspect
-    Rails.logger.info changed_file.inspect
 
     # レビュー時のレスポンス取得
     # 返事の取得return

@@ -12,7 +12,6 @@ ja:
       status:
         connected: 接続済み
         request_reviewed: リクエスト中
-        agreed: 承認済み
         reviewed: レビュー済み
         completed: Merge/Close済み
         canceled: キャンセル済み

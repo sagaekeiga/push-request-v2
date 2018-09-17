@@ -23,7 +23,6 @@ function cancelReply(elem) {
 };
 
 function submitReply(elem) {
-  console.log()
   elem.prop('disabled', true);
   $.ajax({
     type: 'POST',

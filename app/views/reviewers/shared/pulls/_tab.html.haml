@@ -1,24 +1,4 @@
 .reviewers-shared-pulls-tab-wrapper
-  -# - if pull.agreed?
-  -#   .pull-show-tab-wrapper
-  -#     %ul.nav.nav-justified
-  -#       %li.nav-item
-  -#         = link_to reviewers_pull_path(pull), class: 'nav-link' do
-  -#           %i.glyphicon.glyphicon-comment
-  -#           &nbsp;
-  -#           = t 'reviewers.pulls.show.conversation'
-  -#       %li.nav-item
-  -#         = link_to reviewers_pull_path(pull), class: 'nav-link' do
-  -#           %i.fas.fa-code
-  -#           &nbsp;
-  -#           = t 'reviewers.pulls.show.code'
-  -#       %li{ class: is_same_controller_name?('pulls') }
-  -#         = link_to file_reviewers_pull_reviews_path(pull), class: 'nav-link' do
-  -#           %i.glyphicon.glyphicon-file
-  -#           &nbsp;
-  -#           = t 'reviewers.pulls.show.changed_files'
-  -#           %span.badge.badge-default= pull.files_changed_count
-  -# - else
   %ul.nav.nav-tabs.nav-justified
     %li{ class: is_same_controller_and_action_name?('pulls', 'show') }
       = link_to reviewers_pull_path(pull), class: 'nav-link' do
