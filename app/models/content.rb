@@ -134,28 +134,31 @@ class Content < ApplicationRecord
   end
 
   def fetch_sub_dirs_and_files!
-    count = 0
-    begin
-      ActiveRecord::Base.transaction do
-        res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, path)
-        next if res_contents.blank?
-        res_contents.each do |res_content|
-          next if Settings.contents.prohibited_files.include?(res_content['name'])
-          child = Content.fetch_single_content!(repo, res_content)
-          content_tree = ContentTree.find_or_initialize_by(
-            parent: self,
-            child:  child
-          )
-          content_tree.save!
-        end
+    ActiveRecord::Base.transaction do
+      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, path)
+      next if res_contents.blank?
+      res_contents.each do |res_content|
+        next unless res_content.empty? ||
+          res_content.key?('name') ||
+          res_content.key?('path') ||
+          res_content.key?('content') ||
+          res_content.key?('html_url') ||
+          res_content.key?('name') ||
+          res_content.key?('size')
+        Rails.logger.info 'pass key?'
+        next if Settings.contents.prohibited_files.include?(res_content['name'])
+        child = Content.fetch_single_content!(repo, res_content)
+        content_tree = ContentTree.find_or_initialize_by(
+          parent: self,
+          child:  child
+        )
+        content_tree.save!
       end
-    rescue => e
-      Rails.logger.error e
-      Rails.logger.error e.backtrace.join("\n")
-      fail I18n.t('views.error.failed_create_contents')
-      count += 1
-      retry if count < 3
     end
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    fail I18n.t('views.error.failed_create_contents')
   end
 
   def self.fetch_single_content!(repo, res_content)
