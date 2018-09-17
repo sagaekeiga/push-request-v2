@@ -114,7 +114,7 @@ class Content < ApplicationRecord
           end
         break if parents.blank?
         # サブディレクトリ・ファイルの取得
-        Content.fetch_sub_dirs_and_files!(parents)
+        parents.each(&:fetch_sub_dirs_and_files!)
       end
       repo.hidden!
     end
@@ -133,24 +133,28 @@ class Content < ApplicationRecord
     end
   end
 
-  def self.fetch_sub_dirs_and_files!(parents)
-    parents.each do |parent|
-      Rails.logger.info parent.path
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(parent.repo, parent.path)
-      next if res_contents.blank?
-      res_contents.each do |res_content|
-        p '=============================='
-        Rails.logger.info res_content
-        p res_content
-        p '=============================='
-        next if Settings.contents.prohibited_files.include?(res_content['name'])
-        child = Content.fetch_single_content!(parent.repo, res_content)
-        content_tree = ContentTree.find_or_initialize_by(
-          parent: parent,
-          child:  child
-        )
-        content_tree.save!
+  def fetch_sub_dirs_and_files!
+    count = 0
+    begin
+      ActiveRecord::Base.transaction do
+        res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, path)
+        next if res_contents.blank?
+        res_contents.each do |res_content|
+          next if Settings.contents.prohibited_files.include?(res_content['name'])
+          child = Content.fetch_single_content!(repo, res_content)
+          content_tree = ContentTree.find_or_initialize_by(
+            parent: self,
+            child:  child
+          )
+          content_tree.save!
+        end
       end
+    rescue => e
+      Rails.logger.error e
+      Rails.logger.error e.backtrace.join("\n")
+      fail I18n.t('views.error.failed_create_contents')
+      count += 1
+      retry if count < 3
     end
   end
 
