@@ -15,6 +15,7 @@
 #  remote_id       :bigint(8)
 #  review_id       :bigint(8)
 #  reviewer_id     :bigint(8)
+#  root_id         :integer
 #
 # Indexes
 #
@@ -60,9 +61,19 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :remote_id, uniqueness: true, allow_nil: true
+  validates :remote_id, uniqueness: true, allow_nil: true, on: %i(create)
   validates :body,      presence: true
   validates :path,      presence: true
+
+  # -------------------------------------------------------------------------------
+  # Scope
+  # -------------------------------------------------------------------------------
+  # レビューされたレビューコメント
+  scope :reviewed, lambda {
+    where(in_reply_to_id: nil).
+      includes(:reviewer, :changed_file).
+        order(created_at: :asc)
+  }
 
   def self.calc_working_hours
     return 0 if self.first.nil?
@@ -78,8 +89,12 @@ class ReviewComment < ApplicationRecord
       number:    params[:pull_request][:number]
     )
 
-    changed_file = pull.changed_files.find_by(
-      commit_id: params[:comment][:commit_id],
+    commit = pull.commits.find_by(
+      sha: params[:comment][:commit_id]
+    )
+
+    changed_file = commit.changed_files.find_by(
+      pull: pull,
       filename:  params[:comment][:path]
     )
 
@@ -202,9 +217,10 @@ class ReviewComment < ApplicationRecord
   # 返信コメントを返す
   def replies
     ReviewComment.where(
-      changed_file:   changed_file,
-      path:           path,
-      position:       position
+      root_id:      self,
+      changed_file: changed_file,
+      path:         path,
+      position:     position
     ).where.not(in_reply_to_id: nil)
   end
 end

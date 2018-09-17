@@ -14,6 +14,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
     return render json: { status: 'failed' } if @changed_file.nil? || reviewer.nil?
 
     review_comment = @changed_file.review_comments.new(
+      root_id: params[:root_id],
       position: params[:position],
       path: params[:path]&.gsub('\n', ''),
       body: params[:body],

@@ -3,7 +3,6 @@ module Github
     include HTTParty
 
     class << self
-
       # POST レビュー送信
       def github_exec_review!(params, pull)
         _post sub_url(:review, pull), pull.repo.installation_id, :review, params

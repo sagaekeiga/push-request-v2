@@ -29,6 +29,7 @@ function submitReply(elem) {
     url: `/reviewers/review_comments`,
     dataType: 'JSON',
     data: {
+      root_id: elem.nextAll('.root_id').val(),
       path: elem.nextAll('.path').val(),
       position: elem.nextAll('.position').val(),
       changed_file_id: elem.nextAll('.changed_file_id').val(),

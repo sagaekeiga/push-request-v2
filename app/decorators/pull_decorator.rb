@@ -14,22 +14,12 @@ class PullDecorator < ApplicationDecorator
     end
   end
 
-  # プルのステータスに基づき次のアクション名を返す
-  def link_title_by_status
-    case object.status
-    when 'request_reviewed', 'canceled'
-      I18n.t('reviewers.views.reviews')
-    when 'agreed'
-      I18n.t('reviewers.views.cancels')
-    end
-  end
-
   # プルのステータスに基づきボタンカラーを返す
   def btn_class_by_status
     case object.status
-    when 'canceled', 'connected'
+    when 'connected'
       'btn-outline-primary'
-    when 'request_reviewed', 'reviewed', 'agreed'
+    when 'request_reviewed', 'reviewed'
       'btn-success'
     when 'completed'
       'btn-warning'
@@ -47,11 +37,7 @@ class PullDecorator < ApplicationDecorator
   end
 
   def back_path
-    if agreed?
-      h.file_reviewers_pull_reviews_path(object)
-    else
-      h.reviewers_pull_files_path(object)
-    end
+    h.file_reviewers_pull_reviews_path(object)
   end
 
   # ブランチ差分

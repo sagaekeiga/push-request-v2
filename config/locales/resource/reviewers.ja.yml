@@ -45,7 +45,6 @@ ja:
       logout: ログアウト
     my_page:
       title: マイページ
-      working_pulls_count: 作業中
       reviewed_pulls_count: 完了
       sum_working_hours: 合計作業時間（月）
       unit_minutes: "%{working_hours} 分"

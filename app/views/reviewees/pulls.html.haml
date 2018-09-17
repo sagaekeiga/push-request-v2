@@ -21,7 +21,7 @@
                 %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
                 %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
                 %td.text-center
-                  - if pull.connected? || pull.canceled?
+                  - if pull.connected?
                     = link_to t('views.status.request_reviewed'), reviewees_pull_path(pull.id, status: :request_reviewed), method: :put, class: "btn btn-block #{pull.btn_class_by_status}"
                   - elsif pull.completed?
                     .btn.btn-block{ class: pull.btn_class_by_status }
@@ -29,7 +29,7 @@
                       &nbsp;
                       = I18n.t('views.status.complete')
                   - else
-                    = link_to reviewees_pull_path(pull.id, status: :canceled), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn btn-block #{pull.btn_class_by_status}" do
+                    = link_to reviewees_pull_path(pull.id, status: :connected), data: { confirm: t('views.status.confirm_canceled') }, method: :put, class: "btn btn-block #{pull.btn_class_by_status}" do
                       %i.fas.fa-spinner
                       &nbsp;
                       = t('views.status.pending')

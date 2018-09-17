@@ -77,13 +77,6 @@ class Reviewer < ApplicationRecord
     review_comments.where(changed_file: pull.changed_files).where.not(reviewer: nil)
   end
 
-  # レビューコメントを削除する
-  def cancel_review_comments!(pull)
-    if target_review_comments(pull).present?
-      target_review_comments(pull).delete_all
-    end
-  end
-
   # GitHub連携をする
   def connect_to_github(auth)
     reviewer_github_account = build_github_account(
