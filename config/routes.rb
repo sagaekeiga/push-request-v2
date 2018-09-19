@@ -41,12 +41,13 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewees do
-      get :dashboard, :pulls, :repos
+      get :dashboard, :repos
       get 'settings/integrations'
-      resources :pulls, only: %i(update)
+      resources :pulls, only: %i(index)
       resources :repos, only: %i(update) do
         resources :contents, only: %i(index show update)
         resources :issues, only: %i(index show update)
+        resources :pulls, only: %i(update)
         resources :wikis do
           post :import, on: :collection
         end
