@@ -8,7 +8,6 @@ class CreateContents < ActiveRecord::Migration[5.1]
       t.string :size
       t.string :name
       t.string :path
-      t.text :content
       t.string :html_url
       t.datetime :deleted_at, index: true
       t.timestamps

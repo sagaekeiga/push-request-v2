@@ -1,11 +1,11 @@
 class Reviewees::ContentsController < Reviewees::BaseController
-  before_action :set_repo, only: %i(index update)
+  before_action :set_repo, only: %i(index show update)
   before_action :set_content, only: %i(show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
 
   def index
     @dir_or_files = @repo.contents.top
-    @readme = @repo.contents.find_by(name: 'README.md')
+    @readme = Github::Request.github_exec_fetch_readme(@repo)
   end
 
   def show
@@ -39,5 +39,6 @@ class Reviewees::ContentsController < Reviewees::BaseController
 
   def set_content
     @content = Content.find(params[:id])
+    @file = Github::Request.github_exec_fetch_file_content!(@repo, @content) if @content.file?
   end
 end

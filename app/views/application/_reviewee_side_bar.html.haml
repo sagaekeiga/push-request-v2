@@ -10,9 +10,9 @@
       %hr
       %li.list-group-item
         = link_to reviewees_pulls_path do
-          %i.fas.fa-check-circle{ class: is_same_action_name?('pulls') }
+          %i.fas.fa-check-circle{ class: is_same_controller_name?('pulls') }
           %br
-          %small{ class: is_same_action_name?('pulls') }= t('reviewees.pulls.title')
+          %small{ class: is_same_controller_name?('pulls') }= t('reviewees.pulls.title')
       %hr
       %li.list-group-item
         = link_to reviewees_repos_path do

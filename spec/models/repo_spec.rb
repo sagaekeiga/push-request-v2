@@ -7,6 +7,7 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  sha             :string
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null

@@ -34,28 +34,6 @@
     min-width: 60px !important;
     display: inline-block !important;
   }
-  .btn-success {
-    cursor: default;
-    background-color: #4dbd74;
-    border: none;
-    outline: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-    &:hover, &:focus, &:active, &.active, .open > .dropdown-toggle.btn-success{
-      color: $color-white;
-      background-color: $color-cancel;
-      border-color: $color-cancel;
-    }
-  }
-  .btn-warning {
-    cursor: default;
-    color: $base-color-green;
-    background-color: $color-white;
-    border: 1px solid $base-color-green;
-    outline: none;
-    -webkit-box-shadow: none;
-    box-shadow: none;
-  }
   table {
     td {
       color: $color-td;

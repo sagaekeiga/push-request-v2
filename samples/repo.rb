@@ -6,9 +6,13 @@ headers = {
   'Accept': 'application/vnd.github.symmetra-preview+json'
 }
 
-res = HTTParty.get 'https://api.github.com/repos/sagaekeiga/github-api-sample/issues', headers: headers
+# res = HTTParty.get 'https://api.github.com/repos/sagaekeiga/github-api-sample/branches/master', headers: headers
 # puts res
-res.each do |file|
-  next if file.has_key?('pull_request')
-  puts file
-end
+# puts JSON.pretty_generate(JSON.parse(res.body))
+# res.each do |file|
+#   puts file
+# end
+
+res = HTTParty.get 'https://api.github.com/repos/sagaekeiga/github-api-sample/contents/app/models/user.rb?ref=f52dc79570c71b0dc842d556b8fb08dc20827bab', headers: headers
+
+puts JSON.pretty_generate(JSON.parse(res.body))

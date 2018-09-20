@@ -16,16 +16,14 @@
           %h3= @repo.full_name
         = render 'reviewees/shared/repos/tab', repo: @repo
         .panel.panel-default
-          .panel-heading
-            %b.text-right= l @repo.created_at
           .table-wrapper
             %table.table.table-hover
               %tbody
                 = render @dir_or_files, repo: @repo
         - if @readme
           .panel.panel-default
-            .panel-heading= @readme.name
+            .panel-heading= @readme['name']
             .panel-body
               .md-wrapper
-                = markdown(@readme.decorate.decode_by_base64)
+                = markdown(decode_by_base64(@readme['content']))
 = javascript_pack_tag 'update-resource'
