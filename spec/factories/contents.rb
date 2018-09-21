@@ -3,6 +3,7 @@
 # Table name: contents
 #
 #  id          :bigint(8)        not null, primary key
+#  content     :text
 #  deleted_at  :datetime
 #  file_type   :integer
 #  html_url    :string

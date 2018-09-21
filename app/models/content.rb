@@ -3,6 +3,7 @@
 # Table name: contents
 #
 #  id          :bigint(8)        not null, primary key
+#  content     :text
 #  deleted_at  :datetime
 #  file_type   :integer
 #  html_url    :string
@@ -140,6 +141,7 @@ class Content < ApplicationRecord
         next unless res_content.empty? ||
           res_content.key?('name') ||
           res_content.key?('path') ||
+          res_content.key?('content') ||
           res_content.key?('html_url') ||
           res_content.key?('name') ||
           res_content.key?('size')
@@ -168,6 +170,7 @@ class Content < ApplicationRecord
     )
     content.set_file_type_by(res_content['type'])
     content.update_attributes!(
+      content:   res_content['content'],
       html_url:  res_content['html_url'],
       name:      res_content['name'],
       path:      res_content['path'],

@@ -5,7 +5,7 @@
         .page-header
           %h4= @content.path
         - if @content.dir?
-          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme, res_readme: nil
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme
         - else
           .panel.panel-default
             .panel-heading
@@ -15,8 +15,8 @@
                 %thead
                   %tr
                     %th{ scope: 'col' }
-                - if @content && @file
-                  - decode_by_base64(@file['content'])&.each_line&.with_index do |line, index|
+                - if @content.content
+                  - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
                     %tbody
                       %tr
                         %td.index= index

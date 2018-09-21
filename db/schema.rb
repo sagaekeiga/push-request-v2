@@ -80,6 +80,7 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.string "size"
     t.string "name"
     t.string "path"
+    t.text "content"
     t.string "html_url"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
@@ -135,7 +136,6 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.boolean "private"
     t.integer "status"
     t.bigint "installation_id"
-    t.string "sha"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

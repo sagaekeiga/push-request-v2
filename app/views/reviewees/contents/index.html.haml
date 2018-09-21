@@ -22,8 +22,8 @@
                 = render @dir_or_files, repo: @repo
         - if @readme
           .panel.panel-default
-            .panel-heading= @readme['name']
+            .panel-heading= @readme.name
             .panel-body
               .md-wrapper
-                = markdown(decode_by_base64(@readme['content']))
+                = markdown(@readme.decorate.decode_by_base64)
 = javascript_pack_tag 'update-resource'

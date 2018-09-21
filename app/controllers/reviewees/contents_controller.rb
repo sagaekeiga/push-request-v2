@@ -5,7 +5,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
 
   def index
     @dir_or_files = @repo.contents.top
-    @readme = Github::Request.github_exec_fetch_readme(@repo)
+    @readme = @repo.contents.find_by(name: 'README.md')
   end
 
   def show
@@ -21,14 +21,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
       @content.hidden!
       @content.children.each(&:hidden!) if @content.children.present?
     end
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: {
-          status: @content.status
-        }
-      end
-    end
+    render json: { status: @content.status }
   end
 
   private
@@ -39,6 +32,5 @@ class Reviewees::ContentsController < Reviewees::BaseController
 
   def set_content
     @content = Content.find(params[:id])
-    @file = Github::Request.github_exec_fetch_file_content!(@repo, @content) if @content.file?
   end
 end

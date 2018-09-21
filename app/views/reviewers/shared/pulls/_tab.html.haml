@@ -12,8 +12,8 @@
         = t 'reviewers.pulls.show.commits'
         &nbsp;
         %span.badge.badge-default= pull.commits_count
-    %li{ class: is_same_controller_and_action_name?('reviews', 'new') }
-      = link_to file_reviewers_pull_reviews_path(pull), class: 'nav-link' do
+    %li{ class: is_same_controller_and_action_name?('pulls', 'index') }
+      = link_to reviewers_pull_changed_files_path(pull), class: 'nav-link' do
         %i.glyphicon.glyphicon-file
         &nbsp;
         = t 'reviewers.pulls.show.changed_files'

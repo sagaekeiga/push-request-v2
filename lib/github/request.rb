@@ -67,20 +67,6 @@ module Github
         _get "repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}", pull.repo.installation_id, :diff
       end
 
-      # GET レポジトリのmasterのshaを取得
-      def github_exec_fetch_repo_sha!(repo)
-        _get "repos/#{repo.full_name}/branches/master", repo.installation_id, :repo_sha
-      end
-
-      # GET redameの取得
-      def github_exec_fetch_readme(repo)
-        _get sub_url_for(repo, :readme), repo.installation_id, :readme
-      end
-
-      def github_exec_fetch_file_content!(repo, content)
-        _get "repos/#{repo.full_name}/contents/#{content.path}?ref=#{repo.sha}", repo.installation_id, :file_content
-      end
-
       private
 
       #
@@ -163,7 +149,7 @@ module Github
           return Settings.api.github.request.header.accept.machine_man_preview_json
         when :issue_comment
           return Settings.api.github.request.header.accept.machine_man_preview
-        when :changed_file, :pull, :content, :issue, :commit, :diff, :repo_sha, :readme, :file_content
+        when :changed_file, :pull, :content, :issue, :commit, :diff
           return Settings.api.github.request.header.accept.symmetra_preview_json
         when :review_comment
           return Settings.api.github.request.header.accept.squirrel_girl_preview
@@ -175,7 +161,7 @@ module Github
         case event
         when :issue_comment, :changed_file, :pull, :review_comment
           return Settings.api.created.status.code
-        when :content, :commit, :issue, :diff, :review, :repo_sha, :readme, :file_content
+        when :content, :commit, :issue, :diff, :review
           return Settings.api.success.status.code
         end
       end
@@ -201,8 +187,6 @@ module Github
           return "repos/#{repo.full_name}/issues"
         when :pull
           return "repos/#{repo.full_name}/pulls"
-        when :readme
-          return "repos/#{repo.full_name}/readme"
         end
       end
 

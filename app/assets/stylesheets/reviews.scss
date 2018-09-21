@@ -1,6 +1,10 @@
 .reviews-form-wrapper {
   .reviews-form-card-wrapper {
     font-family: $font-code;
+    &.editor {
+      height: 500px;
+      overflow-y: scroll;
+    }
     .changed-file-title {
       font-size: $base-font-size + 1px;
     }

@@ -7,7 +7,6 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
-#  sha             :string
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
@@ -94,8 +93,6 @@ class Repo < ApplicationRecord
             private: repository['private'],                            # プライベート
             installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
           )
-          res = Github::Request.github_exec_fetch_repo_sha!(repo)
-          repo.update!(sha: res['commit']['sha'])
           FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
           Issue.fetch!(repo)
