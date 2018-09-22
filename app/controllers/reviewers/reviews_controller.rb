@@ -7,10 +7,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     @review = Review.new
     @changed_files = @pull.files_changed.decorate
     number = @pull.body.match(/#\d+/)&.to_s&.delete('#')
-    Rails.logger.debug number
     @issue = @pull.repo.issues.find_by(number: number&.to_i)
-    Rails.logger.debug '@issue.present?'
-    Rails.logger.debug @issue
   end
 
   # POST /reviewers/pulls/:pull_id/reviews

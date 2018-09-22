@@ -1,9 +1,7 @@
 class Reviewers::ContentsController < Reviewers::BaseController
   before_action :set_repo, only: %i(index show)
   before_action :set_content, only: %i(show)
-  skip_before_action :verify_authenticity_token, only: %i(search)
-  skip_before_action :set_skill!, only: %i(search)
-  skip_before_action :authenticate_reviewer!, only: %i(search)
+  skip_before_action *%i(verify_authenticity_token set_skill! authenticate_reviewer!), only: %i(search)
 
   def index
     @dir_or_files = @repo.contents.top
@@ -22,6 +20,7 @@ class Reviewers::ContentsController < Reviewers::BaseController
     return render json: { message: '該当するファイルはありません' } if contents.blank?
     contents.each { |content| content[2] = Base64.decode64(content[2]).force_encoding('UTF-8') }
     contents.each do |content|
+      # content #=> [id, path, content]
       next if content[2].nil?
       lines = content[2]
       content[2] = []

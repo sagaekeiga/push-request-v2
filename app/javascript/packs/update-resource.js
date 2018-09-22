@@ -72,7 +72,6 @@ $('.update-pull-button').on('click', function(e) {
     },
     element: $(this),
     success: function(data) {
-      console.log(data.status)
       if (data.status == 'connected') {
         $(this.element).text('Request Review')
         $(this.element).removeClass('btn-outline-danger').addClass('btn-outline-primary')
