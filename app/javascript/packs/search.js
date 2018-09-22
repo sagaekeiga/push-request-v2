@@ -18,8 +18,9 @@ function searchFiles(elem) {
     data: { keyword: elem.val() },
     element: elem,
     success: function(data) {
-      // console.log(data.contents);
       $('#result').empty()
+      console.log(data.message)
+      $('#result').text(data.message)
       $.each(data.contents, function(i, content) {
         var index = `<h6 class='file' content-id=${content[0]}>${content[1]}</h6>`;
         var subIndex = '';

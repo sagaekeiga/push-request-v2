@@ -2,7 +2,7 @@
   .reviews-form-card-wrapper {
     font-family: $font-code;
     &.editor {
-      height: 500px;
+      height: 650px;
       overflow-y: scroll;
     }
     .changed-file-title {
@@ -224,16 +224,27 @@
 }
 
 .review {
+  background-color: $bg-color-github-panel;
   margin-top: - $base-margin * 2;
   height: 100%;
   .tab-content {
-    .panel {
-      height: 550px;
-      overflow-y: scroll;
+    .tab-pane {
+      .h-550 {
+        height: 550px;
+        overflow-y: scroll;
+      }
+      .all-center {
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
     }
   }
   .search-wrapper {
-    .panel {
+    .h-550 {
       height: 550px;
       overflow-y: scroll;
       .modal {
