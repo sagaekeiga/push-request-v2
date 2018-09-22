@@ -191,7 +191,7 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.string "email"
     t.string "url"
     t.string "html_url"
-    t.string "user_type"
+    t.integer "user_type"
     t.string "name"
     t.string "nickname"
     t.string "company"
