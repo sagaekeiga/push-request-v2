@@ -1,0 +1,9 @@
+.col-xs-12
+  .container
+    .page-header{ 'pull-id': @pull.id }
+      %h3= @pull.title
+    = render 'reviewers/shared/pulls/tab', pull: @pull
+    .text-right= link_to 'Review', file_reviewers_pull_reviews_path(@pull), class: 'btn btn-outline-primary', target: 'blank'
+    .reviews-form-wrapper
+      .reviews-form-card-wrapper
+        = render @changed_files

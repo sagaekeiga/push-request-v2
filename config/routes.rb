@@ -41,12 +41,13 @@ Rails.application.routes.draw do
     }
 
     namespace :reviewees do
-      get :dashboard, :pulls, :repos
+      get :dashboard, :repos
       get 'settings/integrations'
-      resources :pulls, only: %i(update)
+      resources :pulls, only: %i(index)
       resources :repos, only: %i(update) do
         resources :contents, only: %i(index show update)
         resources :issues, only: %i(index show update)
+        resources :pulls, only: %i(update)
         resources :wikis do
           post :import, on: :collection
         end
@@ -76,12 +77,14 @@ Rails.application.routes.draw do
           get :file, to: 'reviews#new', on: :collection
         end
         resources :comments, only: %i(create update destroy)
-        resources :changed_files, only: %i(show)
+        resources :changed_files, only: %i(index show)
         resources :commits, only: %i(index show)
       end
       resources :review_comments, only: %i(create update destroy show)
       resources :repos do
-        resources :contents, only: %i(index show)
+        resources :contents, only: %i(index show) do
+          post :search, on: :collection
+        end
         resources :issues, only: %i(index show)
         resources :wikis, only: %i(index show)
       end

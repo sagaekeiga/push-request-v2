@@ -16,8 +16,6 @@
           %h3= @repo.full_name
         = render 'reviewees/shared/repos/tab', repo: @repo
         .panel.panel-default
-          .panel-heading
-            %b.text-right= l @repo.created_at
           .table-wrapper
             %table.table.table-hover
               %tbody

@@ -1,0 +1,20 @@
+%tr
+  %td= link_to pull.title&.truncate(40), pull.decorate.remote_url, target: 'blank'
+  %td.text-center= link_to pull.repo_full_name, pull.repo.decorate.remote_url, target: 'blank'
+  %td
+    - if pull.changed_files.none?
+      %button{ type: 'button', class: 'btn btn-block btn-outline-danger' }
+        %i.fas.fa-times-circle
+        &nbsp;
+        WIP
+    - else
+      %button{ type: 'button', class: "btn btn-block #{I18n.t("views.statuses.text.colors.#{pull.status}")}" }
+        %i.fas{ class: t("views.statuses.icons.#{pull.status}") }
+        &nbsp;
+        = t "views.statuses.text.#{pull.status}"
+  %td
+    - unless pull.changed_files.none?
+      %button{ type: 'button',
+        class: "btn btn-block #{t("views.statuses.buttons.colors.#{pull.status}")} update-pull-button",
+        'pull-id': pull.id,
+        'repo-id': pull.repo.id }= t "views.statuses.buttons.#{pull.status}"

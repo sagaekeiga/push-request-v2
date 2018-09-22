@@ -58,6 +58,7 @@ function addForm(elem) {
         class: 'form-control md-textarea body',
         rows: '5'
     });
+    textarea.val('* 指摘事項\n\n* 理由\n\n* 参考（リンク・サンプルコード）')
     var positionHiddenField = $('<input>').attr({
         type: 'hidden',
         name: 'reviews[position][]',

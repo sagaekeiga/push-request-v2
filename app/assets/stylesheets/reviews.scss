@@ -1,6 +1,10 @@
 .reviews-form-wrapper {
   .reviews-form-card-wrapper {
     font-family: $font-code;
+    &.editor {
+      height: 650px;
+      overflow-y: scroll;
+    }
     .changed-file-title {
       font-size: $base-font-size + 1px;
     }
@@ -215,6 +219,41 @@
     font-family: $font-static;
     .review-btn {
       margin-top: $base-margin;
+    }
+  }
+}
+
+.review {
+  background-color: $bg-color-github-panel;
+  margin-top: - $base-margin * 2;
+  height: 100%;
+  .tab-content {
+    .tab-pane {
+      .h-550 {
+        height: 550px;
+        overflow-y: scroll;
+      }
+      .all-center {
+        height: 100%;
+        width: 100%;
+        text-align: center;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+    }
+  }
+  .search-wrapper {
+    .h-550 {
+      height: 550px;
+      overflow-y: scroll;
+      .modal {
+        .modal-dialog.modal-lg {
+          min-width: 75%;
+          max-width: 90%;
+          width: 200%;
+        }
+      }
     }
   }
 }
