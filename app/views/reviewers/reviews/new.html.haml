@@ -1,30 +1,53 @@
-.col-xs-12
-  .container-fluid.p-r-0.p-l-0
-    .page-header{ 'pull-id': @pull.id }
-      %h3= @pull.title
-
-    - unless @pending_review
-      .col-sm-6.p-l-0
-      .col-sm-6.p-r-0
-        = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
-          .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
-          .reviews-form-wrapper
-            .reviews-form-card-wrapper.editor
-              = render @changed_files
-            %hr
-            .review-footer-wrapper
-              = f.label :body, for: 'review_body'
-              = f.text_area :body, id: 'review_body', class: 'form-control', rows: '3'
-              .text-center
-                = f.submit t('helpers.links.review'), id: 'submit_review_button', class: 'btn btn-primary review-btn'
-                = image_tag 'loading.gif', class: 'loading hidden'
-      .col-sm-12
-        .panel.panel-default
-          .panel-body
-            %input{ class: 'form-control search-input', 'repo-id': @pull.repo.id }
-    - else
-      %h1.text-center 審査中
-      %p.text-center 審査が通るまで少々お待ちください
+.review
+  .col-xs-12
+    .container-fluid.p-r-0.p-l-0
+      .page-header{ 'pull-id': @pull.id, 'repo-id': @pull.repo.id }= @pull.title
+      - unless @pending_review
+        .col-sm-4.p-l-0
+          %ul.nav.nav-tabs
+            %li.active
+              %a{ 'data-toggle': 'tab', href: '#bodyTab'} チェック項目
+            %li
+              %a{ 'data-toggle': 'tab', href: '#issueTab' } issue
+            %li
+              %a{ 'data-toggle': 'tab', href: '#analiticsTab' } 解析
+            %li#searchList
+              %a{ 'data-toggle': 'tab', href: '#searchTab' } 検索
+          / タブ内容
+          .tab-content
+            #bodyTab.tab-pane.active
+              .pulls-body-wrapper
+                - if @pull.body.present?
+                  .pull-body-wrapper
+                    .panel
+                      .panel-body
+                        .md-wrapper
+                          = markdown(@pull.body)
+            #issueTab.tab-pane
+              %p タブDの内容
+            #analiticsTab.tab-pane
+              %p Comming Soon
+            #searchTab.tab-pane
+              .search-wrapper
+                .panel.panel-default.m-t-1
+                  .panel-body
+                    #result 検索結果が表示されます
+                    #fileModal.modal.fade{ tabindex: '-1' }
+        .col-sm-8.p-r-0
+          = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
+            .m-b-1= render 'submit', f: f
+            .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
+            .reviews-form-wrapper
+              .reviews-form-card-wrapper.editor
+                = render @changed_files
+        .row
+          .col-sm-12.m-t-1
+            .panel.panel-default
+              .panel-body
+                %input{ class: 'form-control search-input', 'repo-id': @pull.repo.id, placeholder: '検索' }
+      - else
+        %h1.text-center 審査中
+        %p.text-center 審査が通るまで少々お待ちください
 
 = javascript_pack_tag 'reviews'
 = javascript_pack_tag 'search'

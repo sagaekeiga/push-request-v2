@@ -222,3 +222,27 @@
     }
   }
 }
+
+.review {
+  margin-top: - $base-margin * 2;
+  height: 100%;
+  .tab-content {
+    .panel {
+      height: 550px;
+      overflow-y: scroll;
+    }
+  }
+  .search-wrapper {
+    .panel {
+      height: 550px;
+      overflow-y: scroll;
+      .modal {
+        .modal-dialog.modal-lg {
+          min-width: 75%;
+          max-width: 90%;
+          width: 200%;
+        }
+      }
+    }
+  }
+}

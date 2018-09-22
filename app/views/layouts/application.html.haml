@@ -62,7 +62,8 @@
                 .alert.m-b-1.m-b-0.p-t-2.r-0.b-l-0.b-r-0{ class: "alert-#{key}", role: 'alert' }
                   %strong= message
           = yield
-    .footer
-      .container-fluid
-        .text-center
-          = render 'footer'
+    - unless is_same_controller_name?('reviews')
+      .footer
+        .container-fluid
+          .text-center
+            = render 'footer'

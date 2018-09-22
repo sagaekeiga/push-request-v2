@@ -1,4 +1,12 @@
 $(document).on('keyup keydown keypress change', '.search-input', function () {
+  $.each($('ul.nav.nav-tabs > li'), function(i, elem) {
+    $(elem).removeClass('active')
+  });
+  $.each($('.tab-content > .tab-pane'), function(i, elem) {
+    $(elem).removeClass('active')
+  });
+  $('#searchTab').addClass('active')
+  $('#searchList').addClass('active')
   searchFiles($(this));
 })
 
@@ -7,28 +15,19 @@ function searchFiles(elem) {
     type: 'POST',
     url: `/reviewers/repos/${elem.attr('repo-id')}/contents/search`,
     dataType: 'JSON',
-    data: {
-      keyword: elem.val()
-      // position: elem.nextAll('.position').val(),
-      // changed_file_id: elem.nextAll('.changed_file_id').val(),
-      // body: elem.closest('.flex-row').prevAll('textarea').val(),
-      // reviewer_id: $('.data_id').attr('reviewer-id')
-    },
+    data: { keyword: elem.val() },
     element: elem,
     success: function(data) {
-      console.log(data.contents);
-      // if (data.status === 'success') {
-      //   var panel = elem.closest('.panel');
-      //   panel.empty();
-      //   panel.prepend(`<div class="panel-heading"><span class="label label-warning">Pending</div>
-      //     <div class="panel-body"><p class="panel-text" review-comment-id=${data.review_comment_id} /></div>`);
-      //   var panelText = panel.find('.panel-text')
-      //   panelText.wrapInner(marked(data.body));
-      //   $('<div class="flex-row text-right"></div>').insertAfter(panelText);
-      //   panelText.nextAll('.flex-row').prepend('<button class="btn btn-primary edit-trigger" type="button"><span class="glyphicon glyphicon-pencil"></span></button>');
-      //   panelText.nextAll('.flex-row').prepend('<button class="btn btn-danger destroy-trigger" type="button" data-confirm="本当にキャンセルしてよろしいですか？"><span class="glyphicon glyphicon-trash"></span></button>');
-      // }
-      // elem.prop('disabled', false);
+      // console.log(data.contents);
+      $('#result').empty()
+      $.each(data.contents, function(i, content) {
+        var index = `<h6 class='file' content-id=${content[0]}>${content[1]}</h6>`;
+        var subIndex = '';
+        $.each(content[2], function(i, line) {
+          subIndex = subIndex + `<li><a href='/reviewers/repos/${data.repo_id}/contents/${content[0]}' data-remote=true class='file' content-id=${content[0]}><small>${line}</small></a></li>`;
+        });
+        $('#result').append(`<p>${index}<ul>${subIndex}</ul></p>`)
+      });
     }
   });
 };
