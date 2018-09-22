@@ -61,13 +61,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
   end
 
   def show
-    respond_to do |format|
-      format.json do
-        render json: {
-          body: @review_comment.body
-        }
-      end
-    end
+    render json: { body: @review_comment.body }
   end
 
   private

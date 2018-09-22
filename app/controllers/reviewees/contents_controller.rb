@@ -1,5 +1,5 @@
 class Reviewees::ContentsController < Reviewees::BaseController
-  before_action :set_repo, only: %i(index update)
+  before_action :set_repo, only: %i(index show update)
   before_action :set_content, only: %i(show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
 
@@ -21,14 +21,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
       @content.hidden!
       @content.children.each(&:hidden!) if @content.children.present?
     end
-    respond_to do |format|
-      format.html
-      format.json do
-        render json: {
-          status: @content.status
-        }
-      end
-    end
+    render json: { status: @content.status }
   end
 
   private

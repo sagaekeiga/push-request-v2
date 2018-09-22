@@ -1,15 +1,13 @@
-.col-xs-12
-  .container
-    .row
-      .content-show-wrapper
-        .page-header
-          %h4= @content.decorate.breadcrumbs
+.modal-dialog.modal-lg
+  .modal-content
+    .modal-header
+      %button.close{ 'data-dismiss': 'modal', type: 'button' }
+        %span ×
+      %h4.modal-title= @content.path
+    .modal-body
+      .content-show-wrapper.m-t-0
         - if @content.dir?
-          .panel.panel-default
-            .table-wrapper
-              %table.table.table-hover
-                %tbody
-                  = render @dir_or_files, repo: @repo
+          = render 'dirs', resource: @content, dir_or_files: @dir_or_files, readme: @readme
         - else
           .panel.panel-default
             .panel-heading
@@ -19,10 +17,11 @@
                 %thead
                   %tr
                     %th{ scope: 'col' }
-                - if @file.content
+                - if @content.content
                   - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
                     %tbody
                       %tr
                         %td.index= index
                         %td.file-code= coderay(line, @content.path)
-= javascript_pack_tag 'update-resource'
+    .modal-footer.text-center
+      %button.btn.btn-outline-primary{ 'data-dismiss': 'modal', type: 'button' } 閉じる
