@@ -97,10 +97,10 @@ module Github
         res
       end
 
-      def _get(sub_url, event)
+      def _get(sub_url, installation_id, event)
         headers = {
           'User-Agent': 'PushRequest',
-          # 'Authorization': "token #{get_access_token(installation_id)}",
+          'Authorization': "token #{get_access_token(installation_id)}",
           'Accept': set_accept(event)
         }
 

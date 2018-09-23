@@ -19,11 +19,11 @@ ja:
     views:
       buttons:
         texts:
-          is_valid: 有効化する
-          is_invalid: 無効化する
+          is_valid: 無効化する
+          is_invalid: 有効化する
         colors:
-          is_valid: btn-outline-success
-          is_invalid: btn-outline-danger
+          is_valid: btn-outline-danger
+          is_invalid: btn-outline-success
   reviewees:
     orgs:
       index:
