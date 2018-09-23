@@ -21,3 +21,9 @@ ja:
     views:
       private: 非公開
       public: 公開中
+  reviewees:
+    pulls:
+      index:
+        title: プルリクエスト
+        empty: プルリクエストがありません。
+        set_pulls: 設定する

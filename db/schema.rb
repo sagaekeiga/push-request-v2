@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180916080439) do
+ActiveRecord::Schema.define(version: 20180923081507) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,18 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.index ["reviewee_id"], name: "index_issues_on_reviewee_id"
   end
 
+  create_table "orgs", force: :cascade do |t|
+    t.bigint "remote_id"
+    t.string "login"
+    t.string "avatar_url"
+    t.string "description"
+    t.integer "status"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_orgs_on_deleted_at"
+  end
+
   create_table "pulls", force: :cascade do |t|
     t.bigint "reviewer_id"
     t.bigint "reviewee_id"
@@ -163,6 +175,18 @@ ActiveRecord::Schema.define(version: 20180916080439) do
     t.index ["reviewer_id"], name: "index_review_comments_on_reviewer_id"
   end
 
+  create_table "reviewee_orgs", force: :cascade do |t|
+    t.bigint "reviewee_id"
+    t.bigint "org_id"
+    t.integer "role"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_reviewee_orgs_on_deleted_at"
+    t.index ["org_id"], name: "index_reviewee_orgs_on_org_id"
+    t.index ["reviewee_id"], name: "index_reviewee_orgs_on_reviewee_id"
+  end
+
   create_table "reviewees", force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
@@ -185,6 +209,7 @@ ActiveRecord::Schema.define(version: 20180916080439) do
   create_table "reviewees_github_accounts", force: :cascade do |t|
     t.bigint "reviewee_id"
     t.string "login"
+    t.string "access_token"
     t.integer "owner_id"
     t.string "avatar_url"
     t.string "gravatar_id"

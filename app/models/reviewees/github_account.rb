@@ -3,6 +3,7 @@
 # Table name: reviewees_github_accounts
 #
 #  id                  :bigint(8)        not null, primary key
+#  access_token        :string
 #  avatar_url          :string
 #  company             :string
 #  deleted_at          :datetime
@@ -44,4 +45,22 @@ class Reviewees::GithubAccount < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   belongs_to :reviewee
+  # -------------------------------------------------------------------------------
+  # ClassMethods
+  # -------------------------------------------------------------------------------
+  def fetch_orgs!
+    res_orgs = Github::Request.github_exec_fetch_orgs!(self)
+    res_orgs.each do |res_org|
+      res_org =  ActiveSupport::HashWithIndifferentAccess.new(res_org)
+      org = Org.new(
+        avatar_url: res_org[:avatar_url],
+        description: res_org[:description],
+        login: res_org[:login],
+        remote_id: res_org[:id]
+      )
+      org.save!
+      reviewee_org = self.reviewee.reviewee_orgs.new(org: org)
+      reviewee_org.save!
+    end
+  end
 end

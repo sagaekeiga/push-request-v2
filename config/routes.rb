@@ -43,6 +43,7 @@ Rails.application.routes.draw do
     namespace :reviewees do
       get :dashboard, :repos
       get 'settings/integrations'
+      resources :orgs, only: %i(index update)
       resources :pulls, only: %i(index)
       resources :repos, only: %i(update) do
         resources :contents, only: %i(index show update)

@@ -104,7 +104,8 @@ class Content < ApplicationRecord
     ActiveRecord::Base.transaction do
       res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
       Content.fetch_top_dirs_and_files(repo, res_contents)
-      return true unless repo.contents
+      top_dirs_and_files = repo.contents
+      return true unless top_dirs_and_files
       1.step do |index|
         parents =
           if index == 1

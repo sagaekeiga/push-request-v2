@@ -1,0 +1,31 @@
+ja:
+  activerecord:
+    models:
+      org: 組織
+    attributes:
+      org:
+        id: ID
+        avatar_url: アバター
+        description: 説明
+        login: 組織名
+        status: ステータス
+        remote_id: GitHub ID
+  enums:
+    org:
+      status:
+        is_valid: 有効
+        is_invalid: 無効
+  orgs:
+    views:
+      buttons:
+        texts:
+          is_valid: 有効化する
+          is_invalid: 無効化する
+        colors:
+          is_valid: btn-outline-success
+          is_invalid: btn-outline-danger
+  reviewees:
+    orgs:
+      index:
+        title: 組織
+        blank: 登録されている組織はありません

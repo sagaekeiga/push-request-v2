@@ -10,7 +10,7 @@ class ConnectsController < ApplicationController
       @reviewee = current_reviewee.connect_to_github(request.env['omniauth.auth']) if reviewee_signed_in?
       @reviewer = current_reviewer.connect_to_github(request.env['omniauth.auth']) if reviewer_signed_in?
     end
-    return redirect_to reviewees_repos_url, success: t('views.github.connect.success') if reviewee_signed_in?
+    return redirect_to :reviewees_orgs, success: t('views.github.connect.success') if reviewee_signed_in?
     return redirect_to reviewers_dashboard_url, success: t('views.github.connect.success') if reviewer_signed_in?
   rescue => e
     Rails.logger.error e
