@@ -19,7 +19,7 @@
               %h3= @issue.title
             .panel.panel-primary
               .panel-body
-                .md-wrapper= markdown(@issue.body)
+                .md-wrapper= markdown("#{@issue.body}")
             %button{ type: 'button',
               class: "btn #{t("views.statuses.buttons.#{@issue.publish}")} update-issue-button",
               'issue-id': @issue.id,
