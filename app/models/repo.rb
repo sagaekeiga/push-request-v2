@@ -62,7 +62,12 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:loading]
   attribute :private, default: false
-
+  # -------------------------------------------------------------------------------
+  # Scopes
+  # -------------------------------------------------------------------------------
+  scope :owned_by_orgs, lambda { |reviewee|
+    where(resource_id: reviewee.orgs.owner.pluck(:id), resource_type: 'Org')
+  }
   #
   # リモートのレポジトリを保存する or リストアする
   #
