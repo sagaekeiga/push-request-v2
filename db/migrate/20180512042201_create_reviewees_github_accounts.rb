@@ -3,6 +3,7 @@ class CreateRevieweesGithubAccounts < ActiveRecord::Migration[5.1]
     create_table :reviewees_github_accounts do |t|
       t.belongs_to :reviewee, foreign_key: true
       t.string :login
+      t.string :access_token
       t.integer :owner_id
       t.string :avatar_url
       t.string :gravatar_id

@@ -1,61 +1,59 @@
 # == Schema Information
 #
-# Table name: wikis
+# Table name: orgs
 #
-#  id            :bigint(8)        not null, primary key
-#  body          :text
-#  deleted_at    :datetime
-#  resource_type :string
-#  status        :integer
-#  title         :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  repo_id       :bigint(8)
-#  resource_id   :integer
+#  id          :bigint(8)        not null, primary key
+#  avatar_url  :string
+#  deleted_at  :datetime
+#  description :string
+#  login       :string
+#  status      :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  remote_id   :bigint(8)
 #
 # Indexes
 #
-#  index_wikis_on_deleted_at  (deleted_at)
-#  index_wikis_on_repo_id     (repo_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (repo_id => repos.id)
+#  index_orgs_on_deleted_at  (deleted_at)
 #
 
-class Wiki < ApplicationRecord
+class Org < ApplicationRecord
   acts_as_paranoid
-  paginates_per 20
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :resource, polymorphic: true
-  belongs_to :repo
+  has_many :reviewee_orgs, dependent: :destroy
+  has_many :repos, as: :resource
+  has_many :pulls, as: :resource
+  has_many :issues, as: :resource
+  has_many :wikis, as: :resource
+  has_many :commits, as: :resource
   # -------------------------------------------------------------------------------
   # Enumerables
   # -------------------------------------------------------------------------------
-  # 公開状況
+  # 状態
   #
-  # - hidden  : 非公開
-  # - showing : 公開中
+  # - is_invalid : 無効
+  # - is_valid   : 有効
   #
   enum status: {
-    hidden:  1000,
-    showing: 2000
+    is_invalid: 1000,
+    is_valid:   2000
   }
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :title, presence: true
+  validates :remote_id, presence: true, uniqueness: true
+  validates :login, presence: true
+  validates :status, presence: true
+  # -------------------------------------------------------------------------------
+  # Scopes
+  # -------------------------------------------------------------------------------
+  scope :owner, lambda {
+    where(reviewee_orgs: { role: :owner })
+  }
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:hidden]
-  # -------------------------------------------------------------------------------
-  # ClassMethods
-  # -------------------------------------------------------------------------------
-  def switch_status!
-    self.hidden? ? self.showing! : self.hidden!
-    status
-  end
+  attribute :status, default: statuses[:is_invalid]
 end

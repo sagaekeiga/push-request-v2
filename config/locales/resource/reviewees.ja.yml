@@ -26,10 +26,6 @@ ja:
         loading: 取り込み中
         showing: このレポジトリ全体を非公開にする
         hidden: このレポジトリ全体を公開する
-    pulls:
-      title: プルリクエスト
-      empty: プルリクエストがありません。
-      set_pulls: 設定する
     wikis:
       import:
         success: インポートが完了しました

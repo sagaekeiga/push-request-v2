@@ -67,6 +67,16 @@ module Github
         _get "repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}", pull.repo.installation_id, :diff
       end
 
+      # GET 組織取得
+      def github_exec_fetch_orgs!(github_account)
+        _get_credential_resource "user/orgs", :org, github_account.access_token
+      end
+
+      # GET レビュイーの組織内での役割を取得する
+      def github_exec_fetch_role_in_org!(github_account, org_name)
+        _get_credential_resource "orgs/#{org_name}/memberships/#{github_account.login}", :role_in_org, github_account.access_token
+      end
+
       private
 
       #
@@ -96,6 +106,24 @@ module Github
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "token #{get_access_token(installation_id)}",
+          'Accept': set_accept(event)
+        }
+
+        res = get Settings.api.github.api_domain + sub_url, headers: headers
+
+        unless res.code == success_code(event)
+          logger.error "[Github][#{event}] responseCode => #{res.code}"
+          logger.error "[Github][#{event}] responseMessage => #{res.message}"
+          logger.error "[Github][#{event}] subUrl => #{sub_url}"
+        end
+        res
+      end
+
+      # Organazation, Membership
+      def _get_credential_resource(sub_url, event, access_token)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{access_token}",
           'Accept': set_accept(event)
         }
 
@@ -145,13 +173,13 @@ module Github
       # イベントに対応するacceptを返す
       def set_accept(event)
         case event
-        when :review, :get_access_token
+        when *%i(review get_access_token)
           return Settings.api.github.request.header.accept.machine_man_preview_json
-        when :issue_comment
+        when *%i(issue_comment)
           return Settings.api.github.request.header.accept.machine_man_preview
-        when :changed_file, :pull, :content, :issue, :commit, :diff
+        when *%i(changed_file pull content issue commit diff org role_in_org)
           return Settings.api.github.request.header.accept.symmetra_preview_json
-        when :review_comment
+        when *%i(review_comment)
           return Settings.api.github.request.header.accept.squirrel_girl_preview
         end
       end
@@ -159,9 +187,9 @@ module Github
       # 成功時のレスポンスコード
       def success_code(event)
         case event
-        when :issue_comment, :changed_file, :pull, :review_comment
+        when *%i(issue_comment changed_file pull review_comment)
           return Settings.api.created.status.code
-        when :content, :commit, :issue, :diff, :review
+        when *%i(content commit issue diff review org role_in_org)
           return Settings.api.success.status.code
         end
       end

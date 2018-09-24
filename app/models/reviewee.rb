@@ -33,14 +33,18 @@ class Reviewee < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_one :github_account, class_name: 'Reviewees::GithubAccount'
-  has_many :repos
-  has_many :pulls
-  has_many :issues
-  has_many :wikis
+  has_many :repos, as: :resource
+  has_many :pulls, as: :resource
+  has_many :issues, as: :resource
+  has_many :wikis, as: :resource
+  has_many :commits, as: :resource
+  has_many :reviewee_orgs
+  has_many :orgs, through: :reviewee_orgs
 
   def connect_to_github(auth)
-    reviewee_github_account = build_github_account(
+    github_account = build_github_account(
       login: auth['extra']['raw_info']['login'],
+      access_token: auth['credentials']['token'],
       owner_id: auth['extra']['raw_info']['id'],
       avatar_url: auth['extra']['raw_info']['avatar_url'],
       gravatar_id: auth['extra']['raw_info']['gravatar_id'],
@@ -57,6 +61,7 @@ class Reviewee < ApplicationRecord
       reviewee_created_at: auth['extra']['raw_info']['created_at'],
       reviewee_updated_at: auth['extra']['raw_info']['updated_at']
     )
-    reviewee_github_account.save!
+    github_account.save!
+    github_account.fetch_orgs!
   end
 end
