@@ -20,9 +20,9 @@ class ConnectsController < ApplicationController
   end
 
   def setup
-    # if params[:scope].eql?('read:org')
-    #   request.env['omniauth.strategy'].options[:scope] = 'read:org'
-    # end
+    if params[:scope].eql?('read:org')
+      request.env['omniauth.strategy'].options[:scope] = 'read:org'
+    end
     render json: 'Setup complete.', status: 404
   end
 end
