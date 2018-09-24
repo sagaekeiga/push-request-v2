@@ -59,6 +59,7 @@ group :development do
 end
 
 gem 'activemodel-serializers-xml'
+gem 'activerecord-import'
 gem 'acts-as-taggable-on'
 gem 'annotate'
 gem 'audited'
@@ -79,7 +80,7 @@ gem 'factory_bot_rails'
 gem 'faker'
 gem 'faker-japanese'
 gem 'file_validators'
-gem 'fog'
+gem 'fog-aws'
 gem 'font-awesome-sass'
 gem 'google-analytics-rails'
 gem 'guard'

@@ -59,4 +59,9 @@ class Reviewee < ApplicationRecord
     )
     reviewee_github_account.save!
   end
+
+  # -------------------------------------------------------------------------------
+  # Delegate
+  # -------------------------------------------------------------------------------
+  delegate :nickname, to: :github_account
 end

@@ -23,6 +23,16 @@ module Github
         _get "repos/#{repo.full_name}/contents/#{path}", repo.installation_id, :content
       end
 
+      # GET レポジトリブランチの取得
+      def github_exec_fetch_repo_branches!(repo)
+        _get "repos/#{repo.full_name}/branches/master", repo.installation_id, :branch
+      end
+
+      # GET tree構造の情報を取得
+      def github_exec_fetch_trees!(repo, tree_sha)
+        _get "repos/#{repo.full_name}/git/trees/#{tree_sha}", repo.installation_id, :tree
+      end
+
       def github_exec_fetch_changed_file_content!(repo, content_url)
         headers = {
           'User-Agent': 'PushRequest',
@@ -149,10 +159,12 @@ module Github
           return Settings.api.github.request.header.accept.machine_man_preview_json
         when :issue_comment
           return Settings.api.github.request.header.accept.machine_man_preview
-        when :changed_file, :pull, :content, :issue, :commit, :diff
+        when :changed_file, :pull, :content, :issue, :commit, :diff, :tree
           return Settings.api.github.request.header.accept.symmetra_preview_json
         when :review_comment
           return Settings.api.github.request.header.accept.squirrel_girl_preview
+        when :branch
+          return Settings.api.github.request.header.accept.luke_cage_preview_json
         end
       end
 

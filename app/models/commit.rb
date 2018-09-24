@@ -40,6 +40,7 @@ class Commit < ApplicationRecord
   # -------------------------------------------------------------------------------
   def self.fetch!(pull)
     ActiveRecord::Base.transaction do
+
       res_commits = Github::Request.github_exec_fetch_commits!(pull)
       res_commits.each do |res_commit|
         update = true
