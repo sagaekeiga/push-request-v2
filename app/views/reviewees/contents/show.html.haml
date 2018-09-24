@@ -19,7 +19,7 @@
                 %thead
                   %tr
                     %th{ scope: 'col' }
-                - if @file.content
+                - if @content.content
                   - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
                     %tbody
                       %tr

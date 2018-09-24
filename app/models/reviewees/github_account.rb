@@ -53,13 +53,12 @@ class Reviewees::GithubAccount < ApplicationRecord
     Rails.logger.debug res_orgs
     res_orgs.each do |res_org|
       res_org =  ActiveSupport::HashWithIndifferentAccess.new(res_org)
-      org = Org.new(
+      org = Org.find_or_initialize_by(remote_id: res_org[:id])
+      org.update_attributes!(
         avatar_url: res_org[:avatar_url],
         description: res_org[:description],
-        login: res_org[:login],
-        remote_id: res_org[:id]
+        login: res_org[:login]
       )
-      org.save!
       reviewee_org = self.reviewee.reviewee_orgs.new(org: org)
       reviewee_org.set_role(self)
       reviewee_org.save!

@@ -23,7 +23,7 @@ class Reviewees::IssuesController < Reviewees::BaseController
   private
 
   def set_repo
-    @repo = current_reviewee.repos.find(params[:repo_id])
+    @repo = Repo.find(params[:repo_id])
   end
 
    def set_issue

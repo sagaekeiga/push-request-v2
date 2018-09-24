@@ -40,6 +40,9 @@ Rails.application.routes.draw do
       sessions: 'reviewees/sessions'
     }
 
+    #
+    # Reviewee
+    #
     namespace :reviewees do
       get :dashboard, :repos
       get 'settings/integrations'

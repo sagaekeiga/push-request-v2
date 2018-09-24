@@ -14,7 +14,7 @@ class Api::V1::GithubAppsController < ApplicationController
       # Remove
       if params[:github_app][:repositories_removed].present?
         params[:github_app][:repositories_removed].each do |repositories_removed_params|
-          @github_account.reviewee.repos.find_by(remote_id: repositories_removed_params[:id])&.destroy
+          Repo.find_by(remote_id: repositories_removed_params[:id])&.destroy
         end
         status = true
       end
