@@ -2,34 +2,30 @@
 #
 # Table name: pulls
 #
-#  id          :bigint(8)        not null, primary key
-#  base_label  :string
-#  body        :string
-#  deleted_at  :datetime
-#  head_label  :string
-#  number      :integer
-#  status      :integer
-#  title       :string
-#  token       :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  remote_id   :integer
-#  repo_id     :bigint(8)
-#  reviewee_id :bigint(8)
-#  reviewer_id :bigint(8)
+#  id            :bigint(8)        not null, primary key
+#  base_label    :string
+#  body          :string
+#  deleted_at    :datetime
+#  head_label    :string
+#  number        :integer
+#  resource_type :string
+#  status        :integer
+#  title         :string
+#  token         :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  remote_id     :integer
+#  repo_id       :bigint(8)
+#  resource_id   :integer
 #
 # Indexes
 #
-#  index_pulls_on_deleted_at   (deleted_at)
-#  index_pulls_on_repo_id      (repo_id)
-#  index_pulls_on_reviewee_id  (reviewee_id)
-#  index_pulls_on_reviewer_id  (reviewer_id)
+#  index_pulls_on_deleted_at  (deleted_at)
+#  index_pulls_on_repo_id     (repo_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (repo_id => repos.id)
-#  fk_rails_...  (reviewee_id => reviewees.id)
-#  fk_rails_...  (reviewer_id => reviewers.id)
 #
 
 class Pull < ApplicationRecord
@@ -39,8 +35,7 @@ class Pull < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewee
-  belongs_to :reviewer, optional: true
+  belongs_to :resource, polymorphic: true
   belongs_to :repo
   has_many :changed_files, dependent: :destroy
   has_many :reviews, dependent: :destroy
@@ -93,12 +88,12 @@ class Pull < ApplicationRecord
       res_pulls.each do |res_pull|
         pull = repo.pulls.with_deleted.find_or_initialize_by(
           remote_id: res_pull['id'],
-          reviewee: repo.reviewee
+          resource_type: repo.resource_type,
+          resource_id: repo.resource_id
         )
         pull.update_attributes!(
           remote_id:  res_pull['id'],
           number:     res_pull['number'],
-          reviewee:   repo.reviewee,
           title:      res_pull['title'],
           body:       res_pull['body'],
           head_label: res_pull['head']['label'],

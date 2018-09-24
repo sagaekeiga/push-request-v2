@@ -4,6 +4,6 @@ class RevieweesController < Reviewees::BaseController
   end
 
   def repos
-    @repos = current_reviewee.repos.order(created_at: :desc).page(params[:page])
+    @repos = current_reviewee.repos.or(Repo.owned_by_orgs(current_reviewee)).order(created_at: :desc).page(params[:page])
   end
 end

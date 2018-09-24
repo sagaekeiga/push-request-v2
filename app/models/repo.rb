@@ -7,21 +7,17 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  resource_type   :string
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  installation_id :bigint(8)
 #  remote_id       :integer
-#  reviewee_id     :bigint(8)
+#  resource_id     :integer
 #
 # Indexes
 #
-#  index_repos_on_deleted_at   (deleted_at)
-#  index_repos_on_reviewee_id  (reviewee_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (reviewee_id => reviewees.id)
+#  index_repos_on_deleted_at  (deleted_at)
 #
 
 class Repo < ApplicationRecord
@@ -30,7 +26,7 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewee
+  belongs_to :resource, polymorphic: true
   has_many :pulls, dependent: :destroy
   has_many :skillings, dependent: :destroy, as: :resource
   has_many :skills, through: :skillings
@@ -66,7 +62,12 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:loading]
   attribute :private, default: false
-
+  # -------------------------------------------------------------------------------
+  # Scopes
+  # -------------------------------------------------------------------------------
+  scope :owned_by_orgs, lambda { |reviewee|
+    where(resource_id: reviewee.orgs.owner.pluck(:id), resource_type: 'Org')
+  }
   #
   # リモートのレポジトリを保存する or リストアする
   #
@@ -74,24 +75,34 @@ class Repo < ApplicationRecord
   #
   # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
   #
-  def self.fetch!(repositories_params)
-    repos =
-      if repositories_params['repositories_added'].present?
-        repositories_params['repositories_added']
+  def self.fetch!(params)
+    resource_type = params['installation']['account']['type'].eql?('User') ? 'Reviewee' : 'Org'
+    resource =
+      if resource_type.eql?('Reviewee')
+        Reviewees::GithubAccount.find_by(owner_id: params['installation']['account']['id']).reviewee
       else
-        repositories_params['repositories']
+        Org.find_by(remote_id: params['installation']['account']['id'])
+      end
+    return true if resource.nil?
+    repos =
+      if params['repositories_added'].present?
+        params['repositories_added']
+      else
+        params['repositories']
       end
     repos.each do |repository|
       begin
         ActiveRecord::Base.transaction do
-          repo = with_deleted.find_or_create_by(remote_id: repository['id'])
+          repository = ActiveSupport::HashWithIndifferentAccess.new(repository)
+          repo = with_deleted.find_or_create_by(remote_id: repository[:id])
           repo.restore if repo&.deleted?
           repo.update_attributes!(
-            remote_id: repository['id'],                               # レポジトリID
-            name: repository['name'],                                  # レポジトリ名
-            full_name: repository['full_name'],                        # ニックネーム + レポジトリ名
-            private: repository['private'],                            # プライベート
-            installation_id: repositories_params['installation']['id'] # GitHub AppのインストールID
+            resource_type: resource_type,
+            resource_id: resource.id,
+            name: repository[:name],
+            full_name: repository[:full_name],
+            private: repository[:private],
+            installation_id: params['installation']['id']
           )
           FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
@@ -112,7 +123,7 @@ class Repo < ApplicationRecord
     Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 
-  def import_wikis!(file_params, reviewee)
+  def import_wikis!(file_params, resource)
     ActiveRecord::Base.transaction do
       wikis.delete_all
       zipfile = file_params
@@ -125,7 +136,8 @@ class Repo < ApplicationRecord
             entry.extract(file.path) { true }
             body = file.read
             wiki = wikis.new(
-              reviewee: reviewee,
+              resource_type: resource.class.to_s,
+              resource_id: resource.id,
               title: @title,
               body: body
             )

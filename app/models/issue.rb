@@ -2,29 +2,28 @@
 #
 # Table name: issues
 #
-#  id          :bigint(8)        not null, primary key
-#  body        :text
-#  deleted_at  :datetime
-#  number      :integer
-#  publish     :integer
-#  status      :integer
-#  title       :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  remote_id   :bigint(8)
-#  repo_id     :bigint(8)
-#  reviewee_id :bigint(8)
+#  id            :bigint(8)        not null, primary key
+#  body          :text
+#  deleted_at    :datetime
+#  number        :integer
+#  publish       :integer
+#  resource_type :string
+#  status        :integer
+#  title         :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  remote_id     :bigint(8)
+#  repo_id       :bigint(8)
+#  resource_id   :integer
 #
 # Indexes
 #
-#  index_issues_on_deleted_at   (deleted_at)
-#  index_issues_on_repo_id      (repo_id)
-#  index_issues_on_reviewee_id  (reviewee_id)
+#  index_issues_on_deleted_at  (deleted_at)
+#  index_issues_on_repo_id     (repo_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (repo_id => repos.id)
-#  fk_rails_...  (reviewee_id => reviewees.id)
 #
 
 class Issue < ApplicationRecord
@@ -33,7 +32,7 @@ class Issue < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewee
+  belongs_to :resource, polymorphic: true
   belongs_to :repo
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -76,7 +75,8 @@ class Issue < ApplicationRecord
       res_issues.each do |res_issue|
         next if res_issue.has_key?('pull_request')
         issue = repo.issues.find_or_initialize_by(
-          reviewee: repo.reviewee,
+          resource_type: repo.resource_type,
+          resource_id: repo.resource_id,
           remote_id: res_issue['id'],
           number: res_issue['number']
         )

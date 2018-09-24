@@ -1,7 +1,8 @@
 class CreateCommits < ActiveRecord::Migration[5.1]
   def change
     create_table :commits do |t|
-      t.belongs_to :reviewee, foreign_key: true
+      t.integer :resource_id
+      t.string  :resource_type
       t.belongs_to :pull, foreign_key: true
       t.string :sha
       t.string :message

@@ -51,7 +51,8 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   end
 
   create_table "commits", force: :cascade do |t|
-    t.bigint "reviewee_id"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.bigint "pull_id"
     t.string "sha"
     t.string "message"
@@ -60,7 +61,6 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_commits_on_deleted_at"
     t.index ["pull_id"], name: "index_commits_on_pull_id"
-    t.index ["reviewee_id"], name: "index_commits_on_reviewee_id"
   end
 
   create_table "content_trees", force: :cascade do |t|
@@ -73,7 +73,8 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   end
 
   create_table "contents", force: :cascade do |t|
-    t.bigint "reviewee_id"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.bigint "repo_id"
     t.integer "file_type"
     t.integer "status"
@@ -87,12 +88,12 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_contents_on_deleted_at"
     t.index ["repo_id"], name: "index_contents_on_repo_id"
-    t.index ["reviewee_id"], name: "index_contents_on_reviewee_id"
   end
 
   create_table "issues", force: :cascade do |t|
+    t.integer "resource_id"
+    t.string "resource_type"
     t.bigint "repo_id"
-    t.bigint "reviewee_id"
     t.bigint "remote_id"
     t.integer "number"
     t.integer "status"
@@ -104,7 +105,6 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_issues_on_deleted_at"
     t.index ["repo_id"], name: "index_issues_on_repo_id"
-    t.index ["reviewee_id"], name: "index_issues_on_reviewee_id"
   end
 
   create_table "orgs", force: :cascade do |t|
@@ -120,9 +120,9 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   end
 
   create_table "pulls", force: :cascade do |t|
-    t.bigint "reviewer_id"
-    t.bigint "reviewee_id"
     t.bigint "repo_id"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.integer "remote_id"
     t.integer "number"
     t.string "title"
@@ -136,12 +136,11 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_pulls_on_deleted_at"
     t.index ["repo_id"], name: "index_pulls_on_repo_id"
-    t.index ["reviewee_id"], name: "index_pulls_on_reviewee_id"
-    t.index ["reviewer_id"], name: "index_pulls_on_reviewer_id"
   end
 
   create_table "repos", force: :cascade do |t|
-    t.bigint "reviewee_id"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.integer "remote_id"
     t.string "name"
     t.string "full_name"
@@ -152,7 +151,6 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_repos_on_deleted_at"
-    t.index ["reviewee_id"], name: "index_repos_on_reviewee_id"
   end
 
   create_table "review_comments", force: :cascade do |t|
@@ -317,7 +315,8 @@ ActiveRecord::Schema.define(version: 20180923081507) do
 
   create_table "wikis", force: :cascade do |t|
     t.bigint "repo_id"
-    t.bigint "reviewee_id"
+    t.integer "resource_id"
+    t.string "resource_type"
     t.string "title"
     t.text "body"
     t.integer "status"
@@ -326,21 +325,14 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_wikis_on_deleted_at"
     t.index ["repo_id"], name: "index_wikis_on_repo_id"
-    t.index ["reviewee_id"], name: "index_wikis_on_reviewee_id"
   end
 
   add_foreign_key "changed_files", "commits"
   add_foreign_key "changed_files", "pulls"
   add_foreign_key "commits", "pulls"
-  add_foreign_key "commits", "reviewees"
   add_foreign_key "contents", "repos"
-  add_foreign_key "contents", "reviewees"
   add_foreign_key "issues", "repos"
-  add_foreign_key "issues", "reviewees"
   add_foreign_key "pulls", "repos"
-  add_foreign_key "pulls", "reviewees"
-  add_foreign_key "pulls", "reviewers"
-  add_foreign_key "repos", "reviewees"
   add_foreign_key "review_comments", "changed_files"
   add_foreign_key "review_comments", "reviewers"
   add_foreign_key "review_comments", "reviews"
@@ -350,5 +342,4 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   add_foreign_key "reviews", "reviewers"
   add_foreign_key "skillings", "skills"
   add_foreign_key "wikis", "repos"
-  add_foreign_key "wikis", "reviewees"
 end

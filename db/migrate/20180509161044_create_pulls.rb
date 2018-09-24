@@ -1,9 +1,9 @@
 class CreatePulls < ActiveRecord::Migration[5.1]
   def change
     create_table :pulls do |t|
-      t.belongs_to :reviewer, foreign_key: true
-      t.belongs_to :reviewee, foreign_key: true
       t.belongs_to :repo, foreign_key: true
+      t.integer :resource_id
+      t.string  :resource_type
       t.integer :remote_id
       t.integer :number
       t.string :title

@@ -2,25 +2,24 @@
 #
 # Table name: commits
 #
-#  id          :bigint(8)        not null, primary key
-#  deleted_at  :datetime
-#  message     :string
-#  sha         :string
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  pull_id     :bigint(8)
-#  reviewee_id :bigint(8)
+#  id            :bigint(8)        not null, primary key
+#  deleted_at    :datetime
+#  message       :string
+#  resource_type :string
+#  sha           :string
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  pull_id       :bigint(8)
+#  resource_id   :integer
 #
 # Indexes
 #
-#  index_commits_on_deleted_at   (deleted_at)
-#  index_commits_on_pull_id      (pull_id)
-#  index_commits_on_reviewee_id  (reviewee_id)
+#  index_commits_on_deleted_at  (deleted_at)
+#  index_commits_on_pull_id     (pull_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (pull_id => pulls.id)
-#  fk_rails_...  (reviewee_id => reviewees.id)
 #
 
 class Commit < ApplicationRecord
@@ -28,7 +27,7 @@ class Commit < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewee
+  belongs_to :resource, polymorphic: true
   belongs_to :pull
   has_many :changed_files, dependent: :destroy
   # -------------------------------------------------------------------------------
@@ -45,7 +44,8 @@ class Commit < ApplicationRecord
         update = true
         commit = pull.commits.with_deleted.find_or_initialize_by(
           sha: res_commit['sha'],
-          reviewee: pull.repo.reviewee
+          resource_type: pull.repo.resource_type,
+          resource_id: pull.repo.resource_id,
         )
         update = false unless commit.persisted?
         commit.restore if commit.deleted?
