@@ -1,7 +1,7 @@
 class Reviewees::OrgsController < Reviewees::BaseController
   before_action :set_org, only: %i(update)
   def index
-    @orgs = current_reviewee.orgs
+    @orgs = current_reviewee.orgs.owner
   end
 
   def update

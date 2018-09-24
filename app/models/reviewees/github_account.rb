@@ -50,6 +50,7 @@ class Reviewees::GithubAccount < ApplicationRecord
   # -------------------------------------------------------------------------------
   def fetch_orgs!
     res_orgs = Github::Request.github_exec_fetch_orgs!(self)
+    Rails.logger.debug res_orgs
     res_orgs.each do |res_org|
       res_org =  ActiveSupport::HashWithIndifferentAccess.new(res_org)
       org = Org.new(
@@ -60,6 +61,7 @@ class Reviewees::GithubAccount < ApplicationRecord
       )
       org.save!
       reviewee_org = self.reviewee.reviewee_orgs.new(org: org)
+      reviewee_org.set_role(self)
       reviewee_org.save!
     end
   end
