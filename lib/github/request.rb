@@ -72,6 +72,11 @@ module Github
         _get_credential_resource "user/orgs", :org, github_account.access_token
       end
 
+      # GET レビュイーの組織内での役割を取得する
+      def github_exec_fetch_role_in_org!(github_account, org_name)
+        _get_credential_resource "orgs/#{org_name}/memberships/#{github_account.login}", :role_in_org, github_account.access_token
+      end
+
       private
 
       #
@@ -114,7 +119,7 @@ module Github
         res
       end
 
-      # Organazation
+      # Organazation, Membership
       def _get_credential_resource(sub_url, event, access_token)
         headers = {
           'User-Agent': 'PushRequest',
@@ -172,7 +177,7 @@ module Github
           return Settings.api.github.request.header.accept.machine_man_preview_json
         when *%i(issue_comment)
           return Settings.api.github.request.header.accept.machine_man_preview
-        when *%i(changed_file pull content issue commit diff org)
+        when *%i(changed_file pull content issue commit diff org role_in_org)
           return Settings.api.github.request.header.accept.symmetra_preview_json
         when *%i(review_comment)
           return Settings.api.github.request.header.accept.squirrel_girl_preview
@@ -184,7 +189,7 @@ module Github
         case event
         when *%i(issue_comment changed_file pull review_comment)
           return Settings.api.created.status.code
-        when *%i(content commit issue diff review org)
+        when *%i(content commit issue diff review org role_in_org)
           return Settings.api.success.status.code
         end
       end

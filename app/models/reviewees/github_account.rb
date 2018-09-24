@@ -61,6 +61,7 @@ class Reviewees::GithubAccount < ApplicationRecord
       )
       org.save!
       reviewee_org = self.reviewee.reviewee_orgs.new(org: org)
+      reviewee_org.set_role(self)
       reviewee_org.save!
     end
   end

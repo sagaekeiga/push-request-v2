@@ -47,6 +47,12 @@ class Org < ApplicationRecord
   validates :login, presence: true
   validates :status, presence: true
   # -------------------------------------------------------------------------------
+  # Scopes
+  # -------------------------------------------------------------------------------
+  scope :owner, lambda {
+    where(reviewee_orgs: { role: :owner })
+  }
+  # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:is_invalid]
