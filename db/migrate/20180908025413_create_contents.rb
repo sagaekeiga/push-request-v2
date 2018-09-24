@@ -1,7 +1,8 @@
 class CreateContents < ActiveRecord::Migration[5.1]
   def change
     create_table :contents do |t|
-      t.belongs_to :reviewee, foreign_key: true
+      t.integer :resource_id
+      t.string  :resource_type
       t.belongs_to :repo, foreign_key: true
       t.integer :file_type
       t.integer :status

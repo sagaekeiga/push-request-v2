@@ -33,10 +33,11 @@ class Reviewee < ApplicationRecord
   # Relations
   # -------------------------------------------------------------------------------
   has_one :github_account, class_name: 'Reviewees::GithubAccount'
-  has_many :repos
-  has_many :pulls
-  has_many :issues
-  has_many :wikis
+  has_many :repos, as: :resource
+  has_many :pulls, as: :resource
+  has_many :issues, as: :resource
+  has_many :wikis, as: :resource
+  has_many :commits, as: :resource
   has_many :reviewee_orgs
   has_many :orgs, through: :reviewee_orgs
 

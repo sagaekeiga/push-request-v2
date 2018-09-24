@@ -27,6 +27,10 @@ class Reviewees::IssuesController < Reviewees::BaseController
   end
 
    def set_issue
-     @issue = @repo.issues.find_by(reviewee: current_reviewee, id: params[:id])
+     @issue = @repo.issues.find_by(
+       resource_type: 'Reviewee',
+       resource_id: current_reviewee.id,
+       id: params[:id]
+     )
    end
 end

@@ -7,21 +7,17 @@
 #  full_name       :string
 #  name            :string
 #  private         :boolean
+#  resource_type   :string
 #  status          :integer
 #  created_at      :datetime         not null
 #  updated_at      :datetime         not null
 #  installation_id :bigint(8)
 #  remote_id       :integer
-#  reviewee_id     :bigint(8)
+#  resource_id     :integer
 #
 # Indexes
 #
-#  index_repos_on_deleted_at   (deleted_at)
-#  index_repos_on_reviewee_id  (reviewee_id)
-#
-# Foreign Keys
-#
-#  fk_rails_...  (reviewee_id => reviewees.id)
+#  index_repos_on_deleted_at  (deleted_at)
 #
 
 FactoryBot.define do

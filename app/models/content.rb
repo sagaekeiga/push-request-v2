@@ -2,30 +2,29 @@
 #
 # Table name: contents
 #
-#  id          :bigint(8)        not null, primary key
-#  content     :text
-#  deleted_at  :datetime
-#  file_type   :integer
-#  html_url    :string
-#  name        :string
-#  path        :string
-#  size        :string
-#  status      :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
-#  repo_id     :bigint(8)
-#  reviewee_id :bigint(8)
+#  id            :bigint(8)        not null, primary key
+#  content       :text
+#  deleted_at    :datetime
+#  file_type     :integer
+#  html_url      :string
+#  name          :string
+#  path          :string
+#  resource_type :string
+#  size          :string
+#  status        :integer
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
+#  repo_id       :bigint(8)
+#  resource_id   :integer
 #
 # Indexes
 #
-#  index_contents_on_deleted_at   (deleted_at)
-#  index_contents_on_repo_id      (repo_id)
-#  index_contents_on_reviewee_id  (reviewee_id)
+#  index_contents_on_deleted_at  (deleted_at)
+#  index_contents_on_repo_id     (repo_id)
 #
 # Foreign Keys
 #
 #  fk_rails_...  (repo_id => repos.id)
-#  fk_rails_...  (reviewee_id => reviewees.id)
 #
 
 class Content < ApplicationRecord
@@ -33,7 +32,7 @@ class Content < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
-  belongs_to :reviewee
+  belongs_to :resource, polymorphic: true
   belongs_to :repo
   # 自己結合
   has_one :parent_tree, class_name: 'ContentTree', foreign_key: :child_id
@@ -69,7 +68,7 @@ class Content < ApplicationRecord
   validates :path, presence: true
   validates :size, presence: true
   validates :file_type, presence: true
-  validates :reviewee, uniqueness: { scope: %i(repo path file_type) }, on: %i(create)
+  validates :resource_type, uniqueness: { scope: %i(repo path file_type resource_id) }, on: %i(create)
 
   # -------------------------------------------------------------------------------
   # Attributes
@@ -165,17 +164,18 @@ class Content < ApplicationRecord
   def self.fetch_single_content!(repo, res_content)
     res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
     content = repo.contents.with_deleted.find_or_initialize_by(
-      path:     res_content['path'],
-      name:     res_content['name'],
-      reviewee: repo.reviewee
+      path: res_content['path'],
+      name: res_content['name'],
+      resource_type: repo.resource_type,
+      resource_id: repo.resource_id
     )
     content.set_file_type_by(res_content['type'])
     content.update_attributes!(
-      content:   res_content['content'],
-      html_url:  res_content['html_url'],
-      name:      res_content['name'],
-      path:      res_content['path'],
-      size:      res_content['size']
+      content: res_content['content'],
+      html_url: res_content['html_url'],
+      name: res_content['name'],
+      path: res_content['path'],
+      size: res_content['size']
     )
     content
   end
@@ -193,7 +193,7 @@ class Content < ApplicationRecord
   # 選択したディレクトリ配下もそのディレクトリと同じ公開ステータスに
   def update_children_status
     return if children.includes(:children).blank?
-    children.includes(:repo, :reviewee).each do |child|
+    children.includes(:repo).each do |child|
       child.update(status: status)
     end
   end
