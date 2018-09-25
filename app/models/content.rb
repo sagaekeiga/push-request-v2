@@ -34,7 +34,7 @@ class Content < ApplicationRecord
   # -------------------------------------------------------------------------------
   belongs_to :resource, polymorphic: true
   belongs_to :repo
-  # 自己結合
+  # ファイルツリー構造
   has_one :parent_tree, class_name: 'ContentTree', foreign_key: :child_id
   has_one :parent,      through: :parent_tree, source: :parent
 

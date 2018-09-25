@@ -41,6 +41,12 @@ class Reviewee < ApplicationRecord
   has_many :reviewee_orgs
   has_many :orgs, through: :reviewee_orgs
 
+  has_many :passive_memberships, class_name: 'Membership', foreign_key: 'owner_id', dependent: :destroy
+  has_one :owner, through: :passive_memberships, source: :owner
+
+  has_many :active_memberships, class_name: 'Membership', foreign_key: 'member_id', dependent: :destroy
+  has_many :members, through: :active_memberships,  source: :member
+
   def connect_to_github(auth)
     github_account = build_github_account(
       login: auth['extra']['raw_info']['login'],
