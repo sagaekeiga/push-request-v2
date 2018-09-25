@@ -66,9 +66,11 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   create_table "content_trees", force: :cascade do |t|
     t.bigint "parent_id"
     t.bigint "child_id"
+    t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["child_id"], name: "index_content_trees_on_child_id"
+    t.index ["deleted_at"], name: "index_content_trees_on_deleted_at"
     t.index ["parent_id"], name: "index_content_trees_on_parent_id"
   end
 

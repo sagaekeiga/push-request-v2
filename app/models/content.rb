@@ -38,7 +38,7 @@ class Content < ApplicationRecord
   has_one :parent_tree, class_name: 'ContentTree', foreign_key: :child_id
   has_one :parent,      through: :parent_tree, source: :parent
 
-  has_many :child_trees,  class_name: 'ContentTree', foreign_key: :parent_id
+  has_many :child_trees,  class_name: 'ContentTree', foreign_key: :parent_id, dependent: :destroy
   has_many :children,     through: :child_trees,  source: :child
   # -------------------------------------------------------------------------------
   # Enumerables
@@ -148,11 +148,11 @@ class Content < ApplicationRecord
         Rails.logger.info 'pass key?'
         next if Settings.contents.prohibited_files.include?(res_content['name'])
         child = Content.fetch_single_content!(repo, res_content)
-        content_tree = ContentTree.find_or_initialize_by(
+        content_tree = ContentTree.with_deleted.find_or_initialize_by(
           parent: self,
           child:  child
         )
-        content_tree.save!
+        content_tree&.deleted? ? content_tree.restore : content_tree.save!
       end
     end
   rescue => e
@@ -163,12 +163,14 @@ class Content < ApplicationRecord
 
   def self.fetch_single_content!(repo, res_content)
     res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
+
     content = repo.contents.with_deleted.find_or_initialize_by(
       path: res_content['path'],
       name: res_content['name'],
       resource_type: repo.resource_type,
       resource_id: repo.resource_id
     )
+    content.restore if content&.deleted?
     content.set_file_type_by(res_content['type'])
     content.update_attributes!(
       content: res_content['content'],
