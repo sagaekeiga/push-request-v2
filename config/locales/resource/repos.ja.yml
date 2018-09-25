@@ -5,4 +5,11 @@ ja:
     attributes:
       repo:
         title: レポジトリ名
-        status: 同期
+        status: ステータス
+        sync: 同期
+  enums:
+    repo:
+      status:
+        loading: 取得中
+        hidden: 非公開
+        showing: 公開中
