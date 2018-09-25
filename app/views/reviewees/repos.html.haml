@@ -11,13 +11,16 @@
         %table.table
           %thead
             %tr
-              %th.col-sm-11= t 'activerecord.attributes.repo.title'
+              %th.col-sm-10= t 'activerecord.attributes.repo.title'
               %th.col-sm-1= t 'activerecord.attributes.repo.status'
+              %th.col-sm-1= t 'activerecord.attributes.repo.sync'
           %tbody
             - @repos.each do |repo|
               %tr
                 %td
                   = link_to repo.full_name, reviewees_repo_contents_path(repo)
+                %td.text-center
+                  = repo.status_i18n
                 %td
                   - if repo.loading?
                     = image_tag 'loading-content', class: 'img-responsive center-block'

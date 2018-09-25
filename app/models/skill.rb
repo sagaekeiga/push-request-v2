@@ -43,10 +43,12 @@ class Skill < ApplicationRecord
   end
 
   def self.fetch!(skill_name, repo)
-    skill = find_by(name: skill_name)
-    skilling = skill.skillings.find_or_create_by!(
+    skill = with_deleted.find_by(name: skill_name)
+    skilling = skill.skillings.find_or_initialize_by(
       resource_type: 'Repo',
       resource_id:   repo.id
     )
+    skilling.save! if skilling.new_record?
+    skilling.restore if skilling.deleted?
   end
 end

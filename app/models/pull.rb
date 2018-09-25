@@ -117,25 +117,16 @@ class Pull < ApplicationRecord
   # pull_requestのeventで発火しリモートの変更を検知して更新する
   def self.update_by_pull_request_event!(params)
     ActiveRecord::Base.transaction do
-      pull = find_by(remote_id: params[:id])
-      if pull.present?
-        pull.update!(
-          title: params[:title],
-          body:  params[:body]
-        )
-        pull.update_status_by!(params[:state])
-      else
-        repo = Repo.find_by(remote_id: params[:head][:repo][:id])
-        pull = create!(
-          remote_id: params['id'],
-          number:    params[:number],
-          title:     params[:title],
-          body:      params[:body],
-          repo:      repo
-        )
-        skill = Skill.fetch!(params[:head][:repo][:language], repo)
-      end
-      return if pull.nil?
+      pull = find_or_initialize_by(remote_id: params[:id])
+      repo = Repo.find_by(remote_id: params[:head][:repo][:id])
+      pull.update_attributes!(
+        title:  params[:title],
+        body:   params[:body],
+        number: params[:number],
+        repo:   repo
+      )
+      pull.update_status_by!(params[:state])
+      skill = Skill.fetch!(params[:head][:repo][:language], repo)
       Commit.fetch!(pull)
     end
     true
