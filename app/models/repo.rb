@@ -104,7 +104,7 @@ class Repo < ApplicationRecord
             private: repository[:private],
             installation_id: params['installation']['id']
           )
-          repo.loading! if repo.hidden?
+          repo.loading! unless repo.loading?
           FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
           Issue.fetch!(repo)
