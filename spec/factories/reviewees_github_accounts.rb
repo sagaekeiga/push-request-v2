@@ -22,7 +22,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  gravatar_id         :string
-#  owner_id            :integer
+#  owner_id            :bigint(8)
 #  reviewee_id         :bigint(8)
 #
 # Indexes
@@ -37,6 +37,10 @@
 
 FactoryBot.define do
   factory :reviewees_github_account, class: 'Reviewees::GithubAccount' do
-    
+    reviewee nil
+    avatar_url 'https://identicons.github.com/pronama.png'
+    email { Faker::Internet.email }
+    owner_id { Faker::Number.number(5) }
+    login { Faker::Name.name }
   end
 end

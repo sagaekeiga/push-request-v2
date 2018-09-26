@@ -47,6 +47,9 @@ Rails.application.routes.draw do
     namespace :reviewees do
       get :dashboard, :repos
       get 'settings/integrations'
+      resources :memberships, only: %i(index create destroy) do
+        post :suggest, on: :collection
+      end
       resources :orgs, only: %i(index update)
       resources :pulls, only: %i(index)
       resources :repos, only: %i(update) do

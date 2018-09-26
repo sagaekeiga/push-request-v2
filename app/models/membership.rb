@@ -36,4 +36,8 @@ class Membership < ApplicationRecord
     invited: 1000,
     agreed:  2000
   }
+  # -------------------------------------------------------------------------------
+  # Attributes
+  # -------------------------------------------------------------------------------
+  attribute :status, default: statuses[:invited]
 end

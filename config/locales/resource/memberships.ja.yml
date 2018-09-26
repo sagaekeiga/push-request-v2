@@ -1,0 +1,31 @@
+ja:
+  activerecord:
+    models:
+      membership: メンバー
+    attributes:
+      membership:
+        id: ID
+        avatar_url: アバター
+        description: 説明
+        login: 組織名
+        status: ステータス
+        remote_id: GitHub ID
+  enums:
+    membership:
+      status:
+        invited: 承認待ち
+        agreed: 参加中
+  memberships:
+    views:
+      buttons:
+        texts:
+          invited: 招待中
+          agreed: 参加中
+        colors:
+          is_valid: btn-outline-danger
+          is_invalid: btn-outline-success
+  reviewees:
+    memberships:
+      index:
+        title: メンバー
+        blank: メンバーはいません

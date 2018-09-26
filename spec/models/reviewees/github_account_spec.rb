@@ -22,7 +22,7 @@
 #  created_at          :datetime         not null
 #  updated_at          :datetime         not null
 #  gravatar_id         :string
-#  owner_id            :integer
+#  owner_id            :bigint(8)
 #  reviewee_id         :bigint(8)
 #
 # Indexes
