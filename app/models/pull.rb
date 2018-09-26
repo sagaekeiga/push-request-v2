@@ -128,6 +128,7 @@ class Pull < ApplicationRecord
       pull.update_status_by!(params[:state])
       skill = Skill.fetch!(params[:head][:repo][:language], repo)
       Commit.fetch!(pull)
+      FetchContentJob.perform_later(pull.repo)
     end
     true
   rescue => e
