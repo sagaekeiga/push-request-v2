@@ -6,8 +6,8 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   def new
     @review = Review.new
     @changed_files = @pull.files_changed.decorate
-    number = @pull.body.match(/#\d+/)&.to_s&.delete('#')
-    @issue = @pull.repo.issues.find_by(number: number&.to_i)
+    numberes = @pull.body.scan(/#\d+/)&.map{ |num| num.delete('#').to_i }
+    @issues = @pull.repo.issues.where(number: numberes)
   end
 
   # POST /reviewers/pulls/:pull_id/reviews
