@@ -30,7 +30,7 @@ FactoryBot.define do
     password              'hogehoge'
     password_confirmation 'hogehoge'
     after(:build) do |reviewee|
-      next if Reviewee.first.nil?
+      next if Reviewee.first.nil? || Reviewee.second.nil?
       reviewee.github_account ||= build(:reviewees_github_account,
         reviewee: reviewee
       )

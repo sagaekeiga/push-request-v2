@@ -1,0 +1,8 @@
+= @member.github_account.name
+さん、こんにちは。
+
+= @owner.github_account.login
+さんから招待されました
+%br
+%br
+= link_to '確認する', Settings.reviewees.memberships.join + "owner_id=#{@owner.id}&member_id=#{@member.id}"
