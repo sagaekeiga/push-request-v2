@@ -95,4 +95,11 @@ class Reviewee < ApplicationRecord
       includes(:repo, :changed_files).
       order(updated_at: :desc)
   end
+
+  def self.auto_complete(keyword, current_reviewee)
+    includes(:github_account).
+      where.not(id: current_reviewee.id).
+      where('email LIKE ?', "#{keyword}%").
+      select{ |reviewee| reviewee.github_account.present? }.first(10)
+  end
 end

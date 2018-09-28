@@ -5,9 +5,7 @@
     .setting-integrations-wrapper
       = render 'reviewees/shared/settings/side_nav'
       .col-sm-8.p-r-0
-        - if @members.blank?
-          = t '.blank'
-        - else
+        - if @members.present?
           %table.table
             %thead
               %tr
@@ -19,8 +17,8 @@
             %tbody
               = render @members
         .invite-member-wrapper
-          %p メンバーを招待する
-          %input.form-control.membership-input{ placeholder: 'メールアドレスかニックネーム', type: 'text' }
+          %p= t '.invite'
+          %input.form-control.membership-input{ placeholder: t('.placeholder'), type: 'text' }
           %table.table.table-hover.text-center.hidden.members-table
             %tbody.members-tbody
 = javascript_pack_tag 'memberships'

@@ -1,6 +1,6 @@
 class Reviewees::MembershipsController < Reviewees::BaseController
   skip_before_action *%i(verify_authenticity_token authenticate_reviewee!), only: %i(create suggest)
-  before_action :set_membership, only: %i(join update)
+  before_action :set_membership, only: %i(update)
   def index
     @members = current_reviewee.members.includes(:github_account)
   end
@@ -23,14 +23,20 @@ class Reviewees::MembershipsController < Reviewees::BaseController
   end
 
   def suggest
-    reviewees = Reviewee.includes(:github_account).where.not(id: current_reviewee.id).where('email LIKE ?', "#{params[:keyword]}%").select{ |reviewee| reviewee.github_account.present? }.first(10)
+    reviewees = Reviewee.auto_complete(params[:keyword], current_reviewee)
     return render json: { reviewees: [] } if reviewees.nil?
     github_accounts = reviewees.map(&:github_account)
     render json: { github_accounts: github_accounts }
   end
 
   def join
-    @owner = Reviewee.find(params[:owner_id])
+    owner_id = JsonWebToken.decode(params[:owner_id]).first['owner_id']
+    member_id = JsonWebToken.decode(params[:member_id]).first['member_id']
+    @membership = Membership.find_by(
+      owner_id: owner_id,
+      member_id: member_id
+    )
+    @owner = Reviewee.find(owner_id)
   end
 
   def update

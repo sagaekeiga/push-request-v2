@@ -28,4 +28,9 @@ ja:
     memberships:
       index:
         title: メンバー
-        blank: メンバーはいません
+        invite: メンバーを招待する
+        placeholder: Githubメールアドレス・ニックネーム
+      join:
+        join: 参加する
+        can_operate_resource: "参加すると %{owner_name} さんのレポジトリ・プルリクエスト・issue・wikiを操作することができるようになります。"
+        invite_you: "%{owner_name} さんがあなたを招待しています。"
