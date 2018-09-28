@@ -4,7 +4,7 @@ class CreateRevieweesGithubAccounts < ActiveRecord::Migration[5.1]
       t.belongs_to :reviewee, foreign_key: true
       t.string :login
       t.string :access_token
-      t.integer :owner_id
+      t.bigint :owner_id
       t.string :avatar_url
       t.string :gravatar_id
       t.string :email

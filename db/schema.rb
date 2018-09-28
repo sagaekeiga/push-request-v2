@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180923081507) do
+ActiveRecord::Schema.define(version: 20180925134835) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -107,6 +107,18 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_issues_on_deleted_at"
     t.index ["repo_id"], name: "index_issues_on_repo_id"
+  end
+
+  create_table "memberships", force: :cascade do |t|
+    t.bigint "owner_id"
+    t.bigint "member_id"
+    t.integer "status"
+    t.datetime "deleted_at"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["deleted_at"], name: "index_memberships_on_deleted_at"
+    t.index ["member_id"], name: "index_memberships_on_member_id"
+    t.index ["owner_id"], name: "index_memberships_on_owner_id"
   end
 
   create_table "orgs", force: :cascade do |t|
@@ -210,7 +222,7 @@ ActiveRecord::Schema.define(version: 20180923081507) do
     t.bigint "reviewee_id"
     t.string "login"
     t.string "access_token"
-    t.integer "owner_id"
+    t.bigint "owner_id"
     t.string "avatar_url"
     t.string "gravatar_id"
     t.string "email"
@@ -255,7 +267,7 @@ ActiveRecord::Schema.define(version: 20180923081507) do
   create_table "reviewers_github_accounts", force: :cascade do |t|
     t.bigint "reviewer_id"
     t.string "login"
-    t.integer "owner_id"
+    t.bigint "owner_id"
     t.string "avatar_url"
     t.string "gravatar_id"
     t.string "email"

@@ -3,7 +3,7 @@ class CreateReviewersGithubAccounts < ActiveRecord::Migration[5.1]
     create_table :reviewers_github_accounts do |t|
       t.belongs_to :reviewer, foreign_key: true
       t.string :login
-      t.integer :owner_id
+      t.bigint :owner_id
       t.string :avatar_url
       t.string :gravatar_id
       t.string :email
