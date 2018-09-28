@@ -117,7 +117,7 @@ class Pull < ApplicationRecord
   # pull_requestのeventで発火しリモートの変更を検知して更新する
   def self.update_by_pull_request_event!(params)
     ActiveRecord::Base.transaction do
-      pull = find_or_initialize_by(remote_id: params[:id])
+      pull = lock.find_or_initialize_by(remote_id: params[:id])
       repo = Repo.find_by(remote_id: params[:head][:repo][:id])
       pull.update_attributes!(
         title:  params[:title],
