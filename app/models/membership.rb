@@ -30,7 +30,7 @@ class Membership < ApplicationRecord
   # 性別
   #
   # - invited : (OwnerがMemberを)招待した
-  # - agreed  : (MemberがOenerを)承認した
+  # - agreed  : (MemberがOwnerを)承認した
   #
   enum status: {
     invited: 1000,
