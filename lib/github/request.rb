@@ -64,7 +64,7 @@ module Github
       # GET ファイル差分取得
       # ref: https://developer.github.com/v3/repos/commits/#compare-two-commits
       def github_exec_fetch_diff!(pull)
-        _get "repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}", pull.repo.installation_id, :diff
+        _get URI.encode("repos/#{pull.repo_full_name}/compare/#{pull.base_label}...#{pull.head_label}"), pull.repo.installation_id, :diff
       end
 
       # GET 組織取得

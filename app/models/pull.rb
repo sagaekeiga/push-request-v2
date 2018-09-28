@@ -123,7 +123,9 @@ class Pull < ApplicationRecord
         title:  params[:title],
         body:   params[:body],
         number: params[:number],
-        repo:   repo
+        repo:   repo,
+        head_label: params['head']['label'],
+        base_label: params['base']['label']
       )
       pull.update_status_by!(params[:state])
       skill = Skill.fetch!(params[:head][:repo][:language], repo)
