@@ -121,6 +121,7 @@ gem 'ransack'
 gem 'google-analytics-rails'
 gem 'sentry-raven'
 gem 'rubyzip', require: 'zip'
+gem 'react-rails'
 group :development, :test do
   gem 'bullet'
   gem 'rails-flog', require: "flog"

@@ -1,6 +1,6 @@
-$(document).on('keyup keydown keypress change', '.membership-input', function () {
-  suggestMembers($(this));
-})
+// $(document).on('keyup keydown keypress change', '.membership-input', function () {
+//   suggestMembers($(this));
+// })
 
 $(document).on('click', '.add-member-btn', function () {
   $(this).attr('disabled', true)
