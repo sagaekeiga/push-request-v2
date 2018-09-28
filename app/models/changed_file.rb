@@ -82,7 +82,7 @@ class ChangedFile < ApplicationRecord
     ActiveRecord::Base.transaction do
       res_diffs = Github::Request.github_exec_fetch_diff!(pull)
       commit = pull.commits.last
-      res_diffs['files'].each do |res_diff|
+      res_diffs['files']&.each do |res_diff|
         changed_file = pull.changed_files.create!(
           commit:        commit,
           event:         :compared,
