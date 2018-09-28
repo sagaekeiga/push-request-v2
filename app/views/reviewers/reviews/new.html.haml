@@ -28,14 +28,15 @@
                     チェック項目はありません。
             #issueTab.tab-pane
               .panel.h-550
-                - if @issue
-                  .page-header
-                    %h4= @issue.title
-                  .panel-body
-                    .md-wrapper= markdown(@issue.body)
-                - else
+                - if @issues.blank?
                   .all-center
                     issueはありません
+                - else
+                  - @issues.each do |issue|
+                    .page-header
+                      %h4= issue.title
+                    .panel-body
+                      .md-wrapper= markdown(issue.body)
             #commitsTab.tab-pane.h-550
               .panel.h-550
                 .all-center Comming Soon
