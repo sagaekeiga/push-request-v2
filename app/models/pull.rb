@@ -117,17 +117,33 @@ class Pull < ApplicationRecord
   # pull_requestのeventで発火しリモートの変更を検知して更新する
   def self.update_by_pull_request_event!(params)
     ActiveRecord::Base.transaction do
-      pull = find_or_initialize_by(remote_id: params[:id])
+      resource_type = params[:head][:user][:type].eql?('User') ? 'Reviewee' : 'Org'
+      resource =
+        if resource_type.eql?('Reviewee')
+          Reviewees::GithubAccount.find_by(owner_id: params[:head][:user][:id]).reviewee
+        else
+          Org.find_by(remote_id: params[:head][:user][:id])
+        end
+      return true if resource.nil?
+      pull = lock.find_or_initialize_by(remote_id: params[:id])
       repo = Repo.find_by(remote_id: params[:head][:repo][:id])
       pull.update_attributes!(
         title:  params[:title],
         body:   params[:body],
         number: params[:number],
-        repo:   repo
+        repo:   repo,
+        resource_type: resource_type,
+        resource_id: resource.id,
+        head_label: params['head']['label'],
+        base_label: params['base']['label']
       )
       pull.update_status_by!(params[:state])
+      # たまに同時作成されて重複が起こる。ここは最新の方を「物理」削除する
+      dup_pulls = Pull.where(remote_id: pull.remote_id)
+      dup_pulls.order(created_at: :desc).last.really_destroy! if dup_pulls.count > 1
       skill = Skill.fetch!(params[:head][:repo][:language], repo)
       Commit.fetch!(pull)
+      FetchContentJob.perform_later(pull.repo) if params[:state].eql?('closed')
     end
     true
   rescue => e
