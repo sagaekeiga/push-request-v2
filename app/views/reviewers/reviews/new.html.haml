@@ -4,7 +4,7 @@
       .page-header{ 'pull-id': @pull.id, 'repo-id': @pull.repo.id }= @pull.title
       - unless @pending_review
         .col-sm-4.p-l-0
-          %i.far.fa-window-close.close-left-side
+          %i.fa.fa-chevron-circle-left.close-left-side
           %ul.nav.nav-tabs
             %li.active
               %a{ 'data-toggle': 'tab', href: '#bodyTab'} チェック項目
@@ -59,7 +59,7 @@
                 %input{ class: 'form-control search-input', 'repo-id': @pull.repo.id, placeholder: '検索' }
         #code_note.col-sm-8.p-r-0
           = form_for [:reviewers, @pull, @review], html: { class: 'form-horizontal', role: 'form' } do |f|
-            %i.fas.fa-caret-right.hidden.open-left-side
+            %i.fa.fa-chevron-circle-right.hidden.open-left-side
             .m-b-1.text-right= render 'submit', f: f
             .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
             .reviews-form-wrapper
