@@ -33,6 +33,18 @@ $(document).on('click', '#submit_review_button', function () {
   $('.loading').removeClass('hidden');
 })
 
+$(document).on('click', '.close-left-side', function () {
+  $('.col-sm-4.p-l-0').addClass('hidden')
+  $('#code_note').removeClass('col-sm-8').addClass('col-sm-12');
+  $('.open-left-side').removeClass('hidden')
+})
+
+$(document).on('click', '.open-left-side', function () {
+  $('.col-sm-4.p-l-0').removeClass('hidden')
+  $('#code_note').removeClass('col-sm-12').addClass('col-sm-8');
+  $('.open-left-side').addClass('hidden')
+})
+
 function hoverColor() {
   $('.hljs-addition').each(function(i, elem) {
     $(elem).css('cursor','pointer');

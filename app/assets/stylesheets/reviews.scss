@@ -227,6 +227,17 @@
   background-color: $bg-color-github-panel;
   margin-top: - $base-margin * 2;
   height: 100%;
+  .close-left-side {
+    font-size: 32px;
+    position: relative;
+    float: right;
+  }
+  .fas{
+    &.fa-caret-right {
+      font-size: 40px;
+      float: left;
+    }
+  }
   .tab-content {
     .tab-pane {
       .h-550 {
