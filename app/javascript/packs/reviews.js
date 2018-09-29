@@ -122,7 +122,7 @@ function createReviewComment(elem) {
     },
     element: elem,
     success: function(data) {
-      marked.setOptions({breaks : true});
+      marked.setOptions({ breaks : true });
       if (data.status === 'success') {
         var panel = elem.closest('.panel');
         panel.empty();
