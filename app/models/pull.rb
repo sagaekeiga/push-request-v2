@@ -133,7 +133,9 @@ class Pull < ApplicationRecord
         number: params[:number],
         repo:   repo,
         resource_type: resource_type,
-        resource_id: resource.id
+        resource_id: resource.id,
+        head_label: params['head']['label'],
+        base_label: params['base']['label']
       )
       pull.update_status_by!(params[:state])
       # たまに同時作成されて重複が起こる。ここは最新の方を「物理」削除する
@@ -141,6 +143,7 @@ class Pull < ApplicationRecord
       dup_pulls.order(created_at: :desc).last.really_destroy! if dup_pulls.count > 1
       skill = Skill.fetch!(params[:head][:repo][:language], repo)
       Commit.fetch!(pull)
+      FetchContentJob.perform_later(pull.repo)
     end
     true
   rescue => e
