@@ -228,20 +228,20 @@
   margin-top: - $base-margin * 2;
   height: 100%;
   .close-left-side {
-    color: #a09a9ae8;
+    color: $color-dark-gray;
     font-size: 23px;
     top: 6px;
     position: relative;
     float: right;
+    cursor: pointer;
   }
-  .fa{
-    &.fa-chevron-circle-right {
-      color: #a09a9ae8;
-      font-size: 23px;
-      top: 9px;
-      position: relative;
-      float: left;
-    }
+  .fa.fa-chevron-circle-right {
+    color: $color-dark-gray;
+    font-size: 23px;
+    top: 9px;
+    position: relative;
+    float: left;
+    cursor: pointer;
   }
   .tab-content {
     .tab-pane {
