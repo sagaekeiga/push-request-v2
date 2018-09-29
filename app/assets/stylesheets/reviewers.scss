@@ -7,4 +7,10 @@
       color: $color-dark-gray;
     }
   }
+  .everywhere {
+    margin: 0 0 20px 0;
+    &.btn {
+      width: 200px;
+    }
+  }
 }
