@@ -18,8 +18,7 @@
               = render @members
         .invite-member-wrapper
           %p= t '.invite'
-          %input.form-control.membership-input{ placeholder: t('.placeholder'), type: 'text' }
           = react_component('AddMemberInput')
           %table.table.table-hover.text-center.hidden.members-table
             %tbody.members-tbody
-= javascript_pack_tag 'memberships'
+-# = javascript_pack_tag 'memberships'
