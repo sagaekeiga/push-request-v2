@@ -153,4 +153,24 @@ class Repo < ApplicationRecord
     Rails.logger.error e.backtrace.join("\n")
     false
   end
+
+  def reviewee?(current_reviewee)
+    resource_type.eql?('Reviewee') && resource_id.eql?(current_reviewee.id)
+  end
+
+  def reviewee_org?(current_reviewee)
+    resource_type.eql?('Org') && current_reviewee.orgs.exists?(id: resource_id)
+  end
+
+  def membership?(current_reviewee)
+    owner =
+      case resource_type
+      when 'Reviewee'
+        Reviewee.find_by(id: resource_id)
+      when 'Org'
+        org = Org.find_by(id: resource_id)
+        org.reviewee_orgs.owner
+      end
+    current_reviewee.owners.exists?(id: owner.id)
+  end
 end

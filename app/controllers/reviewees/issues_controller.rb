@@ -2,6 +2,7 @@ class Reviewees::IssuesController < Reviewees::BaseController
   before_action :set_repo, only: %i(index show update)
   before_action :set_issue, only: %i(index show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
+  before_action :check_reviweee_identity, only: %i(show)
 
   def index
     @issues = @repo.issues
@@ -28,8 +29,8 @@ class Reviewees::IssuesController < Reviewees::BaseController
 
    def set_issue
      @issue = @repo.issues.find_by(
-       resource_type: 'Reviewee',
-       resource_id: current_reviewee.id,
+       resource_type: @repo.resource_type,
+       resource_id: @repo.resource_id,
        id: params[:id]
      )
    end
