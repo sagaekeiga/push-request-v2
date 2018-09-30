@@ -2,4 +2,11 @@
   .panel {
     margin-top: $base-margin;
   }
+  .commit_title {
+    font-weight: bold;
+  }
+  .owner_name {
+    font-weight: bold;
+    font-size: 12px;
+  }
 }
