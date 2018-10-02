@@ -212,7 +212,7 @@ module Github
       def sub_url_for(repo, event)
         case event
         when :issue
-          return "repos/#{repo.full_name}/issues"
+          return "repos/#{repo.full_name}/issues?state=all"
         when :pull
           return "repos/#{repo.full_name}/pulls"
         end
