@@ -105,7 +105,7 @@ class Repo < ApplicationRecord
             installation_id: params['installation']['id']
           )
           repo.loading! unless repo.loading?
-          FetchContentJob.perform_later(repo)
+          # FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
           Issue.fetch!(repo)
         end
@@ -144,6 +144,71 @@ class Repo < ApplicationRecord
             )
             wiki.save!
             file.close!
+          end
+        end
+      end
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
+
+  def import_content!(file_params)
+    ActiveRecord::Base.transaction do
+      zipfile = file_params
+      Zip::File.open(zipfile.path) do |zip|
+        # Rails.logger.debug "===================================================="
+        # zip.glob('**/*') do |item|
+        #   Rails.logger.debug item
+        # end
+        zip.each do |entry|
+          # Rails.logger.debug File.basename(entry.to_s)
+          ext = File.extname(entry.name)
+          # Rails.logger.debug entry.ftype
+          if entry.ftype.eql?(:directory)
+            # Rails.logger.debug entry.path
+            Rails.logger.debug "/* #{entry.name} */"
+            Rails.logger.debug "/* #{File.basename(entry.to_s)} */"
+            # zip.glob("#{entry.name}") do |item|
+            #   Rails.logger.debug item
+            # end
+            # content = Content.new(
+            #   path: entry.name,
+            #   name: File.basename(entry.to_s),
+            #   resource_type: resource_type,
+            #   resource_id: resource_id,
+            #   file_type: :dir
+            # )
+            # content.save!
+            # ContentTree.new(
+            #   parent: @parent_directory,
+            #   child: content
+            # )
+            # @parent_directory = content
+            # Dir.chdir entry.name.chop!
+            # Rails.logger.debug Dir.glob './**/*'
+            next
+          end
+          Tempfile.open([File.basename(entry.to_s), ext]) do |file|
+            # Rails.logger.debug file.read
+            # Rails.logger.debug entry.name
+            # entry.extract(file.path) { true }
+            # body = file.read
+            # content = Content.new(
+            #   content: ,
+            #   file_type
+            # )
+            # wiki = wikis.new(
+            #   resource_type: resource.class.to_s,
+            #   resource_id: resource.id,
+            #   title: @title,
+            #   body: body
+            # )
+            # wiki.save!
+            # file.close!
           end
         end
       end

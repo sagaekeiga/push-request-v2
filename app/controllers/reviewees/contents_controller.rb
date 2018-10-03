@@ -1,5 +1,5 @@
 class Reviewees::ContentsController < Reviewees::BaseController
-  before_action :set_repo, only: %i(index show update)
+  before_action :set_repo, only: %i(index show update import)
   before_action :set_content, only: %i(show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
 
@@ -22,6 +22,12 @@ class Reviewees::ContentsController < Reviewees::BaseController
       @content.children.each(&:hidden!) if @content.children.present?
     end
     render json: { status: @content.status }
+  end
+
+  def import
+    import = @repo.import_content!(params[:file])
+    flash = import ? { success: t('.success') } : { danger: t('.failed') }
+    redirect_to reviewees_repo_wikis_url(@repo), flash
   end
 
   private

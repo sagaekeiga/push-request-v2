@@ -203,4 +203,35 @@ class Content < ApplicationRecord
   def is_sub_dir?
     parent.present? && children.blank?
   end
+
+  def import_contents!(file_params, resource)
+    ActiveRecord::Base.transaction do
+      wikis.delete_all
+      zipfile = file_params
+      Zip::File.open(zipfile.path) do |zip|
+        zip.each do |entry|
+          next unless File.extname(entry.name).eql?('.md')
+          @title = File.basename(entry.name).gsub('.md', '')
+          ext = File.extname(entry.name)
+          Tempfile.open([File.basename(entry.to_s), ext]) do |file|
+            entry.extract(file.path) { true }
+            body = file.read
+            wiki = wikis.new(
+              resource_type: resource.class.to_s,
+              resource_id: resource.id,
+              title: @title,
+              body: body
+            )
+            wiki.save!
+            file.close!
+          end
+        end
+      end
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
 end
