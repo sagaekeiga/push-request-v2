@@ -26,7 +26,7 @@
               .panel-heading= @readme.name
               .panel-body
                 .md-wrapper
-                  = markdown(@readme.decorate.decode_by_base64)
+                  = markdown(@readme.content)
         - else
           = form_with url: import_reviewees_repo_contents_path(@repo), multipart: true, class: 'form-horizontal' do |f|
             .form-group

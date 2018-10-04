@@ -23,6 +23,7 @@
 class Repo < ApplicationRecord
   acts_as_paranoid
   paginates_per 10
+  require 'zip'
   # -------------------------------------------------------------------------------
   # Relations
   # -------------------------------------------------------------------------------
@@ -105,7 +106,6 @@ class Repo < ApplicationRecord
             installation_id: params['installation']['id']
           )
           repo.loading! unless repo.loading?
-          # FetchContentJob.perform_later(repo)
           Pull.fetch!(repo)
           Issue.fetch!(repo)
         end
@@ -160,55 +160,69 @@ class Repo < ApplicationRecord
     ActiveRecord::Base.transaction do
       zipfile = file_params
       Zip::File.open(zipfile.path) do |zip|
-        # Rails.logger.debug "===================================================="
-        # zip.glob('**/*') do |item|
-        #   Rails.logger.debug item
-        # end
-        zip.each do |entry|
-          # Rails.logger.debug File.basename(entry.to_s)
-          ext = File.extname(entry.name)
-          # Rails.logger.debug entry.ftype
-          if entry.ftype.eql?(:directory)
-            # Rails.logger.debug entry.path
-            Rails.logger.debug "/* #{entry.name} */"
-            Rails.logger.debug "/* #{File.basename(entry.to_s)} */"
-            # zip.glob("#{entry.name}") do |item|
-            #   Rails.logger.debug item
-            # end
-            # content = Content.new(
-            #   path: entry.name,
-            #   name: File.basename(entry.to_s),
-            #   resource_type: resource_type,
-            #   resource_id: resource_id,
-            #   file_type: :dir
-            # )
-            # content.save!
-            # ContentTree.new(
-            #   parent: @parent_directory,
-            #   child: content
-            # )
-            # @parent_directory = content
-            # Dir.chdir entry.name.chop!
-            # Rails.logger.debug Dir.glob './**/*'
-            next
+          # トップディレクトリ
+        zip.each_with_index do |entry, index|
+          break unless index.eql?(0)
+          zip.glob(entry.name + '*').each do |top_dir|
+            next if Settings.contents.prohibited_files.include?(File.basename(top_dir.to_s))
+            Rails.logger.debug top_dir.ftype
+            file_type = top_dir.ftype.eql?(:directory) ? :dir : :file
+            @parent = Content.new(
+              path: top_dir.name,
+              name: File.basename(top_dir.to_s),
+              content: file_type.eql?(:dir) ? nil : top_dir.get_input_stream.read,
+              resource_type: resource_type,
+              resource_id: resource_id,
+              file_type: file_type,
+              repo: self
+            )
+            @parent.save
           end
-          Tempfile.open([File.basename(entry.to_s), ext]) do |file|
-            # Rails.logger.debug file.read
-            # Rails.logger.debug entry.name
-            # entry.extract(file.path) { true }
-            # body = file.read
-            # content = Content.new(
-            #   content: ,
-            #   file_type
-            # )
-            # wiki = wikis.new(
-            #   resource_type: resource.class.to_s,
-            #   resource_id: resource.id,
-            #   title: @title,
-            #   body: body
-            # )
-            # wiki.save!
-            # file.close!
+        end
+        # トップディレクトリの一個下のサブディレクリ
+        self.contents.dir.each do |top_dir|
+          zip.glob(top_dir.path + '*').each do |top_dir_or_file|
+            file_type = top_dir_or_file.ftype.eql?(:directory) ? :dir : :file
+            child = Content.new(
+              path: top_dir_or_file.name,
+              name: File.basename(top_dir_or_file.to_s),
+              content: file_type.eql?(:dir) ? nil : top_dir_or_file.get_input_stream.read,
+              resource_type: resource_type,
+              resource_id: resource_id,
+              file_type: file_type,
+              repo: self
+            )
+            child.save
+            content_tree = ContentTree.new(
+              parent: top_dir,
+              child: child
+            )
+            content_tree.save
+          end
+        end
+        loop do
+          parents = self.contents.dir.select { |content| content.is_sub_dir? }
+          break if parents.blank?
+          # サブディレクトリ・ファイルの取得
+          parents.each do |parent|
+            zip.glob(parent.path + '*').each do |dir_or_file|
+              file_type = dir_or_file.ftype.eql?(:directory) ? :dir : :file
+              child = Content.new(
+                path: dir_or_file.name,
+                name: File.basename(dir_or_file.to_s),
+                content: file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read,
+                resource_type: resource_type,
+                resource_id: resource_id,
+                file_type: file_type,
+                repo: self
+              )
+              child.save
+              content_tree = ContentTree.new(
+                parent: parent,
+                child: child
+              )
+              content_tree.save
+            end
           end
         end
       end
