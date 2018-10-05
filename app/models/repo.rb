@@ -169,64 +169,18 @@ class Repo < ApplicationRecord
           break unless index.eql?(0)
           zip.glob(entry.name + '*').each do |top_dir|
             next if Settings.contents.prohibited_folders.include?(File.basename(top_dir.to_s))
-            file_type = top_dir.ftype.eql?(:directory) ? :dir : :file
-            @parent = Content.new(
-              path: top_dir.name,
-              name: File.basename(top_dir.to_s),
-              content: _verify_content(file_type, top_dir),
-              resource_type: resource_type,
-              resource_id: resource_id,
-              file_type: file_type,
-              repo: self
-            )
+            file_type = _set_symbol_file_type(top_dir)
+            @parent = Content.new(_content_params(top_dir, file_type, self))
             @parent.save
           end
         end
         # トップディレクトリの一個下のサブディレクリ
-        self.contents.dir.each do |top_dir|
-          zip.glob(top_dir.path + '*').each do |top_dir_or_file|
-            file_type = top_dir_or_file.ftype.eql?(:directory) ? :dir : :file
-            child = Content.new(
-              path: top_dir_or_file.name,
-              name: File.basename(top_dir_or_file.to_s),
-              content: _verify_content(file_type, top_dir_or_file),
-              resource_type: resource_type,
-              resource_id: resource_id,
-              file_type: file_type,
-              repo: self
-            )
-            child.save
-            content_tree = ContentTree.new(
-              parent: top_dir,
-              child: child
-            )
-            content_tree.save
-          end
-        end
+        self.contents.dir.each { |top_dir| _expand_and_create_contents(zip, top_dir, self) }
         loop do
           parents = self.contents.dir.select { |content| content.is_sub_dir? }
           break if parents.blank?
           # サブディレクトリ・ファイルの取得
-          parents.each do |parent|
-            zip.glob(parent.path + '*').each do |dir_or_file|
-              file_type = dir_or_file.ftype.eql?(:directory) ? :dir : :file
-              child = Content.new(
-                path: dir_or_file.name,
-                name: File.basename(dir_or_file.to_s),
-                content: _verify_content(file_type, dir_or_file),
-                resource_type: resource_type,
-                resource_id: resource_id,
-                file_type: file_type,
-                repo: self
-              )
-              child.save
-              content_tree = ContentTree.new(
-                parent: parent,
-                child: child
-              )
-              content_tree.save
-            end
-          end
+          parents.each { |parent| _expand_and_create_contents(zip, parent, self) }
         end
       end
     end
@@ -239,8 +193,41 @@ class Repo < ApplicationRecord
 
   private
 
+  def _content_params(dir_or_file, file_type, repo)
+    {
+      path: dir_or_file.name,
+      name: File.basename(dir_or_file.to_s),
+      content: _verify_content(file_type, dir_or_file),
+      resource_type: repo.resource_type,
+      resource_id: repo.resource_id,
+      file_type: file_type,
+      repo: repo
+    }
+  end
+
+  def _content_tree_params(parent, child)
+    {
+      parent: parent,
+      child: child
+    }
+  end
+
+  def _expand_and_create_contents(zip, parent, repo)
+    zip.glob(parent.path + '*').each do |dir_or_file|
+      file_type = _set_symbol_file_type(dir_or_file)
+      child = Content.new(_content_params(dir_or_file, file_type, repo))
+      child.save
+      content_tree = ContentTree.new(_content_tree_params(parent, child))
+      content_tree.save
+    end
+  end
+
+  def _set_symbol_file_type(dir_or_file)
+    dir_or_file.ftype.eql?(:directory) ? :dir : :file
+  end
+
   def _verify_content(file_type, dir_or_file)
-    return nil if Settings.prohibited_files.extnames.include?(File.extname(dir_or_file.name))
+    return nil if Settings.contents.prohibited_files.extnames.include?(File.extname(dir_or_file.name))
     file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read
   end
 end
