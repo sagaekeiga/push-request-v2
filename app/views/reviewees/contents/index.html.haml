@@ -4,15 +4,10 @@
       .content-show-wrapper
         .page-header
           .pull-right
-            - if @repo.loading?
-              %i.fas.fa-hourglass-start
-              &nbsp;
-              = t("reviewees.repos.index.#{@repo.status}")
-            - else
-              = link_to t("reviewees.repos.index.#{@repo.status}"),
-                reviewees_repo_path(@repo),
-                method: :put,
-                class: "btn #{t("views.statuses.buttons.#{@repo.status}")}"
+            = link_to t("reviewees.repos.index.#{@repo.status}"),
+              reviewees_repo_path(@repo),
+              method: :put,
+              class: "btn #{t("views.statuses.buttons.#{@repo.status}")}"
           %h3= @repo.full_name
         = render 'reviewees/shared/repos/tab', repo: @repo
         - if @dir_or_files.present?

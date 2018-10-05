@@ -47,20 +47,18 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   # 性別
   #
-  # - loding  : 取得中
   # - hidden  : 非公開
   # - showing : 公開
   #
   enum status: {
-    loading: 1000,
-    hidden:  2000,
-    showing: 3000
+    hidden:  1000,
+    showing: 2000
   }
 
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:loading]
+  attribute :status, default: statuses[:hidden]
   attribute :private, default: false
   # -------------------------------------------------------------------------------
   # Scopes
@@ -104,7 +102,7 @@ class Repo < ApplicationRecord
             private: repository[:private],
             installation_id: params['installation']['id']
           )
-          repo.loading! unless repo.loading?
+          repo.import_content!
           Pull.fetch!(repo)
           Issue.fetch!(repo)
         end
@@ -155,21 +153,27 @@ class Repo < ApplicationRecord
   end
 
 
-  def import_content!(file_params)
+  def import_content!
     ActiveRecord::Base.transaction do
-      zipfile = file_params
+      # リモートZIPファイルの作成
+      zipfile = Tempfile.new('file')
+      zipfile.binmode
+      reviewee = Reviewee.find(resource_id)
+      remote_zip = Github::Request.github_exec_fetch_repo_zip!(self, reviewee.github_account)
+      zipfile.write(remote_zip.body)
+      zipfile.close
+      # リモートZIPファイルの取り込み
       Zip::File.open(zipfile.path) do |zip|
-          # トップディレクトリ
+        # トップディレクトリ
         zip.each_with_index do |entry, index|
           break unless index.eql?(0)
           zip.glob(entry.name + '*').each do |top_dir|
-            next if Settings.contents.prohibited_files.include?(File.basename(top_dir.to_s))
-            Rails.logger.debug top_dir.ftype
+            next if Settings.contents.prohibited_folders.include?(File.basename(top_dir.to_s))
             file_type = top_dir.ftype.eql?(:directory) ? :dir : :file
             @parent = Content.new(
               path: top_dir.name,
               name: File.basename(top_dir.to_s),
-              content: file_type.eql?(:dir) ? nil : top_dir.get_input_stream.read,
+              content: _verify_content(file_type, top_dir),
               resource_type: resource_type,
               resource_id: resource_id,
               file_type: file_type,
@@ -185,7 +189,7 @@ class Repo < ApplicationRecord
             child = Content.new(
               path: top_dir_or_file.name,
               name: File.basename(top_dir_or_file.to_s),
-              content: file_type.eql?(:dir) ? nil : top_dir_or_file.get_input_stream.read,
+              content: _verify_content(file_type, top_dir_or_file),
               resource_type: resource_type,
               resource_id: resource_id,
               file_type: file_type,
@@ -209,7 +213,7 @@ class Repo < ApplicationRecord
               child = Content.new(
                 path: dir_or_file.name,
                 name: File.basename(dir_or_file.to_s),
-                content: file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read,
+                content: _verify_content(file_type, dir_or_file),
                 resource_type: resource_type,
                 resource_id: resource_id,
                 file_type: file_type,
@@ -231,5 +235,12 @@ class Repo < ApplicationRecord
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     false
+  end
+
+  private
+
+  def _verify_content(file_type, dir_or_file)
+    return nil if Settings.prohibited_files.extnames.include?(File.extname(dir_or_file.name))
+    file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read
   end
 end
