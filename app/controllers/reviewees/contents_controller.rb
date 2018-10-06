@@ -25,7 +25,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
   end
 
   def import
-    import = @repo.import_content!(params[:file])
+    import = @repo.import_contents!(params[:file])
     flash = import ? { success: t('.success') } : { danger: t('.failed') }
     redirect_to reviewees_repo_wikis_url(@repo), flash
   end

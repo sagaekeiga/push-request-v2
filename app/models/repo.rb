@@ -47,20 +47,18 @@ class Repo < ApplicationRecord
   # -------------------------------------------------------------------------------
   # 性別
   #
-  # - loding  : 取得中
   # - hidden  : 非公開
   # - showing : 公開
   #
   enum status: {
-    loading: 1000,
-    hidden:  2000,
-    showing: 3000
+    hidden:  1000,
+    showing: 2000
   }
 
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:loading]
+  attribute :status, default: statuses[:hidden]
   attribute :private, default: false
   # -------------------------------------------------------------------------------
   # Scopes
@@ -68,59 +66,78 @@ class Repo < ApplicationRecord
   scope :owned_by_orgs, lambda { |reviewee|
     where(resource_id: reviewee.orgs.owner.pluck(:id), resource_type: 'Org')
   }
-  #
-  # リモートのレポジトリを保存する or リストアする
-  #
-  # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
-  #
-  # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
-  #
-  def self.fetch!(params)
-    resource_type = params['installation']['account']['type'].eql?('User') ? 'Reviewee' : 'Org'
-    resource =
-      if resource_type.eql?('Reviewee')
-        Reviewees::GithubAccount.find_by(owner_id: params['installation']['account']['id']).reviewee
-      else
-        Org.find_by(remote_id: params['installation']['account']['id'])
-      end
-    return true if resource.nil?
-    repos =
-      if params['repositories_added'].present?
-        params['repositories_added']
-      else
-        params['repositories']
-      end
-    repos.each do |repository|
-      begin
-        ActiveRecord::Base.transaction do
-          repository = ActiveSupport::HashWithIndifferentAccess.new(repository)
-          repo = with_deleted.find_or_create_by(remote_id: repository[:id])
-          repo.restore if repo&.deleted?
-          repo.update_attributes!(
-            resource_type: resource_type,
-            resource_id: resource.id,
-            name: repository[:name],
-            full_name: repository[:full_name],
-            private: repository[:private],
-            installation_id: params['installation']['id']
-          )
-          repo.loading! unless repo.loading?
-          Pull.fetch!(repo)
-          Issue.fetch!(repo)
+  class << self
+    #
+    # リモートのレポジトリを保存する or リストアする
+    #
+    # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
+    #
+    # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
+    #
+    def fetch!(params)
+      resource_type = params[:installation][:account][:type].eql?('User') ? 'Reviewee' : 'Org'
+      resource = _set_resource_for_repo(params, resource_type)
+      return true if resource.nil?
+      repos =
+        if params[:repositories_added].present?
+          params[:repositories_added]
+        else
+          params[:repositories]
         end
-        true
-      rescue => e
-        Rails.logger.error e
-        Rails.logger.error e.backtrace.join("\n")
-        false
+      repos.each do |repository|
+        begin
+          ActiveRecord::Base.transaction do
+            repository = ActiveSupport::HashWithIndifferentAccess.new(repository)
+            repo = with_deleted.find_or_create_by(remote_id: repository[:id])
+            repo.restore if repo&.deleted?
+            repo.update_attributes!(
+              _merge_params(
+                resource_type,
+                resource,
+                repository,
+                params
+              )
+            )
+            repo.import_contents!
+            Pull.fetch!(repo)
+            Issue.fetch!(repo)
+          end
+          true
+        rescue => e
+          Rails.logger.error e
+          Rails.logger.error e.backtrace.join("\n")
+          false
+        end
       end
     end
-  end
 
-  # レビュワーのスキルに合致するPRを取得する
-  def self.pulls_suitable_for reviewer
-    repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+    # レビュワーのスキルに合致するPRを取得する
+    def pulls_suitable_for reviewer
+      repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
+      Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+    end
+
+    private
+
+    def _set_resource_for_repo(params, resource_type)
+      resource =
+        if resource_type.eql?('Reviewee')
+          Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id]).reviewee
+        else
+          Org.find_by(remote_id: params[:installation][:account][:id])
+        end
+    end
+
+    def _merge_params(resource_type, resource, repo_params, params)
+      {
+        resource_type: resource_type,
+        resource_id: resource.id,
+        name: repo_params[:name],
+        full_name: repo_params[:full_name],
+        private: repo_params[:private],
+        installation_id: params[:installation][:id]
+      }
+    end
   end
 
   def import_wikis!(file_params, resource)
@@ -155,74 +172,34 @@ class Repo < ApplicationRecord
   end
 
 
-  def import_content!(file_params)
+  def import_contents!
     ActiveRecord::Base.transaction do
-      zipfile = file_params
+      # リモートZIPファイルの作成
+      zipfile = Tempfile.new('file')
+      zipfile.binmode
+      reviewee = set_resource_for_content
+      remote_zip = Github::Request.github_exec_fetch_repo_zip!(self, reviewee.github_account)
+      zipfile.write(remote_zip.body)
+      zipfile.close
+      # リモートZIPファイルの取り込み
       Zip::File.open(zipfile.path) do |zip|
-          # トップディレクトリ
+        # トップディレクトリ
         zip.each_with_index do |entry, index|
           break unless index.eql?(0)
           zip.glob(entry.name + '*').each do |top_dir|
-            next if Settings.contents.prohibited_files.include?(File.basename(top_dir.to_s))
-            Rails.logger.debug top_dir.ftype
-            file_type = top_dir.ftype.eql?(:directory) ? :dir : :file
-            @parent = Content.new(
-              path: top_dir.name,
-              name: File.basename(top_dir.to_s),
-              content: file_type.eql?(:dir) ? nil : top_dir.get_input_stream.read,
-              resource_type: resource_type,
-              resource_id: resource_id,
-              file_type: file_type,
-              repo: self
-            )
+            next if Settings.contents.prohibited_folders.include?(File.basename(top_dir.to_s))
+            file_type = _set_symbol_file_type(top_dir)
+            @parent = Content.new(_content_params(top_dir, file_type, self))
             @parent.save
           end
         end
         # トップディレクトリの一個下のサブディレクリ
-        self.contents.dir.each do |top_dir|
-          zip.glob(top_dir.path + '*').each do |top_dir_or_file|
-            file_type = top_dir_or_file.ftype.eql?(:directory) ? :dir : :file
-            child = Content.new(
-              path: top_dir_or_file.name,
-              name: File.basename(top_dir_or_file.to_s),
-              content: file_type.eql?(:dir) ? nil : top_dir_or_file.get_input_stream.read,
-              resource_type: resource_type,
-              resource_id: resource_id,
-              file_type: file_type,
-              repo: self
-            )
-            child.save
-            content_tree = ContentTree.new(
-              parent: top_dir,
-              child: child
-            )
-            content_tree.save
-          end
-        end
+        self.contents.dir.each { |top_dir| _expand_and_create_contents(zip, top_dir, self) }
         loop do
-          parents = self.contents.dir.select { |content| content.is_sub_dir? }
+          parents = self.contents.dir.select(&:is_sub_dir?)
           break if parents.blank?
           # サブディレクトリ・ファイルの取得
-          parents.each do |parent|
-            zip.glob(parent.path + '*').each do |dir_or_file|
-              file_type = dir_or_file.ftype.eql?(:directory) ? :dir : :file
-              child = Content.new(
-                path: dir_or_file.name,
-                name: File.basename(dir_or_file.to_s),
-                content: file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read,
-                resource_type: resource_type,
-                resource_id: resource_id,
-                file_type: file_type,
-                repo: self
-              )
-              child.save
-              content_tree = ContentTree.new(
-                parent: parent,
-                child: child
-              )
-              content_tree.save
-            end
-          end
+          parents.each { |parent| _expand_and_create_contents(zip, parent, self) }
         end
       end
     end
@@ -231,5 +208,55 @@ class Repo < ApplicationRecord
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     false
+  end
+
+  def set_resource_for_content
+    case resource_type
+    when 'Reviewee'
+      Reviewee.find(resource_id)
+    when 'Org'
+      org = Org.find(resource_id)
+      org.owner
+    end
+  end
+
+  private
+
+  def _content_params(dir_or_file, file_type, repo)
+    {
+      path: dir_or_file.name,
+      name: File.basename(dir_or_file.to_s),
+      content: _verify_content(file_type, dir_or_file),
+      resource_type: repo.resource_type,
+      resource_id: repo.resource_id,
+      file_type: file_type,
+      repo: repo
+    }
+  end
+
+  def _content_tree_params(parent, child)
+    {
+      parent: parent,
+      child: child
+    }
+  end
+
+  def _expand_and_create_contents(zip, parent, repo)
+    zip.glob(parent.path + '*').each do |dir_or_file|
+      file_type = _set_symbol_file_type(dir_or_file)
+      child = Content.new(_content_params(dir_or_file, file_type, repo))
+      child.save
+      content_tree = ContentTree.new(_content_tree_params(parent, child))
+      content_tree.save
+    end
+  end
+
+  def _set_symbol_file_type(dir_or_file)
+    dir_or_file.ftype.eql?(:directory) ? :dir : :file
+  end
+
+  def _verify_content(file_type, dir_or_file)
+    return nil if Settings.contents.prohibited_files.extnames.include?(File.extname(dir_or_file.name))
+    file_type.eql?(:dir) ? nil : dir_or_file.get_input_stream.read
   end
 end

@@ -23,7 +23,6 @@ ja:
         showing: 公開しました
         hidden: 非公開にしました
       index:
-        loading: 取り込み中
         showing: このレポジトリ全体を非公開にする
         hidden: このレポジトリ全体を公開する
     wikis:
