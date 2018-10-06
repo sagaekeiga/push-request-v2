@@ -15,6 +15,8 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     # データの作成とGHAへのリクエストを分離することで例外処理に対応する
     ActiveRecord::Base.transaction do
       @review = current_reviewer.reviews.ready_to_review!(@pull, params[:review][:body])
+      @changed_files = @pull.files_changed
+      @changed_files.map{ |file| file.associate_review_comments!(@review)}
     end
     redirect_to [:reviewers, @pull], success: t('.success')
   rescue => e
@@ -29,7 +31,7 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.friendly.find(params[:pull_token]).decorate
+    @pull = Pull.includes(:changed_files).friendly.find(params[:pull_token]).decorate
   end
 
   def check_pending_review
