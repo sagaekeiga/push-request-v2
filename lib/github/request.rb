@@ -77,6 +77,24 @@ module Github
         _get_credential_resource "orgs/#{org_name}/memberships/#{github_account.login}", :role_in_org, github_account.access_token
       end
 
+      # GET レポジトリのZIPファイル
+      # @see https://developer.github.com/v3/repos/contents/#get-archive-link
+      def github_exec_fetch_repo_zip!(repo, github_account)
+        headers = {
+          'User-Agent': 'PushRequest',
+          'Authorization': "token #{github_account.access_token}",
+          'Accept': 'application/octet-stream'
+        }
+        res = get "https://github.com/#{repo.full_name}/zipball/master", headers: headers
+
+        unless res.code == success_code(:repo_zip)
+          logger.error "[Github][#{:repo_zip}] responseCode => #{res.code}"
+          logger.error "[Github][#{:repo_zip}] responseMessage => #{res.message}"
+          logger.error "[Github][#{:repo_zip}] subUrl => https://github.com/#{repo.full_name}/archive/master.zip"
+        end
+        res
+      end
+
       private
 
       #
@@ -177,7 +195,7 @@ module Github
           return Settings.api.github.request.header.accept.machine_man_preview_json
         when *%i(issue_comment)
           return Settings.api.github.request.header.accept.machine_man_preview
-        when *%i(changed_file pull content issue commit diff org role_in_org)
+        when *%i(changed_file pull content issue commit diff org role_in_org repo_zip)
           return Settings.api.github.request.header.accept.symmetra_preview_json
         when *%i(review_comment)
           return Settings.api.github.request.header.accept.squirrel_girl_preview
@@ -189,7 +207,7 @@ module Github
         case event
         when *%i(issue_comment changed_file pull review_comment)
           return Settings.api.created.status.code
-        when *%i(content commit issue diff review org role_in_org)
+        when *%i(content commit issue diff review org role_in_org repo_zip)
           return Settings.api.success.status.code
         end
       end
@@ -212,7 +230,7 @@ module Github
       def sub_url_for(repo, event)
         case event
         when :issue
-          return "repos/#{repo.full_name}/issues"
+          return "repos/#{repo.full_name}/issues?state=all"
         when :pull
           return "repos/#{repo.full_name}/pulls"
         end
