@@ -1,6 +1,11 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
+$(document).on('click', '.add-member-btn', function () {
+  $(this).attr('disabled', true)
+  inviteMember($(this));
+})
+
 function inviteMember(elem) {
   $.ajax({
     type: 'POST',

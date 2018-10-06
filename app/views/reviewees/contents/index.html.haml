@@ -23,5 +23,5 @@
               .panel-heading= @readme.name
               .panel-body
                 .md-wrapper
-                  = markdown(@readme.decorate.decode_by_base64)
+                  = markdown(@readme.content)
 = javascript_pack_tag 'update-resource'
