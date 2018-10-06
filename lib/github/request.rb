@@ -69,7 +69,7 @@ module Github
 
       # GET 組織取得
       def github_exec_fetch_orgs!(github_account)
-        _get_credential_resource "users/#{github_account.login}/orgs", :org, github_account.access_token
+        _get_credential_resource "user/orgs", :org, github_account.access_token
       end
 
       # GET レビュイーの組織内での役割を取得する
