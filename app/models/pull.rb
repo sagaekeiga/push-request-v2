@@ -143,7 +143,6 @@ class Pull < ApplicationRecord
       dup_pulls.order(created_at: :desc).last.really_destroy! if dup_pulls.count > 1
       skill = Skill.fetch!(params[:head][:repo][:language], repo)
       Commit.fetch!(pull)
-      FetchContentJob.perform_later(pull.repo) if params[:state].eql?('closed')
     end
     true
   rescue => e

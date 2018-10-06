@@ -2,6 +2,6 @@ class CreateRepoJob < ApplicationJob
   queue_as :default
 
   def perform(params)
-    Repo.fetch!(JSON.parse(params))
+    Repo.fetch!(ActiveSupport::HashWithIndifferentAccess.new(JSON.parse(params)))
   end
 end
