@@ -2,7 +2,7 @@
   .col-xs-12
     .container
       .page-header
-        %h3 Repositories
+        %h3= t '.title'
       - if @repos.blank?
         = t 'views.github_apps.install_repositories'
         = link_to t('.add_repo'), ENV['GITHUB_APP_URL'], target: '_blank'

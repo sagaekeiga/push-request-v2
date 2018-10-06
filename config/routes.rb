@@ -45,7 +45,7 @@ Rails.application.routes.draw do
     # Reviewee
     #
     namespace :reviewees do
-      get :dashboard, :repos
+      get :dashboard
       get 'settings/integrations'
       resources :memberships, only: %i(index create destroy update) do
         collection do
@@ -55,7 +55,7 @@ Rails.application.routes.draw do
       end
       resources :orgs, only: %i(index update)
       resources :pulls, only: %i(index)
-      resources :repos, only: %i(update) do
+      resources :repos, only: %i(index update) do
         resources :contents, only: %i(index show update)
         resources :issues, only: %i(index show update)
         resources :pulls, only: %i(update)

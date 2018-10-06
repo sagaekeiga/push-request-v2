@@ -17,14 +17,14 @@ ja:
     dashboard:
       title: ダッシュボード
     repos:
-      title: レポジトリ
-      add_repo: レポジトリを追加する
       update:
         showing: 公開しました
         hidden: 非公開にしました
       index:
         showing: このレポジトリ全体を非公開にする
         hidden: このレポジトリ全体を公開する
+        title: レポジトリ
+        add_repo: レポジトリを追加する
     wikis:
       import:
         success: インポートが完了しました

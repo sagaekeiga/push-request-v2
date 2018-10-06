@@ -2,6 +2,7 @@ class Reviewees::ContentsController < Reviewees::BaseController
   before_action :set_repo, only: %i(index show update)
   before_action :set_content, only: %i(show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
+  before_action :check_reviweee_identity, only: %i(index show)
 
   def index
     @dir_or_files = @repo.contents.top
