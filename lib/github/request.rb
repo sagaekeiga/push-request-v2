@@ -69,7 +69,7 @@ module Github
 
       # GET 組織取得
       def github_exec_fetch_orgs!(github_account)
-        _get_credential_resource "user/orgs", :org, github_account.access_token
+        _get_credential_resource "users/#{github_account.login}/orgs", :org, github_account.access_token
       end
 
       # GET レビュイーの組織内での役割を取得する
@@ -77,13 +77,15 @@ module Github
         _get_credential_resource "orgs/#{org_name}/memberships/#{github_account.login}", :role_in_org, github_account.access_token
       end
 
+      # GET レポジトリのZIPファイル
+      # @see https://developer.github.com/v3/repos/contents/#get-archive-link
       def github_exec_fetch_repo_zip!(repo, github_account)
         headers = {
           'User-Agent': 'PushRequest',
           'Authorization': "token #{github_account.access_token}",
           'Accept': 'application/octet-stream'
         }
-        res = get "https://github.com/#{repo.full_name}/archive/master.zip", headers: headers
+        res = get "https://github.com/#{repo.full_name}/zipball/master", headers: headers
 
         unless res.code == success_code(:repo_zip)
           logger.error "[Github][#{:repo_zip}] responseCode => #{res.code}"
