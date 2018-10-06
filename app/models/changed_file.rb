@@ -70,6 +70,7 @@ class ChangedFile < ApplicationRecord
           patch:        res_changed_file['patch'],
           contents_url: res_changed_file['contents_url']
         )
+        ReviewComment.fetch_self_review!(changed_file)
       end
     end
   rescue => e

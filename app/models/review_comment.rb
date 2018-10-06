@@ -83,6 +83,29 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
+  def self.fetch_self_review!(changed_file)
+    ActiveRecord::Base.transaction do
+      res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
+      res_pull_comments.each do |pull_comment|
+        review_comment = ReviewComment.find_or_initialize_by(remote_id: pull_comment[:commit_id])
+        review_comment.update_attributes!(
+          remote_id:    pull_comment['pull_request_review_id'],
+          body:         pull_comment['body'],
+          path:         pull_comment['path'],
+          position:     pull_comment['position'],
+          status:       :commented,
+          changed_file_id: changed_file.id,
+          in_reply_to_id: pull_comment['in_reply_to_id'],
+        )
+      end
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
+  end
+
   def self.fetch!(params)
     pull = Pull.find_by(
       remote_id: params[:pull_request][:id],
@@ -152,7 +175,7 @@ class ReviewComment < ApplicationRecord
   # Edit
   def self.fetch_changes!(params, pull, changed_file)
     ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.find_by(remote_id: params[:comment][:id])
+      review_comment = ReviewComment.find_or_initialize_by(remote_id: params[:comment][:id])
       review_comment.update_attributes!(
         remote_id:    params[:comment][:id],
         body:         params[:comment][:body],
