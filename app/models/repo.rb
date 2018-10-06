@@ -66,59 +66,78 @@ class Repo < ApplicationRecord
   scope :owned_by_orgs, lambda { |reviewee|
     where(resource_id: reviewee.orgs.owner.pluck(:id), resource_type: 'Org')
   }
-  #
-  # リモートのレポジトリを保存する or リストアする
-  #
-  # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
-  #
-  # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
-  #
-  def self.fetch!(params)
-    resource_type = params['installation']['account']['type'].eql?('User') ? 'Reviewee' : 'Org'
-    resource =
-      if resource_type.eql?('Reviewee')
-        Reviewees::GithubAccount.find_by(owner_id: params['installation']['account']['id']).reviewee
-      else
-        Org.find_by(remote_id: params['installation']['account']['id'])
-      end
-    return true if resource.nil?
-    repos =
-      if params['repositories_added'].present?
-        params['repositories_added']
-      else
-        params['repositories']
-      end
-    repos.each do |repository|
-      begin
-        ActiveRecord::Base.transaction do
-          repository = ActiveSupport::HashWithIndifferentAccess.new(repository)
-          repo = with_deleted.find_or_create_by(remote_id: repository[:id])
-          repo.restore if repo&.deleted?
-          repo.update_attributes!(
-            resource_type: resource_type,
-            resource_id: resource.id,
-            name: repository[:name],
-            full_name: repository[:full_name],
-            private: repository[:private],
-            installation_id: params['installation']['id']
-          )
-          repo.import_content!
-          Pull.fetch!(repo)
-          Issue.fetch!(repo)
+  class << self
+    #
+    # リモートのレポジトリを保存する or リストアする
+    #
+    # @param [ActionController::Parameter] repositories_added_params addedなPOSTパラメータ
+    #
+    # @return [Boolean] 保存 or リストアに成功すればtrue、失敗すればfalseを返す
+    #
+    def fetch!(params)
+      resource_type = params[:installation][:account][:type].eql?('User') ? 'Reviewee' : 'Org'
+      resource = _set_resource_for_repo(params, resource_type)
+      return true if resource.nil?
+      repos =
+        if params[:repositories_added].present?
+          params[:repositories_added]
+        else
+          params[:repositories]
         end
-        true
-      rescue => e
-        Rails.logger.error e
-        Rails.logger.error e.backtrace.join("\n")
-        false
+      repos.each do |repository|
+        begin
+          ActiveRecord::Base.transaction do
+            repository = ActiveSupport::HashWithIndifferentAccess.new(repository)
+            repo = with_deleted.find_or_create_by(remote_id: repository[:id])
+            repo.restore if repo&.deleted?
+            repo.update_attributes!(
+              _merge_params(
+                resource_type,
+                resource,
+                repository,
+                params
+              )
+            )
+            repo.import_contents!
+            Pull.fetch!(repo)
+            Issue.fetch!(repo)
+          end
+          true
+        rescue => e
+          Rails.logger.error e
+          Rails.logger.error e.backtrace.join("\n")
+          false
+        end
       end
     end
-  end
 
-  # レビュワーのスキルに合致するPRを取得する
-  def self.pulls_suitable_for reviewer
-    repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+    # レビュワーのスキルに合致するPRを取得する
+    def pulls_suitable_for reviewer
+      repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
+      Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+    end
+
+    private
+
+    def _set_resource_for_repo(params, resource_type)
+      resource =
+        if resource_type.eql?('Reviewee')
+          Reviewees::GithubAccount.find_by(owner_id: params[:installation][:account][:id]).reviewee
+        else
+          Org.find_by(remote_id: params[:installation][:account][:id])
+        end
+    end
+
+    def _merge_params(resource_type, resource, repo_params, params)
+      {
+        resource_type: resource_type,
+        resource_id: resource.id,
+        name: repo_params[:name],
+        full_name: repo_params[:full_name],
+        private: repo_params[:private],
+        installation_id: params[:installation][:id]
+      }
+    end
   end
 
   def import_wikis!(file_params, resource)
@@ -153,12 +172,12 @@ class Repo < ApplicationRecord
   end
 
 
-  def import_content!
+  def import_contents!
     ActiveRecord::Base.transaction do
       # リモートZIPファイルの作成
       zipfile = Tempfile.new('file')
       zipfile.binmode
-      reviewee = Reviewee.find(resource_id)
+      reviewee = set_resource_for_content
       remote_zip = Github::Request.github_exec_fetch_repo_zip!(self, reviewee.github_account)
       zipfile.write(remote_zip.body)
       zipfile.close
@@ -177,7 +196,7 @@ class Repo < ApplicationRecord
         # トップディレクトリの一個下のサブディレクリ
         self.contents.dir.each { |top_dir| _expand_and_create_contents(zip, top_dir, self) }
         loop do
-          parents = self.contents.dir.select { |content| content.is_sub_dir? }
+          parents = self.contents.dir.select(&:is_sub_dir?)
           break if parents.blank?
           # サブディレクトリ・ファイルの取得
           parents.each { |parent| _expand_and_create_contents(zip, parent, self) }
@@ -189,6 +208,16 @@ class Repo < ApplicationRecord
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     false
+  end
+
+  def set_resource_for_content
+    case resource_type
+    when 'Reviewee'
+      Reviewee.find(resource_id)
+    when 'Org'
+      org = Org.find(resource_id)
+      org.owner
+    end
   end
 
   private
