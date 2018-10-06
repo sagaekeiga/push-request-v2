@@ -66,7 +66,6 @@ class Content < ApplicationRecord
   # -------------------------------------------------------------------------------
   validates :name, presence: true
   validates :path, presence: true
-  validates :size, presence: true
   validates :file_type, presence: true
   validates :resource_type, uniqueness: { scope: %i(repo path file_type resource_id) }, on: %i(create)
 
@@ -96,102 +95,8 @@ class Content < ApplicationRecord
   after_update *%i(update_children_status)
 
   # -------------------------------------------------------------------------------
-  # ClassMethods
+  # InstanceMethods
   # -------------------------------------------------------------------------------
-  # deletedなpullを考慮しているかどうかがupdate_by_pull_request_event!との違い
-  def self.fetch!(repo)
-    ActiveRecord::Base.transaction do
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo)
-      Content.fetch_top_dirs_and_files(repo, res_contents)
-      top_dirs_and_files = repo.contents
-      return true unless top_dirs_and_files
-      1.step do |index|
-        parents =
-          if index == 1
-            repo.contents.dir
-          else
-            repo.contents.dir.select { |content| content.is_sub_dir? }
-          end
-        break if parents.blank?
-        # サブディレクトリ・ファイルの取得
-        parents.each(&:fetch_sub_dirs_and_files!)
-      end
-      repo.hidden!
-    end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_contents')
-  end
-
-  def self.fetch_top_dirs_and_files(repo, res_contents)
-    res_contents.each do |res_content|
-      # 画像やvendor配下はレビュワーが見る必要がなくデータ量が多いため除外
-      next if Settings.contents.prohibited_files.include?(res_content['name'])
-      content = Content.fetch_single_content!(repo, res_content)
-      content.restore if content&.deleted?
-    end
-  end
-
-  def fetch_sub_dirs_and_files!
-    ActiveRecord::Base.transaction do
-      res_contents = Github::Request.github_exec_fetch_repo_contents!(repo, path)
-      next if res_contents.blank?
-      res_contents.each do |res_content|
-        next unless res_content.empty? ||
-          res_content.key?('name') ||
-          res_content.key?('path') ||
-          res_content.key?('content') ||
-          res_content.key?('html_url') ||
-          res_content.key?('name') ||
-          res_content.key?('size')
-        Rails.logger.info 'pass key?'
-        next if Settings.contents.prohibited_files.include?(res_content['name'])
-        child = Content.fetch_single_content!(repo, res_content)
-        content_tree = ContentTree.with_deleted.find_or_initialize_by(
-          parent: self,
-          child:  child
-        )
-        content_tree&.deleted? ? content_tree.restore : content_tree.save!
-      end
-    end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_contents')
-  end
-
-  def self.fetch_single_content!(repo, res_content)
-    res_content = Github::Request.github_exec_fetch_repo_contents!(repo, res_content['path']) if res_content['type'] == 'file'
-
-    content = repo.contents.with_deleted.find_or_initialize_by(
-      path: res_content['path'],
-      name: res_content['name'],
-      resource_type: repo.resource_type,
-      resource_id: repo.resource_id
-    )
-    content.restore if content&.deleted?
-    content.set_file_type_by(res_content['type'])
-    content.update_attributes!(
-      content: res_content['content'],
-      html_url: res_content['html_url'],
-      name: res_content['name'],
-      path: res_content['path'],
-      size: res_content['size']
-    )
-    content
-  end
-
-  # レスポンスはString型であり、Enumに対応できるよう変換する
-  def set_file_type_by(file_type)
-    case file_type
-    when 'file'
-      assign_attributes(file_type: :file)
-    when 'dir'
-      assign_attributes(file_type: :dir)
-    end
-  end
-
   # 選択したディレクトリ配下もそのディレクトリと同じ公開ステータスに
   def update_children_status
     return if children.includes(:children).blank?

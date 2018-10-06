@@ -10,6 +10,5 @@ ja:
   enums:
     repo:
       status:
-        loading: 取得中
         hidden: 非公開
         showing: 公開中

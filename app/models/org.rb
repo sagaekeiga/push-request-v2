@@ -56,4 +56,10 @@ class Org < ApplicationRecord
   # Attributes
   # -------------------------------------------------------------------------------
   attribute :status, default: statuses[:is_invalid]
+  # -------------------------------------------------------------------------------
+  # InstanceMethods
+  # -------------------------------------------------------------------------------
+  def owner
+    reviewee_orgs.find_by(role: :owner).reviewee
+  end
 end
