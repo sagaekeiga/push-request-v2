@@ -1,5 +1,5 @@
 class Reviewees::ContentsController < Reviewees::BaseController
-  before_action :set_repo, only: %i(index show update import)
+  before_action :set_repo, only: %i(index show update)
   before_action :set_content, only: %i(show update)
   skip_before_action :verify_authenticity_token, only: %i(update)
 
