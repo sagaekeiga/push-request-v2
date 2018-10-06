@@ -56,9 +56,7 @@ Rails.application.routes.draw do
       resources :orgs, only: %i(index update)
       resources :pulls, only: %i(index)
       resources :repos, only: %i(update) do
-        resources :contents, only: %i(index show update) do
-          post :import, on: :collection
-        end
+        resources :contents, only: %i(index show update)
         resources :issues, only: %i(index show update)
         resources :pulls, only: %i(update)
         resources :wikis do

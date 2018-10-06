@@ -24,12 +24,6 @@ class Reviewees::ContentsController < Reviewees::BaseController
     render json: { status: @content.status }
   end
 
-  def import
-    import = @repo.import_contents!(params[:file])
-    flash = import ? { success: t('.success') } : { danger: t('.failed') }
-    redirect_to reviewees_repo_wikis_url(@repo), flash
-  end
-
   private
 
   def set_repo
