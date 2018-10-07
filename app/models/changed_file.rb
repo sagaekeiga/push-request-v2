@@ -130,11 +130,4 @@ class ChangedFile < ApplicationRecord
   def already_updated?(pull, double_file_names)
     filename.in?(double_file_names) && pull.changed_files.find_by(filename: filename).id != id
   end
-
-  #
-  # reviewとself_reviewを関連づける
-  #
-  def associate_review_comments!(review)
-    review_comments.map{|comment| comment.update_attributes!(review_id: review.id, reviewer_id: review.reviewer_id)}
-  end
 end

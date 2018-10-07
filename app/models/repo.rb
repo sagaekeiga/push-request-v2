@@ -121,7 +121,7 @@ class Repo < ApplicationRecord
   # レビュワーのスキルに合致するPRを取得する
   def self.pulls_suitable_for reviewer
     repos = joins(:skillings).where(skillings: { skill_id: reviewer.skillings.pluck(:skill_id) })
-    Pull.includes(:repo).request_reviewed.where(repo_id: repos&.pluck(:id))
+    Pull.includes(repo: [skillings: :skill]).request_reviewed.where(repo_id: repos&.pluck(:id))
   end
 
   def import_wikis!(file_params, resource)
