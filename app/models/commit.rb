@@ -2,15 +2,17 @@
 #
 # Table name: commits
 #
-#  id            :bigint(8)        not null, primary key
-#  deleted_at    :datetime
-#  message       :string
-#  resource_type :string
-#  sha           :string
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  pull_id       :bigint(8)
-#  resource_id   :integer
+#  id             :bigint(8)        not null, primary key
+#  committed_date :string
+#  committer_name :string
+#  deleted_at     :datetime
+#  message        :string
+#  resource_type  :string
+#  sha            :string
+#  created_at     :datetime         not null
+#  updated_at     :datetime         not null
+#  pull_id        :bigint(8)
+#  resource_id    :integer
 #
 # Indexes
 #
@@ -46,6 +48,8 @@ class Commit < ApplicationRecord
           sha: res_commit['sha'],
           resource_type: pull.repo.resource_type,
           resource_id: pull.repo.resource_id,
+          committer_name: res_commit['commit']['committer']['name'],
+          committed_date: res_commit['commit']['committer']['date'],
         )
         update = false unless commit.persisted?
         commit.restore if commit.deleted?

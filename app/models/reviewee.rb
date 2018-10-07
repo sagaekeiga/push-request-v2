@@ -52,6 +52,7 @@ class Reviewee < ApplicationRecord
   # -------------------------------------------------------------------------------
   delegate :avatar_url, to: :github_account
   delegate :login, to: :github_account
+  delegate :nickname, to: :github_account
 
   def connect_to_github(auth)
     github_account = build_github_account(

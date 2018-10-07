@@ -56,6 +56,8 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.bigint "pull_id"
     t.string "sha"
     t.string "message"
+    t.string "committer_name"
+    t.string "committed_date"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
