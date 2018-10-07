@@ -95,22 +95,13 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  def self.fetch_self_review!(changed_file)
+  def self.fetch_review_at_first!(changed_file)
     ActiveRecord::Base.transaction do
       res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
       res_pull_comments.each do |pull_comment|
-        review_comment = ReviewComment.find_or_initialize_by(remote_id: pull_comment[:commit_id])
-        event = pull_comment['in_reply_to_id'] ? :replied : :self_reviewed
-        review_comment.update_attributes!(
-          remote_id:    pull_comment['pull_request_review_id'],
-          body:         pull_comment['body'],
-          path:         pull_comment['path'],
-          position:     pull_comment['position'],
-          status:       pending,
-          event:        event,
-          changed_file_id: changed_file.id,
-          in_reply_to_id: pull_comment['in_reply_to_id'],
-        )
+        params = ActiveSupport::HashWithIndifferentAccess.new(pull_comment)
+        review_comment = ReviewComment.find_or_initialize_by(_pull_comments_params(params, changed_file))
+        review_comment.update_attributes!(body: params[:body])
       end
     end
     true
@@ -140,19 +131,8 @@ class ReviewComment < ApplicationRecord
       return ReviewComment.fetch_changes!(params, pull, changed_file)
     end
 
-    # paramsでenumステータスの分ける(リプライ、セルフレビュー)
-    event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
-
-    review_comment = ReviewComment.find_or_initialize_by(
-      remote_id:      nil,
-      path:           params[:comment][:path],
-      position:       params[:comment][:position],
-      body:           params[:comment][:body],
-      in_reply_to_id: params[:comment][:in_reply_to_id],
-      changed_file:   changed_file,
-      status:       :pending,
-      event:       event
-    )
+    review_comment = ReviewComment.find_or_initialize_by(_comment_params(params, changed_file))
+    review_comment.update_attributes!(body: params[:comment][:body])
 
     # レビュー時のレスポンス取得
     # 返事の取得return
@@ -195,18 +175,8 @@ class ReviewComment < ApplicationRecord
   # Edit
   def self.fetch_changes!(params, pull, changed_file)
     ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.find_or_initialize_by(remote_id: params[:comment][:id])
-      event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
-      review_comment.update_attributes!(
-        remote_id:    params[:comment][:id],
-        body:         params[:comment][:body],
-        path:         params[:comment][:path],
-        position:     params[:comment][:position],
-        in_reply_to_id: params[:comment][:in_reply_to_id],
-        changed_file: changed_file,
-        status:       :pending,
-        event:       event
-      )
+      review_comment = ReviewComment.find_or_initialize_by(_comment_params(params, changed_file))
+      review_comment.update_attributes!(body: params[:comment][:body])
     end
     true
   rescue => e
@@ -268,5 +238,33 @@ class ReviewComment < ApplicationRecord
       path:         path,
       position:     position
     ).where.not(in_reply_to_id: nil)
+  end
+
+  private
+
+  def self._comment_params(params, changed_file)
+    event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
+    {
+      remote_id:      nil,
+      path:           params[:comment][:path],
+      position:       params[:comment][:position],
+      in_reply_to_id: params[:comment][:in_reply_to_id],
+      changed_file:   changed_file,
+      status:       :pending,
+      event:       event
+    }
+  end
+
+  def self._pull_comments_params(params, changed_file)
+    event = params[:in_reply_to_id] ? :replied : :self_reviewed
+    {
+      remote_id:    params[:pull_request_review_id],
+      path:         params[:path],
+      position:     params[:position],
+      status:       :completed,
+      event:        event,
+      changed_file_id: changed_file.id,
+      in_reply_to_id: params[:in_reply_to_id]
+    }
   end
 end

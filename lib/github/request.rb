@@ -21,7 +21,7 @@ module Github
       # GET プルリクエストのレビューコメント取得
       # https://developer.github.com/v3/pulls/comments/#list-comments-on-a-pull-request
       def github_exec_fetch_pull_review_comment_contents!(pull)
-        _get "repos/#{pull.repo.full_name}/pulls/#{pull.number}/comments", pull.repo.installation_id, :review_comment
+        _get sub_url(:review_comment, pull), pull.repo.installation_id, :review_comment
       end
 
       # GET レポジトリファイルの取得
