@@ -2,7 +2,7 @@ class ReviewersController < Reviewers::BaseController
   before_action :check_reviewer, except: %i(pending)
 
   def dashboard
-    @pulls = Repo.pulls_suitable_for(current_reviewer).order(created_at: :desc).page(params[:page])
+    @pulls = Repo.pulls_suitable_for(current_reviewer).includes(repo: [skillings: :skill]).order(created_at: :desc).page(params[:page])
     @q = Pull.ransack(params[:q])
   end
 
