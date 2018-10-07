@@ -10,6 +10,9 @@
             - @commits.each do |commit|
               %tr
                 %td
-                  = link_to commit.message, [:reviewers, @pull, commit]
+                  = link_to commit.message, [:reviewers, @pull, commit], class: 'commit_title'
+                  .break-line.owner_name
+                    = commit.committer_name
+                    = I18n.l(commit.committed_date.to_time, format: :default)
                 %td.text-right
                   = link_to commit.short_sha, [:reviewers, @pull, commit]

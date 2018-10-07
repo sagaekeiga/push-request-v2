@@ -15,10 +15,10 @@
           %small{ class: is_same_controller_name?('pulls') }= t('reviewees.pulls.index.title')
       %hr
       %li.list-group-item
-        = link_to reviewees_repos_path do
+        = link_to :reviewees_repos do
           %i.fas.fa-table{ class: is_same_action_name?('repos') }
           %br
-          %small{ class: is_same_action_name?('repos') }= t('reviewees.repos.title')
+          %small{ class: is_same_action_name?('repos') }= t('reviewees.repos.index.title')
       %hr
       %li.list-group-item
         = link_to reviewees_settings_integrations_path do

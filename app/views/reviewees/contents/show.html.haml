@@ -2,27 +2,30 @@
   .container
     .row
       .content-show-wrapper
-        .page-header
-          %h4= @content.decorate.breadcrumbs
-        - if @content.dir?
-          .panel.panel-default
-            .table-wrapper
-              %table.table.table-hover
-                %tbody
-                  = render @dir_or_files, repo: @repo
+        - if @other
+          %p このページを見るには、メンバー権限が必要です。
         - else
-          .panel.panel-default
-            .panel-heading
-              %b= t 'views.bytes', byte: @content.size
-            .table-wrapper
-              %table
-                %thead
-                  %tr
-                    %th{ scope: 'col' }
-                - if @content.content
-                  - @content.decorate.decode_by_base64&.each_line&.with_index do |line, index|
-                    %tbody
-                      %tr
-                        %td.index= index
-                        %td.file-code= coderay(line, @content.path)
+          .page-header
+            %h4= @content.decorate.breadcrumbs
+          - if @content.dir?
+            .panel.panel-default
+              .table-wrapper
+                %table.table.table-hover
+                  %tbody
+                    = render @dir_or_files, repo: @repo
+          - else
+            .panel.panel-default
+              .panel-heading
+                %b= t 'views.bytes', byte: @content.size
+              .table-wrapper
+                %table
+                  %thead
+                    %tr
+                      %th{ scope: 'col' }
+                  - if @content.content
+                    - @content.content&.each_line&.with_index do |line, index|
+                      %tbody
+                        %tr
+                          %td.index= index
+                          %td.file-code= coderay(line, @content.path)
 = javascript_pack_tag 'update-resource'

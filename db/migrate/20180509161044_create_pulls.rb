@@ -15,5 +15,6 @@ class CreatePulls < ActiveRecord::Migration[5.1]
       t.datetime :deleted_at, index: true
       t.timestamps
     end
+    add_index :pulls, :remote_id, unique: true
   end
 end

@@ -1,7 +1,7 @@
 .col-xs-12
   .container
     .page-header
-      %h3 Pullrequests
+      %h3= t '.title'
     = render 'error_messages', resource: @pull if @pull
     - if @pulls.blank?
       = t '.empty'
@@ -12,7 +12,7 @@
         %table.table.table-hover
           %thead
             %tr
-              %th.col-sm-5= t 'activerecord.models.pull'
+              %th.col-sm-5= t 'activerecord.attributes.pull.title'
               %th.col-sm-5= t 'activerecord.models.repo'
               %th.col-sm-1= t 'activerecord.attributes.pull.status'
               %th.col-sm-1

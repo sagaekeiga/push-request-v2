@@ -56,6 +56,8 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.bigint "pull_id"
     t.string "sha"
     t.string "message"
+    t.string "committer_name"
+    t.string "committed_date"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -149,6 +151,7 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["deleted_at"], name: "index_pulls_on_deleted_at"
+    t.index ["remote_id"], name: "index_pulls_on_remote_id", unique: true
     t.index ["repo_id"], name: "index_pulls_on_repo_id"
   end
 

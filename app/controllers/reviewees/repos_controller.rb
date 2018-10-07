@@ -1,6 +1,10 @@
 class Reviewees::ReposController < Reviewees::BaseController
   before_action :set_repo, only: %i(update)
 
+  def index
+    @repos = current_reviewee.viewable_repos.page(params[:page])
+  end
+
   def update
     case @repo.status
     when 'hidden'

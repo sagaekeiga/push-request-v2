@@ -43,14 +43,19 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Enumerables
   # -------------------------------------------------------------------------------
-  # 性別
   #
   # - pending   : コメントが作成された
   # - commented : レビューした
+  # - self   : revieweeのセルフレビュー
+  # - review : reviewer(PR内)のコメント
+  # - reply : コメントに対する返信
   #
   enum status: {
     pending:  1000,
-    commented: 2000
+    commented: 2000,
+    self:  3000,
+    review: 4000,
+    reply: 5000
   }
 
   # -------------------------------------------------------------------------------
@@ -88,12 +93,13 @@ class ReviewComment < ApplicationRecord
       res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
       res_pull_comments.each do |pull_comment|
         review_comment = ReviewComment.find_or_initialize_by(remote_id: pull_comment[:commit_id])
+        status = pull_comment['in_reply_to_id'] ? :reply : :self
         review_comment.update_attributes!(
           remote_id:    pull_comment['pull_request_review_id'],
           body:         pull_comment['body'],
           path:         pull_comment['path'],
           position:     pull_comment['position'],
-          status:       :commented,
+          status:       status,
           changed_file_id: changed_file.id,
           in_reply_to_id: pull_comment['in_reply_to_id'],
         )

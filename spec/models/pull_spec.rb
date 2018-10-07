@@ -21,6 +21,7 @@
 # Indexes
 #
 #  index_pulls_on_deleted_at  (deleted_at)
+#  index_pulls_on_remote_id   (remote_id) UNIQUE
 #  index_pulls_on_repo_id     (repo_id)
 #
 # Foreign Keys
