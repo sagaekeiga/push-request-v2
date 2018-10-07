@@ -5,6 +5,7 @@
 #  id              :bigint(8)        not null, primary key
 #  body            :text
 #  deleted_at      :datetime
+#  event           :integer
 #  path            :string
 #  position        :integer
 #  status          :integer
@@ -46,16 +47,22 @@ class ReviewComment < ApplicationRecord
   #
   # - pending   : コメントが作成された
   # - commented : レビューした
+  #
+  enum status: {
+    pending:   1000,
+    completed: 2000
+  }
+
+  # - commented :conversationでのコメント
   # - self   : revieweeのセルフレビュー
   # - review : reviewer(PR内)のコメント
   # - reply : コメントに対する返信
   #
-  enum status: {
-    pending:  1000,
-    commented: 2000,
-    self:  3000,
-    review: 4000,
-    reply: 5000
+  enum event: {
+    commented: 1000,
+    self_reviewed:  2000,
+    reviewed: 3000,
+    replied: 4000
   }
 
   # -------------------------------------------------------------------------------
@@ -93,13 +100,14 @@ class ReviewComment < ApplicationRecord
       res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
       res_pull_comments.each do |pull_comment|
         review_comment = ReviewComment.find_or_initialize_by(remote_id: pull_comment[:commit_id])
-        status = pull_comment['in_reply_to_id'] ? :reply : :self
+        event = pull_comment['in_reply_to_id'] ? :replied : :self_reviewed
         review_comment.update_attributes!(
           remote_id:    pull_comment['pull_request_review_id'],
           body:         pull_comment['body'],
           path:         pull_comment['path'],
           position:     pull_comment['position'],
-          status:       status,
+          status:       pending,
+          event:        event,
           changed_file_id: changed_file.id,
           in_reply_to_id: pull_comment['in_reply_to_id'],
         )
@@ -132,12 +140,18 @@ class ReviewComment < ApplicationRecord
       return ReviewComment.fetch_changes!(params, pull, changed_file)
     end
 
+    # paramsでenumステータスの分ける(リプライ、セルフレビュー)
+    event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
+
     review_comment = ReviewComment.find_or_initialize_by(
       remote_id:      nil,
       path:           params[:comment][:path],
       position:       params[:comment][:position],
       body:           params[:comment][:body],
-      changed_file:   changed_file
+      in_reply_to_id: params[:comment][:in_reply_to_id],
+      changed_file:   changed_file,
+      status:       :pending,
+      event:       event
     )
 
     # レビュー時のレスポンス取得
@@ -182,13 +196,16 @@ class ReviewComment < ApplicationRecord
   def self.fetch_changes!(params, pull, changed_file)
     ActiveRecord::Base.transaction do
       review_comment = ReviewComment.find_or_initialize_by(remote_id: params[:comment][:id])
+      event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
       review_comment.update_attributes!(
         remote_id:    params[:comment][:id],
         body:         params[:comment][:body],
         path:         params[:comment][:path],
         position:     params[:comment][:position],
+        in_reply_to_id: params[:comment][:in_reply_to_id],
         changed_file: changed_file,
-        status:       :commented
+        status:       :pending,
+        event:       event
       )
     end
     true

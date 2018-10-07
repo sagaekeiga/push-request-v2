@@ -105,7 +105,7 @@ class Review < ApplicationRecord
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|
       review_comment.review = review
-      review_comment.review!
+      review_comment.reviewed!
       review_comment.save!
     end
     review
