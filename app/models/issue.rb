@@ -68,52 +68,54 @@ class Issue < ApplicationRecord
   # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
-  def self.fetch!(repo)
-    ActiveRecord::Base.transaction do
-      # JSON
-      res_issues = Github::Request.github_exec_fetch_issues!(repo)
-      res_issues.each do |res_issue|
-        next if res_issue.has_key?('pull_request')
-        issue = repo.issues.find_or_initialize_by(
-          resource_type: repo.resource_type,
-          resource_id: repo.resource_id,
-          remote_id: res_issue['id'],
-          number: res_issue['number']
-        )
-        issue.update_attributes!(
-          title: res_issue['title'],
-          body: res_issue['body']
-        )
-        issue.update_status_by!(res_issue['state'])
+  class << self
+    def fetch!(repo)
+      ActiveRecord::Base.transaction do
+        res_issues = Github::Request.github_exec_fetch_issues!(repo)
+        res_issues.each do |res_issue|
+          res_issue = ActiveSupport::HashWithIndifferentAccess.new(res_issue)
+          next if res_issue.has_key?(:pull_request)
+          issue = repo.issues.find_or_initialize_by(_merge_params(res_issue, repo))
+          issue.update_attributes!(
+            title: res_issue[:title],
+            body: res_issue[:body]
+          )
+          issue.update_status_by!(res_issue[:state])
+        end
       end
+    rescue => e
+      Rails.logger.error e
+      Rails.logger.error e.backtrace.join("\n")
+      fail I18n.t('views.error.failed_create_issue')
     end
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    fail I18n.t('views.error.failed_create_issue')
-  end
 
-  def self.update_by_issue_event!(params)
-    ActiveRecord::Base.transaction do
-      repo = Repo.find_by(remote_id: params[:repository][:id])
-      issue = find_or_initialize_by(
-        repo_id: repo.id,
+    def update_by_issue_event!(params)
+      ActiveRecord::Base.transaction do
+        repo = Repo.find_by(remote_id: params[:repository][:id])
+        issue = repo.issues.find_or_initialize_by(_merge_params(params[:issue], repo))
+        issue.update_attributes!(
+          title: params[:issue][:title],
+          body: params[:issue][:body]
+        )
+        issue.update_status_by!(params[:issue][:state])
+      end
+      true
+    rescue => e
+      Rails.logger.error e
+      Rails.logger.error e.backtrace.join("\n")
+      false
+    end
+
+    private
+
+    def _merge_params(params, repo)
+      {
         resource_type: repo.resource_type,
         resource_id: repo.resource_id,
-        remote_id: params[:issue][:id],
-        number: params[:issue][:number]
-      )
-      issue.update_attributes!(
-        title: params[:issue][:title],
-        body: params[:issue][:body]
-      )
-      issue.update_status_by!(params[:issue][:state])
+        remote_id: params[:id],
+        number: params[:number]
+      }
     end
-    true
-  rescue => e
-    Rails.logger.error e
-    Rails.logger.error e.backtrace.join("\n")
-    false
   end
   # -------------------------------------------------------------------------------
   # InstanceMethods
