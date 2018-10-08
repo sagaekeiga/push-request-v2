@@ -95,7 +95,7 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  def self.fetch_review_at_first!(changed_file)
+  def self.fetch_on_repo_install!(changed_file)
     ActiveRecord::Base.transaction do
       res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
       res_pull_comments.each do |pull_comment|
@@ -242,29 +242,32 @@ class ReviewComment < ApplicationRecord
 
   private
 
-  def self._comment_params(params, changed_file)
-    event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
-    {
-      remote_id:      nil,
-      path:           params[:comment][:path],
-      position:       params[:comment][:position],
-      in_reply_to_id: params[:comment][:in_reply_to_id],
-      changed_file:   changed_file,
-      status:       :pending,
-      event:       event
-    }
-  end
+  class << self
 
-  def self._pull_comments_params(params, changed_file)
-    event = params[:in_reply_to_id] ? :replied : :self_reviewed
-    {
-      remote_id:    params[:pull_request_review_id],
-      path:         params[:path],
-      position:     params[:position],
-      status:       :completed,
-      event:        event,
-      changed_file_id: changed_file.id,
-      in_reply_to_id: params[:in_reply_to_id]
-    }
+    def _comment_params(params, changed_file)
+      event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
+      {
+        remote_id:      nil,
+        path:           params[:comment][:path],
+        position:       params[:comment][:position],
+        in_reply_to_id: params[:comment][:in_reply_to_id],
+        changed_file:   changed_file,
+        status:       :pending,
+        event:       event
+      }
+    end
+
+    def _pull_comments_params(params, changed_file)
+      event = params[:in_reply_to_id] ? :replied : :self_reviewed
+      {
+        remote_id:    params[:pull_request_review_id],
+        path:         params[:path],
+        position:     params[:position],
+        status:       :completed,
+        event:        event,
+        changed_file_id: changed_file.id,
+        in_reply_to_id: params[:in_reply_to_id]
+      }
+    end
   end
 end
