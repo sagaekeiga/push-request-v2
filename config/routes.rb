@@ -23,12 +23,18 @@ Rails.application.routes.draw do
 
   constraints(WebDomainConstraint) do
     root to: 'welcome#index'
-    get '/auth/github/callback', to: 'connects#github'
-    get '/auth/github/setup', to: 'connects#setup'
+    get '/auth/github/setup', to: 'authentications#setup'
+    get '/auth/github/callback', to: 'authentications#callback'
 
     devise_scope :reviewee do
       post '/auth/:action/callback',
-        controller: 'connects',
+        controller: 'authentications',
+        constraints: { action: /github/ }
+    end
+
+    devise_scope :reviewer do
+      get '/auth/:action/callback',
+        controller: 'authentications',
         constraints: { action: /github/ }
     end
 

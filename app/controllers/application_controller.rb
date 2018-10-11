@@ -61,7 +61,7 @@ class ApplicationController < ActionController::Base
   force_ssl if: :use_ssl?
 
   def check_reviewer
-    redirect_to :reviewers_pending if reviewer_signed_in? && current_reviewer.github_account && current_reviewer.skillings && current_reviewer.pending?
+    redirect_to :reviewers_pending if reviewer_signed_in? && current_reviewer.github_account && current_reviewer.skillings.exists? && current_reviewer.pending?
   end
 
   #

@@ -62,41 +62,28 @@ class Reviewer < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Attributes
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:pending]
+  attribute :status, default: statuses[:active]
 
   # -------------------------------------------------------------------------------
-  # Attributes
+  # ClassMethods
   # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:pending]
+  def self.find_for_oauth(github_account)
+    reviewer = find_or_initialize_by(email: github_account.email)
+    if reviewer.persisted?
+      reviewer.update_attributes(last_sign_in_at: Time.zone.now)
+      github_account.save
+    else
+      reviewer.update_attributes(password: Devise.friendly_token.first(8))
+      github_account.update_attributes(reviewer: reviewer)
+    end
+    reviewer
+  end
 
   # -------------------------------------------------------------------------------
-  # InstanceMethods
+  # InstancMethods
   # -------------------------------------------------------------------------------
   # pullのレビューコメントを返す
   def target_review_comments(pull)
     review_comments.where(changed_file: pull.changed_files).where.not(reviewer: nil)
-  end
-
-  # GitHub連携をする
-  def connect_to_github(auth)
-    reviewer_github_account = build_github_account(
-      login: auth['extra']['raw_info']['login'],
-      owner_id: auth['extra']['raw_info']['id'],
-      avatar_url: auth['extra']['raw_info']['avatar_url'],
-      gravatar_id: auth['extra']['raw_info']['gravatar_id'],
-      email: auth['info']['email'],
-      url: auth['info']['url'],
-      html_url: auth['extra']['raw_info']['html_url'],
-      user_type: auth['extra']['raw_info']['type'],
-      nickname: auth['info']['nickname'],
-      name: auth['info']['name'],
-      company: auth['info']['company'],
-      location: auth['extra']['raw_info']['location'],
-      public_gists: auth['extra']['raw_info']['public_gists'],
-      public_repos: auth['extra']['raw_info']['public_repos'],
-      reviewee_created_at: auth['extra']['raw_info']['created_at'],
-      reviewee_updated_at: auth['extra']['raw_info']['updated_at']
-    )
-    reviewer_github_account.save!
   end
 end
