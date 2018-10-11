@@ -1,6 +1,0 @@
-%tr
-  %td= image_tag org.avatar_url, class: 'img-responsive'
-  %td= org.login
-  %td= org.description
-  %td= org.status_i18n
-  %td= link_to t("orgs.views.buttons.texts.#{org.status}"), reviewees_org_path(org), method: :put, class: "btn btn-block #{t("orgs.views.buttons.colors.#{org.status}")}"

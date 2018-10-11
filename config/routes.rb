@@ -59,7 +59,6 @@ Rails.application.routes.draw do
           get :join
         end
       end
-      resources :orgs, only: %i(index update)
       resources :pulls, only: %i(index)
       resources :repos, only: %i(index update) do
         resources :contents, only: %i(index show update)
