@@ -70,7 +70,6 @@ class ChangedFile < ApplicationRecord
           patch:        res_changed_file['patch'],
           contents_url: res_changed_file['contents_url']
         )
-        ReviewComment.fetch_on_repo_install!(changed_file)
       end
     end
   rescue => e
@@ -95,6 +94,7 @@ class ChangedFile < ApplicationRecord
           patch:         res_diff['patch'],
           contents_url:  res_diff['contents_url']
         )
+        ReviewComment.fetch_on_repo_install!(changed_file)
       end
     end
   rescue => e

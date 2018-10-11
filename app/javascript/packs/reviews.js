@@ -1,5 +1,9 @@
 hoverColor();
 
+hoverCode();
+
+hoverComment();
+
 $('.hljs-addition').click(function() {
   addForm($(this));
 })
@@ -35,12 +39,14 @@ $(document).on('click', '#submit_review_button', function () {
 
 $(document).on('click', '.close-left-side', function () {
   $('.col-sm-4.p-l-0').addClass('hidden')
-  $('#code_note').removeClass('col-sm-8').addClass('col-sm-12');
+  $('.col-sm-3.p-r-0').removeClass('hidden')
+  $('#code_note').removeClass('col-sm-8').addClass('col-sm-9');
   $('.open-left-side').removeClass('hidden')
 })
 
 $(document).on('click', '.open-left-side', function () {
   $('.col-sm-4.p-l-0').removeClass('hidden')
+  $('.col-sm-3.p-r-0').addClass('hidden')
   $('#code_note').removeClass('col-sm-12').addClass('col-sm-8');
   $('.open-left-side').addClass('hidden')
 })
@@ -58,6 +64,65 @@ function hoverColor() {
       }
     )
   })
+};
+
+function hoverColor() {
+  $('.hljs-addition').each(function(i, elem) {
+    $(elem).css('cursor','pointer');
+    var color = $(elem).css("color");
+    $(elem).hover(
+      function(){
+        $(this).css({ 'color':'#FFFFFF', 'text-decoration':'none' });
+      },
+      function(){
+        $(this).css({ 'color': color, 'text-decoration':'none' });
+      }
+    )
+  })
+};
+
+function hoverCode() {
+ $('.code-tr').hover(
+   function(){
+     self_review_num = $(this).attr('data-line-number');
+     comment_position = `div[comment-position=${self_review_num}]`
+
+     if ($(this).children($('td')).hasClass('bg-success')){
+        bg_class = 'bg-success'
+     }else{
+        bg_class = 'bg-danger'
+     };
+
+     $(this).children($('td')).addClass('bg-warning').removeClass(bg_class);
+     $(comment_position).children('div').addClass('bg-warning')
+   },
+   function(){
+     $(this).children($('td')).addClass(bg_class).removeClass('bg-warning');
+     $(comment_position).children('div').removeClass('bg-warning')
+   }
+  );
+};
+
+function hoverComment() {
+ $('.comment-card').hover(
+   function(){
+     self_review_position = $(this).attr('comment-position');
+     code_position = `tr[data-line-number=${self_review_position}]`
+
+     if ($(`tr[data-line-number=${self_review_position}]`).children($('td')).hasClass('bg-success')){
+        bg_class = 'bg-success'
+     }else{
+        bg_class = 'bg-danger'
+     };
+
+     $(code_position).children('td').removeClass(bg_class).addClass('bg-warning');
+     $(this).children('div').addClass('bg-warning');
+   },
+   function(){
+     $(this).children('div').removeClass('bg-warning');
+     $(code_position).children('td').removeClass('bg-warning').addClass(bg_class);
+   }
+ );
 };
 
 function addForm(elem) {

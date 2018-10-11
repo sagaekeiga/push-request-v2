@@ -64,7 +64,22 @@
             .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
             .reviews-form-wrapper
               .reviews-form-card-wrapper.editor
-                = render @changed_files
+                = render @changed_files.decorate
+        .col-sm-3.p-r-0.hidden
+          - @changed_files.each do |changed_file|
+            - changed_file.review_comments.order(position: :asc).each do |comment|
+              - if comment.self_reviewed?
+                .comment-card{ 'comment-position': "#{comment.position}" }
+                  .text-content
+                    %p.caption
+                      = comment.position
+                      = comment.body
+                  .content-meta
+                    - if changed_file.review_comments.size > 2
+                      .open_comment
+                        もっと見る
+                        = render 'comment' , comment: comment
+
       - else
         %h1.text-center 審査中
         %p.text-center 審査が通るまで少々お待ちください
