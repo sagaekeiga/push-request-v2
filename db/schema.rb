@@ -126,7 +126,6 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.string "login"
     t.string "avatar_url"
     t.string "description"
-    t.integer "status"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

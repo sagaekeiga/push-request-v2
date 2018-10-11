@@ -7,7 +7,6 @@
 #  deleted_at  :datetime
 #  description :string
 #  login       :string
-#  status      :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  remote_id   :bigint(8)
@@ -29,33 +28,16 @@ class Org < ApplicationRecord
   has_many :wikis, as: :resource
   has_many :commits, as: :resource
   # -------------------------------------------------------------------------------
-  # Enumerables
-  # -------------------------------------------------------------------------------
-  # 状態
-  #
-  # - is_invalid : 無効
-  # - is_valid   : 有効
-  #
-  enum status: {
-    is_invalid: 1000,
-    is_valid:   2000
-  }
-  # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
   validates :remote_id, presence: true, uniqueness: true
   validates :login, presence: true
-  validates :status, presence: true
   # -------------------------------------------------------------------------------
   # Scopes
   # -------------------------------------------------------------------------------
   scope :owner, lambda {
     where(reviewee_orgs: { role: :owner })
   }
-  # -------------------------------------------------------------------------------
-  # Attributes
-  # -------------------------------------------------------------------------------
-  attribute :status, default: statuses[:is_invalid]
   # -------------------------------------------------------------------------------
   # InstanceMethods
   # -------------------------------------------------------------------------------
