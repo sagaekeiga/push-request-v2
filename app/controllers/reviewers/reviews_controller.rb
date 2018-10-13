@@ -1,11 +1,11 @@
 class Reviewers::ReviewsController < Reviewers::BaseController
   before_action :set_pull, only: %i(new create)
+  before_action :set_changed_files, only: %i(new create)
   before_action :check_pending_review, only: %i(new create)
 
   # GET /reviewers/pulls/:pull_id/reviews/file
   def new
     @review = Review.new
-    @changed_files = @pull.files_changed.decorate
     numbers = @pull.body.scan(/#\d+/)&.map{ |num| num.delete('#').to_i }
     @issues = @pull.repo.issues.where(number: numbers)
   end
@@ -21,7 +21,6 @@ class Reviewers::ReviewsController < Reviewers::BaseController
     Rails.logger.error e
     Rails.logger.error e.backtrace.join("\n")
     @review = Review.new
-    @changed_files = @pull.files_changed
     flash[:danger] = 'レビューに失敗しました'
     render :new
   end
@@ -29,7 +28,11 @@ class Reviewers::ReviewsController < Reviewers::BaseController
   private
 
   def set_pull
-    @pull = Pull.friendly.find(params[:pull_token]).decorate
+    @pull = Pull.includes(:changed_files).friendly.find(params[:pull_token]).decorate
+  end
+
+  def set_changed_files
+    @changed_files = @pull.files_changed
   end
 
   def check_pending_review

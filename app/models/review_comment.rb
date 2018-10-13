@@ -5,6 +5,7 @@
 #  id              :bigint(8)        not null, primary key
 #  body            :text
 #  deleted_at      :datetime
+#  event           :integer
 #  path            :string
 #  position        :integer
 #  status          :integer
@@ -43,14 +44,25 @@ class ReviewComment < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Enumerables
   # -------------------------------------------------------------------------------
-  # 性別
   #
   # - pending   : コメントが作成された
   # - commented : レビューした
   #
   enum status: {
-    pending:  1000,
-    commented: 2000
+    pending:   1000,
+    completed: 2000
+  }
+
+  # - commented :conversationでのコメント
+  # - self_reviewed   : revieweeのセルフレビュー
+  # - reviewed : reviewer(PR内)のコメント
+  # - replid : コメントに対する返信
+  #
+  enum event: {
+    commented: 1000,
+    self_reviewed:  2000,
+    reviewed: 3000,
+    replied: 4000
   }
 
   # -------------------------------------------------------------------------------
@@ -75,12 +87,36 @@ class ReviewComment < ApplicationRecord
         order(created_at: :asc)
   }
 
+  scope :search_self_reviews, -> (params) {
+    where(
+      changed_file_id: params[:changed_file_id],
+      position: params[:position],
+      path: params[:comm_path]
+    )
+  }
+
   def self.calc_working_hours
     return 0 if self.first.nil?
     start_time = self.first.created_at
     end_time = Time.zone.now
     working_hours = ((end_time - start_time).to_i / 60).floor
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
+  end
+
+  def self.fetch_on_installing_repo!(changed_file)
+    ActiveRecord::Base.transaction do
+      res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
+      res_pull_comments.each do |pull_comment|
+        params = ActiveSupport::HashWithIndifferentAccess.new(pull_comment)
+        review_comment = ReviewComment.find_or_initialize_by(_pull_comments_params(params, changed_file))
+        review_comment.update_attributes!(body: params[:body])
+      end
+    end
+    true
+  rescue => e
+    Rails.logger.error e
+    Rails.logger.error e.backtrace.join("\n")
+    false
   end
 
   def self.fetch!(params)
@@ -103,13 +139,8 @@ class ReviewComment < ApplicationRecord
       return ReviewComment.fetch_changes!(params, pull, changed_file)
     end
 
-    review_comment = ReviewComment.find_or_initialize_by(
-      remote_id:      nil,
-      path:           params[:comment][:path],
-      position:       params[:comment][:position],
-      body:           params[:comment][:body],
-      changed_file:   changed_file
-    )
+    review_comment = ReviewComment.find_or_initialize_by(_comment_params(params, changed_file))
+    review_comment.update_attributes!(body: params[:comment][:body])
 
     # レビュー時のレスポンス取得
     # 返事の取得return
@@ -152,15 +183,8 @@ class ReviewComment < ApplicationRecord
   # Edit
   def self.fetch_changes!(params, pull, changed_file)
     ActiveRecord::Base.transaction do
-      review_comment = ReviewComment.find_by(remote_id: params[:comment][:id])
-      review_comment.update_attributes!(
-        remote_id:    params[:comment][:id],
-        body:         params[:comment][:body],
-        path:         params[:comment][:path],
-        position:     params[:comment][:position],
-        changed_file: changed_file,
-        status:       :commented
-      )
+      review_comment = ReviewComment.find_or_initialize_by(_comment_params(params, changed_file))
+      review_comment.update_attributes!(body: params[:comment][:body])
     end
     true
   rescue => e
@@ -217,10 +241,40 @@ class ReviewComment < ApplicationRecord
   # 返信コメントを返す
   def replies
     ReviewComment.where(
-      root_id:      self,
+      root_id: self,
       changed_file: changed_file,
-      path:         path,
-      position:     position
-    ).where.not(in_reply_to_id: nil)
+      path: path,
+    )
+  end
+
+  private
+
+  class << self
+
+    def _comment_params(params, changed_file)
+      event = params[:comment][:in_reply_to_id] ? :replied : :self_reviewed
+      {
+        remote_id: nil,
+        path: params[:comment][:path],
+        position: params[:comment][:position],
+        in_reply_to_id: params[:comment][:in_reply_to_id],
+        changed_file: changed_file,
+        status: :pending,
+        event: event
+      }
+    end
+
+    def _pull_comments_params(params, changed_file)
+      event = params[:in_reply_to_id] ? :replied : :self_reviewed
+      {
+        remote_id: params[:pull_request_review_id],
+        path: params[:path],
+        position: params[:position],
+        status: :completed,
+        event: event,
+        changed_file_id: changed_file.id,
+        in_reply_to_id: params[:in_reply_to_id]
+      }
+    end
   end
 end

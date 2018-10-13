@@ -7,6 +7,11 @@ class Reviewers::ReviewCommentsController < ApplicationController
   before_action :set_pull, only: %i(create)
   before_action :set_review_comment, only: %i(destroy update show)
 
+  def index
+    review_comments = ReviewComment.search_self_reviews(params)
+    render json: { review_comments: review_comments.pluck(:body) }
+  end
+
   def create
     reviewer = Reviewer.find(params[:reviewer_id])
     @changed_file = ChangedFile.find(params[:changed_file_id])

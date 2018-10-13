@@ -64,7 +64,11 @@
             .data_id{ 'pull-id': @pull.id, 'reviewer-id': current_reviewer.id }
             .reviews-form-wrapper
               .reviews-form-card-wrapper.editor
-                = render @changed_files
+                = render @changed_files.decorate
+        .col-sm-3.p-r-0.hidden
+          = render 'comment', changed_files: @changed_files
+          = render 'comment_modal'
+
       - else
         %h1.text-center 審査中
         %p.text-center 審査が通るまで少々お待ちください

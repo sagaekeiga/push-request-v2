@@ -81,7 +81,7 @@ class Review < ApplicationRecord
         remote_id: params[:review][:id],
         commit_id: params[:review][:commit_id]
       )
-      repo = Repo.find_by_name(params[:repository][:name])
+      repo = Repo.find_by(name: params[:repository][:name])
     end
     true
   rescue => e
@@ -105,6 +105,7 @@ class Review < ApplicationRecord
     review.update!(working_hours: working_hours)
     review_comments.each do |review_comment|
       review_comment.review = review
+      review_comment.reviewed!
       review_comment.save!
     end
     review
@@ -116,7 +117,7 @@ class Review < ApplicationRecord
   def self.fetch_issue_comments!(params)
     ActiveRecord::Base.transaction do
       return false if params[:sender][:type] == 'Bot'
-      repo = Repo.find_by_name(params[:repository][:name])
+      repo = Repo.find_by(name: params[:repository][:name])
       return false unless repo
       # ① 該当するPRを取得
       pull = repo.pulls.find_by(number: params[:issue][:number])

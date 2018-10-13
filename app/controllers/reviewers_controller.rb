@@ -2,13 +2,13 @@ class ReviewersController < Reviewers::BaseController
   before_action :check_reviewer, except: %i(pending)
 
   def dashboard
-    @pulls = Repo.pulls_suitable_for(current_reviewer).order(created_at: :desc).page(params[:page])
+    @pulls = Repo.pulls_suitable_for(current_reviewer).includes(repo: [skillings: :skill]).order(created_at: :desc).page(params[:page])
     @q = Pull.ransack(params[:q])
   end
 
   def my_page
-    @reviewed_pulls = Pull.includes(:repo).where(id: current_reviewer.reviews.comment.pluck(:pull_id)).page(params[:pages])
-    @pending_reviews = current_reviewer.reviews.includes(:pull).pending
+    @reviewed_pulls = Pull.includes(repo: :skilling).where(id: current_reviewer.reviews.comment.pluck(:pull_id)).page(params[:pages])
+    @pending_reviews = current_reviewer.reviews.includes(pull: [repo: [skillings: :skill]]).pending
   end
 
   def pending
