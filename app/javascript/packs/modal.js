@@ -1,3 +1,4 @@
+// window.onload = function() {
 $(document).on('click', '#reviewSubmit', function () {
   showModal('#reviewSubmitModal')
 })
@@ -10,9 +11,11 @@ $(document).on('click', '.close-comment-btn', function () {
   $('.comment-list').empty();
 })
 
-$(document).on('click', '.open-comment-btn', function () {
-  showCommentModal($(this));
-})
+window.addEventListener('DOMContentLoaded', function() {
+  $(document).on('click', '.open-comment-btn', function () {
+    showCommentModal($(this));
+  })
+});
 
 function showCommentModal(element) {
   $('.comment-list').empty();
