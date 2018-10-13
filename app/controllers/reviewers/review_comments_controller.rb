@@ -8,11 +8,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
   before_action :set_review_comment, only: %i(destroy update show)
 
   def index
-    review_comments = ReviewComment.where(
-      changed_file_id: params[:changed_file_id],
-      position: params[:position],
-      path: params[:comm_path]
-    )
+    review_comments = ReviewComment.search_self_reviews(params)
     render json: { review_comments: review_comments }
   end
 

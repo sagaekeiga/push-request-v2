@@ -87,6 +87,14 @@ class ReviewComment < ApplicationRecord
         order(created_at: :asc)
   }
 
+  scope :search_self_reviews, -> (params) {
+    where(
+      changed_file_id: params[:changed_file_id],
+      position: params[:position],
+      path: params[:comm_path]
+    )
+  }
+
   def self.calc_working_hours
     return 0 if self.first.nil?
     start_time = self.first.created_at
