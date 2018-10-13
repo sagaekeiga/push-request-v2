@@ -10,11 +10,8 @@ $(document).on('click', '.comment_close', function () {
   $('.comment_list').empty();
 })
 
-$(document).on('click', '.open_comment', function () {
-  showCommentModal($(this));
-})
-
 function showCommentModal(element) {
+  $('.comment_list').empty();
   var changed_file_id = $(element).attr('changed_file_id');
   var path = $(element).attr('com_path');
   var position = $(element).attr('position');
