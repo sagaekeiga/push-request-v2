@@ -1,4 +1,3 @@
-// window.onload = function() {
 $(document).on('click', '#reviewSubmit', function () {
   showModal('#reviewSubmitModal')
 })
