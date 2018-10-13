@@ -9,7 +9,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
 
   def index
     review_comments = ReviewComment.search_self_reviews(params)
-    render json: { review_comments: review_comments }
+    render json: { review_comments: review_comments.pluck(:body) }
   end
 
   def create

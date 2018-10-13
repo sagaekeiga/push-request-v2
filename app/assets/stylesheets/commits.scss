@@ -4,7 +4,7 @@
   }
   .commit_title {
     font-weight: bold;
-    font-size: 15px;
+    font-size: $base-font-size + 3px;
   }
   .owner_name {
     font-weight: bold;

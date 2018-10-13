@@ -271,14 +271,8 @@
       }
     }
   }
-  $color: #4cc48e;
   * {
     box-sizing: border-box;
-  }
-  body {
-    font-family: 'Open Sans';
-    background: #fafafa;
-    transition-duration: 3s;
   }
   .comment-card {
     overflow: hidden;
@@ -286,56 +280,55 @@
     transition-duration: 3s;
     width: 320px;
     padding: 0;
-    margin: 14px auto;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    background: #fff;
+    margin: $base-font-size + 2 auto;
+    border: 1px solid $table-border-color;
+    border-radius: $base-padding;
+    background: $body-bg;
     box-shadow: 0px 1px 2px rgba(0, 0, 0, 0.1), 0 8px 20px rgba(0, 0, 0, 0.1);
   }
   .text-content {
     padding: 8px 16px;
     .title {
       margin: 0 0 12px 0;
-      font-size: 20px;
-      color: $color;
+      font-size: $base-margin + 4;
     }
     .caption {
       margin: 5px 0;
-      font-size: 20px;
-      color: #555;
+      font-size: $base-margin + 4;
+      color: $gray;
       font-weight: bold;
     }
   }
   .content-meta {
     overflow: hidden;
     width: 100%;
-    font-size: 12px;
-    .open_comment {
+    font-size: $base-font-size;
+    .open-comment-btn {
       float: right;
-      color: #aaa;
+      color: $btn-default-border;
       cursor: pointer;
       position: absolute;
-      right: 8px;
-      bottom: 5px;
+      right: $base-padding * 2;
+      bottom: $base-padding + 1;
       display: inline-block;
       transition: .3s;
     }
-    .open_comment:hover {
-      color: #3777d8;
+    .open-comment-btn:hover {
+      color: $input-border-focus;
     }
-    .open_comment::after {
+    .open-comment-btn::after {
       position: absolute;
       bottom: 0;
       left: 50%;
       content: '';
       width: 0;
       height: 1px;
-      background-color: #3777d8;
+      background-color: $input-border-focus;
       transition: .3s;
       -webkit-transform: translateX(-50%);
       transform: translateX(-50%);
     }
-    .open_comment:hover::after {
+    .open-comment-btn:hover::after {
       width: 100%;
     }
     .comment-wrapper {

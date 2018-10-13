@@ -6,16 +6,16 @@ $(document).on('click', '#import', function () {
   showModal('#importModal')
 })
 
-$(document).on('click', '.comment_close', function () {
-  $('.comment_list').empty();
+$(document).on('click', '.close-comment-btn', function () {
+  $('.comment-list').empty();
 })
 
-$(document).on('click', '.open_comment', function () {
+$(document).on('click', '.open-comment-btn', function () {
   showCommentModal($(this));
 })
 
 function showCommentModal(element) {
-  $('.comment_list').empty();
+  $('.comment-list').empty();
   var changed_file_id = $(element).attr('changed_file_id');
   var path = $(element).attr('com_path');
   var position = $(element).attr('position');
@@ -38,7 +38,7 @@ function showCommentModal(element) {
         $.each(assign_code,
           function(index, elem) {
             if (typeof elem === "string" && elem.indexOf('<pre>') != -1){
-              $('.comment_list')
+              $('.comment-list')
                 .append(elem);
             }
           }
@@ -46,8 +46,8 @@ function showCommentModal(element) {
 
         $.each(comments,
           function(index, elem) {
-            $('.comment_list')
-              .append(`<tr><td>${elem.body}</td></tr>`);
+            $('.comment-list')
+              .append(`<tr><td>${elem}</td></tr>`);
           }
         );
         showModal('#commentModal');
