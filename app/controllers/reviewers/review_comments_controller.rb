@@ -13,10 +13,7 @@ class Reviewers::ReviewCommentsController < ApplicationController
       position: params[:position],
       path: params[:comm_path]
     )
-    render json: {
-      review_comments: review_comments,
-      position: params[:position]
-    }
+    render json: { review_comments: review_comments }
   end
 
   def create
