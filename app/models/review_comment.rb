@@ -236,8 +236,7 @@ class ReviewComment < ApplicationRecord
       root_id:      self,
       changed_file: changed_file,
       path:         path,
-      position:     position
-    ).where.not(in_reply_to_id: nil)
+    )
   end
 
   private
