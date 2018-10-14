@@ -80,7 +80,7 @@ class Reviewer < ApplicationRecord
   end
 
   # -------------------------------------------------------------------------------
-  # InstancMethods
+  # InstanceMethods
   # -------------------------------------------------------------------------------
   # pullのレビューコメントを返す
   def target_review_comments(pull)
