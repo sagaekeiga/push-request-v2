@@ -62,3 +62,7 @@ RedundantReturn:
 
 Rails:
   Enabled: true
+
+PredicateName:
+  NamePrefixBlacklist:
+    - hoge_

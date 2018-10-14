@@ -14,7 +14,7 @@ class Reviewers::IssuesController < Reviewers::BaseController
     @repo = Repo.find(params[:repo_id])
   end
 
-   def set_issue
-     @issue = @repo.issues.find(params[:id])
-   end
+  def set_issue
+    @issue = @repo.issues.find(params[:id])
+  end
 end

@@ -46,7 +46,6 @@ class ApplicationController < ActionController::Base
   def render_404(e = nil)
     logger.info "Rendering 404 with exception: #{e.message}" if e
 
-    format = params[:format] == :json ? :json : :html
     render template: 'errors/error_404', status: 404, layout: 'lp', content_type: 'text/html'
   end
 
