@@ -128,7 +128,6 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.string "login"
     t.string "avatar_url"
     t.string "description"
-    t.integer "status"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -228,19 +227,11 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.string "access_token"
     t.bigint "owner_id"
     t.string "avatar_url"
-    t.string "gravatar_id"
     t.string "email"
-    t.string "url"
-    t.string "html_url"
     t.string "user_type"
     t.string "name"
     t.string "nickname"
     t.string "company"
-    t.string "location"
-    t.integer "public_repos"
-    t.integer "public_gists"
-    t.datetime "reviewee_created_at"
-    t.datetime "reviewee_updated_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -273,19 +264,11 @@ ActiveRecord::Schema.define(version: 20180925134835) do
     t.string "login"
     t.bigint "owner_id"
     t.string "avatar_url"
-    t.string "gravatar_id"
     t.string "email"
-    t.string "url"
-    t.string "html_url"
     t.string "user_type"
     t.string "name"
     t.string "nickname"
     t.string "company"
-    t.string "location"
-    t.integer "public_repos"
-    t.integer "public_gists"
-    t.datetime "reviewee_created_at"
-    t.datetime "reviewee_updated_at"
     t.datetime "deleted_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false

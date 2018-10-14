@@ -9,18 +9,3 @@
         %span.icon-bar
         %span.icon-bar
       = link_to Settings.meta.site, root_path, class: 'navbar-brand'
-
-    #navbar.collapse.navbar-collapse
-      %ul.nav.navbar-nav.pull-right
-        %li
-          = link_to new_reviewee_registration_path, style: 'color: $color-white;' do
-            &nbsp;
-            = t('helpers.links.sign_up')
-        %li
-          = link_to new_reviewee_session_path do
-            &nbsp;
-            = t('helpers.label.reviewee.log_in')
-        %li
-          = link_to new_reviewer_session_path do
-            &nbsp;
-            = t('helpers.label.reviewer.log_in')

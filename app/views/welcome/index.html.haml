@@ -10,14 +10,14 @@
       .col-xs-12
         .col-xs-6
           .text-center
-            .target 初めての方
+            .target レビューを受けたい方
             %br
-            = link_to 'Sign up', new_reviewee_registration_path, class: 'btn btn-block btn-primary'
+            = link_to 'GitHubログイン', '/auth/github?model_type=reviewee&scope=repo', method: :post, class: 'btn btn-block btn-primary'
         .col-xs-6
           .text-center
-            .target 登録済みの方
+            .target レビューをしたい方
             %br
-            = link_to 'Sign in', new_reviewee_session_path, class: 'btn btn-block btn-primary'
+            = link_to 'GitHubログイン', '/auth/github?model_type=reviewer', class: 'btn btn-block btn-primary'
 
 //
 // Live
