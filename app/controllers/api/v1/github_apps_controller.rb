@@ -23,8 +23,10 @@ class Api::V1::GithubAppsController < ApplicationController
     when 'pull_request'
       status = Pull.update_by_pull_request_event!(params[:github_app][:pull_request]) if params.dig(:github_app, :pull_request).present?
     when 'pull_request_review'
-      status = Review.fetch_remote_id!(params)
+      # レビュー内容取得
+      status = Review.update_by_commit_id!(params)
     when 'pull_request_review_comment'
+      # コメント取得(レビュー時のコメント部分も含む)
       status = ReviewComment.fetch!(params)
     when 'issue_comment'
       @github_account = Reviewees::GithubAccount.find_by(owner_id: params[:issue][:user][:id])

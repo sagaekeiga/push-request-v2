@@ -64,11 +64,11 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :working_hours, presence: true, on: %i(update)
+  # validates :working_hours, presence: true, on: %i(update)
   validates :remote_id, uniqueness: true, allow_nil: true
 
   # レビューはidが可変なので、commit_idを識別子にする
-  def self.fetch_remote_id!(params)
+  def self.update_by_commit_id!(params)
     ActiveRecord::Base.transaction do
       pull = Pull.find_by(
         remote_id: params[:pull_request][:id],
