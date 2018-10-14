@@ -2,28 +2,20 @@
 #
 # Table name: reviewees_github_accounts
 #
-#  id                  :bigint(8)        not null, primary key
-#  access_token        :string
-#  avatar_url          :string
-#  company             :string
-#  deleted_at          :datetime
-#  email               :string
-#  html_url            :string
-#  location            :string
-#  login               :string
-#  name                :string
-#  nickname            :string
-#  public_gists        :integer
-#  public_repos        :integer
-#  reviewee_created_at :datetime
-#  reviewee_updated_at :datetime
-#  url                 :string
-#  user_type           :string
-#  created_at          :datetime         not null
-#  updated_at          :datetime         not null
-#  gravatar_id         :string
-#  owner_id            :bigint(8)
-#  reviewee_id         :bigint(8)
+#  id           :bigint(8)        not null, primary key
+#  access_token :string
+#  avatar_url   :string
+#  company      :string
+#  deleted_at   :datetime
+#  email        :string
+#  login        :string
+#  name         :string
+#  nickname     :string
+#  user_type    :string
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
+#  owner_id     :bigint(8)
+#  reviewee_id  :bigint(8)
 #
 # Indexes
 #
@@ -48,20 +40,18 @@ class Reviewees::GithubAccount < ApplicationRecord
   # -------------------------------------------------------------------------------
   # ClassMethods
   # -------------------------------------------------------------------------------
-  def fetch_orgs!
-    res_orgs = Github::Request.github_exec_fetch_orgs!(self)
-    Rails.logger.debug res_orgs
-    res_orgs.each do |res_org|
-      res_org =  ActiveSupport::HashWithIndifferentAccess.new(res_org)
-      org = Org.find_or_initialize_by(remote_id: res_org[:id])
-      org.update_attributes!(
-        avatar_url: res_org[:avatar_url],
-        description: res_org[:description],
-        login: res_org[:login]
-      )
-      reviewee_org = self.reviewee.reviewee_orgs.new(org: org)
-      reviewee_org.set_role(self)
-      reviewee_org.save!
-    end
+  def self.find_for_oauth(auth)
+    github_account = find_or_initialize_by(owner_id: auth['extra']['raw_info']['id'])
+    github_account.assign_attributes(
+      login: auth['extra']['raw_info']['login'],
+      access_token: auth['credentials']['token'],
+      avatar_url: auth['extra']['raw_info']['avatar_url'],
+      email: auth['info']['email'],
+      user_type: auth['extra']['raw_info']['type'],
+      nickname: auth['info']['nickname'],
+      name: auth['info']['name'],
+      company: auth['info']['company']
+    )
+    github_account
   end
 end

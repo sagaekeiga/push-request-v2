@@ -2,10 +2,9 @@
   %ul.nav.nav-pills.nav-stacked
     %li
       = link_to t('reviewees.settings.integrations.title'), :reviewees_settings_integrations
-    %li
-      = link_to t('reviewees.orgs.index.title'), :reviewees_orgs
-    %li
-      = link_to t('reviewees.memberships.index.title'), :reviewees_memberships
+    -# @TODO 初期は使用しない
+    -# %li
+    -#   = link_to t('reviewees.memberships.index.title'), :reviewees_memberships
     %li
       = link_to t('reviewees.registrations.edit.title'), :edit_reviewee_registration
     %li
