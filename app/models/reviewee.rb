@@ -57,10 +57,10 @@ class Reviewee < ApplicationRecord
   def self.find_for_oauth(github_account)
     reviewee = find_or_initialize_by(email: github_account.email)
     if reviewee.persisted?
-      reviewee.update_attributes(last_sign_in_at: Time.zone.now)
+      reviewee.update_attributes!(last_sign_in_at: Time.zone.now)
       github_account.save
     else
-      reviewee.update_attributes(password: Devise.friendly_token.first(8))
+      reviewee.update_attributes!(password: Devise.friendly_token.first(8))
       github_account.update_attributes(reviewee: reviewee)
     end
     reviewee

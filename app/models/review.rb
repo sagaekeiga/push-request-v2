@@ -64,11 +64,11 @@ class Review < ApplicationRecord
   # -------------------------------------------------------------------------------
   # Validations
   # -------------------------------------------------------------------------------
-  validates :working_hours, presence: true, on: %i(update)
+  # validates :working_hours, presence: true, on: %i(update)
   validates :remote_id, uniqueness: true, allow_nil: true
 
   # レビューはidが可変なので、commit_idを識別子にする
-  def self.fetch_remote_id!(params)
+  def self.update_by_commit_id!(params)
     ActiveRecord::Base.transaction do
       pull = Pull.find_by(
         remote_id: params[:pull_request][:id],
@@ -76,8 +76,8 @@ class Review < ApplicationRecord
       )
       review = pull.reviews.find_by(body: params[:review][:body])
       # レビューの内容を変えた場合は、commit_idから取得
-      review = pull.reviews.find_by(commit_id: params[:review][:commit_id]) if review.nil?
-      review.update!(
+      review = pull.reviews.find_or_initialize_by(commit_id: params[:review][:commit_id]) if review.nil?
+      review.update_attributes!(
         remote_id: params[:review][:id],
         commit_id: params[:review][:commit_id]
       )
