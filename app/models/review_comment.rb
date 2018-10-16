@@ -267,7 +267,7 @@ class ReviewComment < ApplicationRecord
     def _pull_comments_params(params, changed_file)
       event = params[:in_reply_to_id] ? :replied : :self_reviewed
       {
-        remote_id: params[:pull_request_review_id],
+        remote_id: nil,
         path: params[:path],
         position: params[:position],
         status: :completed,
