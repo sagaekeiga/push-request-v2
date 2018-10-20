@@ -111,7 +111,8 @@ class ReviewComment < ApplicationRecord
         changed_files = Commit.find_by(sha: params[:commit_id]).changed_files.compared
 
         changed_files.each do |changed_file|
-          review_comment = ReviewComment.find_or_create_by(_pull_comments_params(params, changed_file))
+          review_comment = ReviewComment.with_deleted.find_or_initialize_by(_pull_comments_params(params, changed_file))
+          review_comment.update_attributes!(body: params[:body])
         end
       end
     end
@@ -271,7 +272,6 @@ class ReviewComment < ApplicationRecord
       event = params[:in_reply_to_id] ? :replied : :self_reviewed
       {
         remote_id: params[:id],
-        body: params[:body],
         path: params[:path],
         position: params[:position],
         status: :completed,
