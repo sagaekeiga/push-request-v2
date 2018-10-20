@@ -107,6 +107,7 @@ class Pull < ApplicationRecord
           skillings.each(&:restore) if skillings.present?
         end
         Commit.fetch!(pull)
+        ReviewComment.fetch_on_installing_repo!(pull)
       end
     end
   rescue => e

@@ -52,6 +52,7 @@ class ChangedFile < ApplicationRecord
   # ClassMethods
   # -------------------------------------------------------------------------------
   # deletedなchanged_fileを考慮しているかどうかがcheck_and_updateとの違い
+  # １つずつのコミット取得
   def self.fetch!(commit)
     ActiveRecord::Base.transaction do
       res_changed_files = Github::Request.github_exec_fetch_changed_files!(commit)
@@ -78,8 +79,10 @@ class ChangedFile < ApplicationRecord
     fail I18n.t('views.error.failed_create_changed_file')
   end
 
+  # headブランチとbase(master)ブランチの差分取得
   def self.fetch_diff!(pull)
     ActiveRecord::Base.transaction do
+
       res_diffs = Github::Request.github_exec_fetch_diff!(pull)
       commit = pull.commits.last
 
@@ -94,7 +97,6 @@ class ChangedFile < ApplicationRecord
           patch:         res_diff['patch'],
           contents_url:  res_diff['contents_url']
         )
-        ReviewComment.fetch_on_installing_repo!(changed_file)
       end
     end
   rescue => e

@@ -55,7 +55,9 @@ class Commit < ApplicationRecord
         commit.restore if commit.deleted?
         commit.update_attributes!(message: res_commit['commit']['message'])
         next if update && commit.changed_files.present?
+        # １つずつのコミット取得
         ChangedFile.fetch!(commit)
+        # headブランチとbase(master)ブランチの差分取得
         ChangedFile.fetch_diff!(pull)
       end
     end

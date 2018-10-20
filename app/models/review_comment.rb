@@ -103,13 +103,16 @@ class ReviewComment < ApplicationRecord
     working_hours > Settings.review_comments.max_working_hours ? Settings.review_comments.max_working_hours : working_hours
   end
 
-  def self.fetch_on_installing_repo!(changed_file)
+  def self.fetch_on_installing_repo!(pull)
     ActiveRecord::Base.transaction do
-      res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(changed_file.pull)
+      res_pull_comments = Github::Request.github_exec_fetch_pull_review_comment_contents!(pull)
       res_pull_comments.each do |pull_comment|
         params = ActiveSupport::HashWithIndifferentAccess.new(pull_comment)
-        review_comment = ReviewComment.find_or_initialize_by(_pull_comments_params(params, changed_file))
-        review_comment.update_attributes!(body: params[:body])
+        changed_files = Commit.find_by(sha: params[:commit_id]).changed_files.compared
+
+        changed_files.each do |changed_file|
+          review_comment = ReviewComment.find_or_create_by(_pull_comments_params(params, changed_file))
+        end
       end
     end
     true
@@ -267,7 +270,8 @@ class ReviewComment < ApplicationRecord
     def _pull_comments_params(params, changed_file)
       event = params[:in_reply_to_id] ? :replied : :self_reviewed
       {
-        remote_id: nil,
+        remote_id: params[:id],
+        body: params[:body],
         path: params[:path],
         position: params[:position],
         status: :completed,
