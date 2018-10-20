@@ -10,14 +10,11 @@ $(document).on('click', '.close-comment-btn', function () {
   $('.comment-list').empty();
 })
 
-window.addEventListener('DOMContentLoaded', function() {
-  $(document).on('click', '.open-comment-btn', function () {
-    showCommentModal($(this));
-  })
-});
+$(document).on('click', '.open-comment-btn', function () {
+  showCommentModal($(this));
+})
 
 function showCommentModal(element) {
-  $('.comment-list').empty();
   var changed_file_id = $(element).attr('changed_file_id');
   var path = $(element).attr('com_path');
   var position = $(element).attr('position');
@@ -36,6 +33,7 @@ function showCommentModal(element) {
       success: function(data){
         var comments = data.review_comments
         var assign_code = $(`tr[data-line-number=${position}]`).find($('pre'))[0];
+        $('.comment-list').empty();
 
         $.each(assign_code,
           function(index, elem) {
