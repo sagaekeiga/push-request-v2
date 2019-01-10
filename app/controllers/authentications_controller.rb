@@ -1,10 +1,10 @@
 class AuthenticationsController < ApplicationController
-
   # GET /auth/github/callback
   def callback
     model_type = request.env['omniauth.params']['model_type']
 
-    clazz = case model_type
+    clazz =
+      case model_type
       when 'reviewee' then Reviewees
       when 'reviewer' then Reviewers
       end
